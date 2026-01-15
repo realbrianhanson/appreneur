@@ -9,8 +9,9 @@ import ValueStackSection from "@/components/landing/ValueStackSection";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { AboutHostSection } from "@/components/landing/AboutHostSection";
 import { FAQSection } from "@/components/landing/FAQSection";
+import { FinalCTASection } from "@/components/landing/FinalCTASection";
 import heroVideo from "@/assets/hero-video.mp4";
-import { Zap, ArrowDown } from "lucide-react";
+import { Zap, ArrowDown, Twitter, Linkedin, Youtube } from "lucide-react";
 
 const Index = () => {
   return (
@@ -153,22 +154,57 @@ const Index = () => {
       {/* FAQ Section */}
       <FAQSection />
 
+      {/* Final CTA Section */}
+      <FinalCTASection />
+
       {/* Footer */}
-      <footer className="border-t border-border py-8 bg-background-secondary">
+      <footer className="border-t border-border py-12 bg-background">
         <Container size="wide">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col items-center gap-8">
+            {/* Logo */}
             <div className="flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" />
-              <span className="font-display font-bold">Appreneur</span>
+              <Zap className="w-6 h-6 text-primary" />
+              <span className="font-display font-bold text-xl">Appreneur</span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              © 2025 Appreneur Challenge. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-primary transition-colors">Privacy</a>
-              <a href="#" className="hover:text-primary transition-colors">Terms</a>
+
+            {/* Links */}
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+              <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
+              <span className="text-border">|</span>
+              <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+              <span className="text-border">|</span>
               <a href="#" className="hover:text-primary transition-colors">Contact</a>
             </div>
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-4">
+              <a
+                href="#"
+                className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+                aria-label="Twitter"
+              >
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
+                aria-label="YouTube"
+              >
+                <Youtube className="w-4 h-4" />
+              </a>
+            </div>
+
+            {/* Copyright */}
+            <p className="text-sm text-muted-foreground text-center">
+              © 2026 AI For Beginners. All rights reserved.
+            </p>
           </div>
         </Container>
       </footer>
