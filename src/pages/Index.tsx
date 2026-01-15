@@ -8,6 +8,7 @@ import JourneyTimeline from "@/components/landing/JourneyTimeline";
 import ValueStackSection from "@/components/landing/ValueStackSection";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { AboutHostSection } from "@/components/landing/AboutHostSection";
+import { FAQSection } from "@/components/landing/FAQSection";
 import heroVideo from "@/assets/hero-video.mp4";
 import { Zap, ArrowDown } from "lucide-react";
 
@@ -148,6 +149,9 @@ const Index = () => {
 
       {/* About Host Section */}
       <AboutHostSection />
+
+      {/* FAQ Section */}
+      <FAQSection />
 
       {/* Footer */}
       <footer className="border-t border-border py-8 bg-background-secondary">
