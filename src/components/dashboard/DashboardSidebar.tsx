@@ -50,7 +50,7 @@ const dayConfigs: DayConfig[] = [
 ];
 
 const bottomNavItems = [
-  { title: "Community", icon: <Users className="w-4 h-4" />, url: "#", external: true },
+  { title: "Community", icon: <Users className="w-4 h-4" />, url: "https://www.facebook.com/groups/918528500613193", external: true },
   { title: "Resources", icon: <FolderOpen className="w-4 h-4" />, url: "/dashboard/resources" },
   { title: "Support", icon: <HelpCircle className="w-4 h-4" />, url: "/dashboard/support" },
 ];
@@ -191,17 +191,28 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false,
         {/* Bottom Navigation */}
         <SidebarFooter className="border-t border-border">
           <SidebarMenu>
-            {bottomNavItems.map((item) => (
+          {bottomNavItems.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
-                  <Link
-                    to={item.url}
-                    className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-muted transition-colors"
-                    {...(item.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  >
-                    {item.icon}
-                    {!collapsed && <span>{item.title}</span>}
-                  </Link>
+                  {item.external ? (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-muted transition-colors"
+                    >
+                      {item.icon}
+                      {!collapsed && <span>{item.title}</span>}
+                    </a>
+                  ) : (
+                    <Link
+                      to={item.url}
+                      className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-muted transition-colors"
+                    >
+                      {item.icon}
+                      {!collapsed && <span>{item.title}</span>}
+                    </Link>
+                  )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
