@@ -5,6 +5,7 @@ import QuizContainer from "@/components/quiz/QuizContainer";
 import HeroVisual from "@/components/landing/HeroVisual";
 import FloatingParticles from "@/components/landing/FloatingParticles";
 import JourneyTimeline from "@/components/landing/JourneyTimeline";
+import ValueStackSection from "@/components/landing/ValueStackSection";
 import heroVideo from "@/assets/hero-video.mp4";
 import { Zap, ArrowDown } from "lucide-react";
 
@@ -115,6 +116,28 @@ const Index = () => {
               Join the Challenge Above
             </a>
           </div>
+        </Container>
+      </Section>
+
+      {/* What You Get FREE Section */}
+      <Section variant="default" spacing="xl" className="relative overflow-hidden">
+        {/* Background accents */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-secondary/5 via-primary/5 to-transparent blur-3xl" />
+        
+        <Container size="wide" className="relative z-10">
+          <div className="text-center mb-12 space-y-4">
+            <Badge variant="secondary" className="mx-auto">
+              100% Free Access
+            </Badge>
+            <h2 className="text-glow-primary">
+              Everything You Need to Build Your First App
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Get instant access to the complete challenge toolkit — no strings attached.
+            </p>
+          </div>
+
+          <ValueStackSection />
         </Container>
       </Section>
 
