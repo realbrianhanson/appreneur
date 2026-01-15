@@ -14,13 +14,118 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      cohorts: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          max_participants: number
+          name: string
+          spots_taken: number
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_participants?: number
+          name: string
+          spots_taken?: number
+          start_date: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_participants?: number
+          name?: string
+          spots_taken?: number
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quiz_leads: {
+        Row: {
+          answer1: string
+          answer2: string
+          answer3: string
+          cohort_id: string | null
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+        }
+        Insert: {
+          answer1: string
+          answer2: string
+          answer3: string
+          cohort_id?: string | null
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+        }
+        Update: {
+          answer1?: string
+          answer2?: string
+          answer3?: string
+          cohort_id?: string | null
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_leads_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      waitlist: {
+        Row: {
+          cohort_id: string | null
+          created_at: string
+          email: string
+          id: string
+        }
+        Insert: {
+          cohort_id?: string | null
+          created_at?: string
+          email: string
+          id?: string
+        }
+        Update: {
+          cohort_id?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waitlist_cohort_id_fkey"
+            columns: ["cohort_id"]
+            isOneToOne: false
+            referencedRelation: "cohorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_spots_taken: {
+        Args: { cohort_uuid: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
