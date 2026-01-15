@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.sms-scheduler]
 verify_jwt = false
+
+[functions.fire-webhook]
+verify_jwt = false

@@ -16,6 +16,7 @@ import DayMission from "./pages/DayMission";
 import Graduation from "./pages/Graduation";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import WebhooksAdmin from "./pages/admin/Webhooks";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/thank-you" element={<ThankYou />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/admin/webhooks" element={<WebhooksAdmin />} />
             
             {/* Protected Routes */}
             <Route
