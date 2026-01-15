@@ -20,6 +20,7 @@ import AdminOverview from "./pages/admin/Overview";
 import AdminUsers from "./pages/admin/Users";
 import AdminCohorts from "./pages/admin/Cohorts";
 import AdminAnalytics from "./pages/admin/Analytics";
+import AdminTestimonials from "./pages/admin/Testimonials";
 import WebhooksAdmin from "./pages/admin/Webhooks";
 import NotFound from "./pages/NotFound";
 
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/cohorts" element={<AdminCohorts />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/testimonials" element={<AdminTestimonials />} />
             <Route path="/admin/webhooks" element={<WebhooksAdmin />} />
             
             {/* Protected Routes */}

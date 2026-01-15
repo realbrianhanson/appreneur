@@ -403,6 +403,9 @@ export type Database = {
       }
       testimonials: {
         Row: {
+          app_name: string | null
+          app_screenshot_url: string | null
+          approved_at: string | null
           cohort_id: string | null
           content: string
           created_at: string
@@ -414,6 +417,9 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          app_name?: string | null
+          app_screenshot_url?: string | null
+          approved_at?: string | null
           cohort_id?: string | null
           content: string
           created_at?: string
@@ -425,6 +431,9 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          app_name?: string | null
+          app_screenshot_url?: string | null
+          approved_at?: string | null
           cohort_id?: string | null
           content?: string
           created_at?: string

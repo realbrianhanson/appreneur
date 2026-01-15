@@ -1,11 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { Star, Quote } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface StatItemProps {
   value: number;
   suffix?: string;
   label: string;
   isVisible: boolean;
+}
+
+interface Testimonial {
+  id: string;
+  name: string;
+  content: string;
+  rating: number | null;
+  app_name: string | null;
+  app_screenshot_url: string | null;
+  is_featured: boolean;
 }
 
 const StatItem = ({ value, suffix = "", label, isVisible }: StatItemProps) => {
@@ -42,48 +53,34 @@ const StatItem = ({ value, suffix = "", label, isVisible }: StatItemProps) => {
   );
 };
 
-const testimonials = [
+// Fallback testimonials if none in database
+const fallbackTestimonials: Testimonial[] = [
   {
+    id: "1",
     name: "Sarah M.",
-    title: "Marketing Consultant",
-    quote: "I built my first SaaS in 5 days. I finally have something real to show for my idea.",
+    content: "I built my first SaaS in 5 days. I finally have something real to show for my idea.",
     rating: 5,
-    image: "SM",
+    app_name: null,
+    app_screenshot_url: null,
+    is_featured: false,
   },
   {
+    id: "2",
     name: "Marcus T.",
-    title: "Real Estate Investor",
-    quote: "I thought I needed to hire a developer. Turns out I just needed this challenge.",
+    content: "I thought I needed to hire a developer. Turns out I just needed this challenge.",
     rating: 5,
-    image: "MT",
+    app_name: null,
+    app_screenshot_url: null,
+    is_featured: false,
   },
   {
+    id: "3",
     name: "Jennifer K.",
-    title: "Coach",
-    quote: "The prompts alone saved me 100+ hours. Insane value for free.",
+    content: "The prompts alone saved me 100+ hours. Insane value for free.",
     rating: 5,
-    image: "JK",
-  },
-  {
-    name: "David R.",
-    title: "Startup Founder",
-    quote: "Shipped my MVP and got my first paying customer by Day 6.",
-    rating: 5,
-    image: "DR",
-  },
-  {
-    name: "Amanda L.",
-    title: "Content Creator",
-    quote: "Finally understood how to turn my ideas into real products.",
-    rating: 5,
-    image: "AL",
-  },
-  {
-    name: "Chris P.",
-    title: "Agency Owner",
-    quote: "The community support made all the difference. Never felt stuck.",
-    rating: 5,
-    image: "CP",
+    app_name: null,
+    app_screenshot_url: null,
+    is_featured: false,
   },
 ];
 
@@ -101,42 +98,53 @@ const TestimonialCard = ({
   index, 
   isVisible 
 }: { 
-  testimonial: typeof testimonials[0]; 
+  testimonial: Testimonial; 
   index: number;
   isVisible: boolean;
 }) => {
+  const initials = testimonial.name.split(" ").map(n => n[0]).join("");
+  
   return (
     <div
       className={`
-        relative p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/50
+        relative p-6 rounded-2xl bg-card/50 backdrop-blur-sm border 
+        ${testimonial.is_featured ? "border-primary/50 ring-2 ring-primary/20" : "border-border/50"}
         transform transition-all duration-700 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10
         ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
       `}
       style={{ transitionDelay: `${index * 100}ms` }}
     >
+      {testimonial.is_featured && (
+        <div className="absolute -top-3 left-4 px-2 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded">
+          Featured
+        </div>
+      )}
+      
       {/* Quote icon */}
       <Quote className="absolute top-4 right-4 w-8 h-8 text-primary/20" />
       
       {/* Rating */}
       <div className="flex gap-1 mb-4">
-        {Array.from({ length: testimonial.rating }).map((_, i) => (
+        {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
           <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
         ))}
       </div>
       
       {/* Quote */}
       <p className="text-foreground/90 mb-6 leading-relaxed">
-        "{testimonial.quote}"
+        "{testimonial.content}"
       </p>
       
       {/* Author */}
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-semibold text-sm">
-          {testimonial.image}
+          {initials}
         </div>
         <div>
           <div className="font-semibold text-foreground">{testimonial.name}</div>
-          <div className="text-sm text-muted-foreground">{testimonial.title}</div>
+          {testimonial.app_name && (
+            <div className="text-sm text-muted-foreground">Built: {testimonial.app_name}</div>
+          )}
         </div>
       </div>
     </div>
@@ -203,6 +211,26 @@ export const SocialProofSection = () => {
   const [isStatsVisible, setIsStatsVisible] = useState(false);
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
   const [isAppsVisible, setIsAppsVisible] = useState(false);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
+
+  useEffect(() => {
+    // Fetch approved testimonials from database
+    const fetchTestimonials = async () => {
+      const { data, error } = await supabase
+        .from("testimonials")
+        .select("id, name, content, rating, app_name, app_screenshot_url, is_featured")
+        .eq("is_approved", true)
+        .order("is_featured", { ascending: false })
+        .order("created_at", { ascending: false })
+        .limit(6);
+      
+      if (!error && data && data.length > 0) {
+        setTestimonials(data as Testimonial[]);
+      }
+    };
+    
+    fetchTestimonials();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
