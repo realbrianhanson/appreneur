@@ -1,22 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Star, Quote } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { TestimonialCarousel, TestimonialData, TestimonialStats } from "@/components/testimonials";
 
 interface StatItemProps {
   value: number;
   suffix?: string;
   label: string;
   isVisible: boolean;
-}
-
-interface Testimonial {
-  id: string;
-  name: string;
-  content: string;
-  rating: number | null;
-  app_name: string | null;
-  app_screenshot_url: string | null;
-  is_featured: boolean;
 }
 
 const StatItem = ({ value, suffix = "", label, isVisible }: StatItemProps) => {
@@ -54,7 +44,7 @@ const StatItem = ({ value, suffix = "", label, isVisible }: StatItemProps) => {
 };
 
 // Fallback testimonials if none in database
-const fallbackTestimonials: Testimonial[] = [
+const fallbackTestimonials: TestimonialData[] = [
   {
     id: "1",
     name: "Sarah M.",
@@ -82,6 +72,33 @@ const fallbackTestimonials: Testimonial[] = [
     app_screenshot_url: null,
     is_featured: false,
   },
+  {
+    id: "4",
+    name: "David R.",
+    content: "Shipped my MVP and got my first paying customer by Day 6.",
+    rating: 5,
+    app_name: "LeadFlow",
+    app_screenshot_url: null,
+    is_featured: true,
+  },
+  {
+    id: "5",
+    name: "Amanda L.",
+    content: "Finally understood how to turn my ideas into real products.",
+    rating: 5,
+    app_name: null,
+    app_screenshot_url: null,
+    is_featured: false,
+  },
+  {
+    id: "6",
+    name: "Chris P.",
+    content: "The community support made all the difference. Never felt stuck.",
+    rating: 5,
+    app_name: "CoachBot",
+    app_screenshot_url: null,
+    is_featured: false,
+  },
 ];
 
 const appShowcase = [
@@ -92,64 +109,6 @@ const appShowcase = [
   { name: "Booking System", color: "from-red-500 to-orange-500" },
   { name: "Analytics Dashboard", color: "from-indigo-500 to-purple-500" },
 ];
-
-const TestimonialCard = ({ 
-  testimonial, 
-  index, 
-  isVisible 
-}: { 
-  testimonial: Testimonial; 
-  index: number;
-  isVisible: boolean;
-}) => {
-  const initials = testimonial.name.split(" ").map(n => n[0]).join("");
-  
-  return (
-    <div
-      className={`
-        relative p-6 rounded-2xl bg-card/50 backdrop-blur-sm border 
-        ${testimonial.is_featured ? "border-primary/50 ring-2 ring-primary/20" : "border-border/50"}
-        transform transition-all duration-700 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10
-        ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
-      `}
-      style={{ transitionDelay: `${index * 100}ms` }}
-    >
-      {testimonial.is_featured && (
-        <div className="absolute -top-3 left-4 px-2 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded">
-          Featured
-        </div>
-      )}
-      
-      {/* Quote icon */}
-      <Quote className="absolute top-4 right-4 w-8 h-8 text-primary/20" />
-      
-      {/* Rating */}
-      <div className="flex gap-1 mb-4">
-        {Array.from({ length: testimonial.rating || 5 }).map((_, i) => (
-          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-        ))}
-      </div>
-      
-      {/* Quote */}
-      <p className="text-foreground/90 mb-6 leading-relaxed">
-        "{testimonial.content}"
-      </p>
-      
-      {/* Author */}
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground font-semibold text-sm">
-          {initials}
-        </div>
-        <div>
-          <div className="font-semibold text-foreground">{testimonial.name}</div>
-          {testimonial.app_name && (
-            <div className="text-sm text-muted-foreground">Built: {testimonial.app_name}</div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const AppCard = ({ 
   app, 
@@ -211,7 +170,8 @@ export const SocialProofSection = () => {
   const [isStatsVisible, setIsStatsVisible] = useState(false);
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
   const [isAppsVisible, setIsAppsVisible] = useState(false);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(fallbackTestimonials);
+  const [testimonials, setTestimonials] = useState<TestimonialData[]>(fallbackTestimonials);
+  const [completedCount, setCompletedCount] = useState(500);
 
   useEffect(() => {
     // Fetch approved testimonials from database
@@ -222,10 +182,21 @@ export const SocialProofSection = () => {
         .eq("is_approved", true)
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
-        .limit(6);
+        .limit(9);
       
       if (!error && data && data.length > 0) {
-        setTestimonials(data as Testimonial[]);
+        setTestimonials(data as TestimonialData[]);
+      }
+
+      // Fetch completion count
+      const { count } = await supabase
+        .from("user_progress")
+        .select("*", { count: "exact", head: true })
+        .eq("day_number", 7)
+        .eq("is_completed", true);
+      
+      if (count && count >= 10) {
+        setCompletedCount(Math.floor(count / 10) * 10);
       }
     };
     
@@ -269,9 +240,10 @@ export const SocialProofSection = () => {
               Already Built
             </span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
             Real results from real people who took the challenge
           </p>
+          <TestimonialStats className="mx-auto" />
         </div>
 
         {/* Stats Bar */}
@@ -279,24 +251,18 @@ export const SocialProofSection = () => {
           data-section="stats"
           className="flex flex-wrap justify-center gap-4 md:gap-0 md:divide-x divide-border/50 bg-card/30 backdrop-blur-sm rounded-2xl border border-border/50 mb-20"
         >
-          <StatItem value={500} suffix="+" label="Apps Built" isVisible={isStatsVisible} />
+          <StatItem value={completedCount} suffix="+" label="Apps Built" isVisible={isStatsVisible} />
           <StatItem value={47} label="Countries" isVisible={isStatsVisible} />
           <StatItem value={4.9} suffix="/5" label="Rating" isVisible={isStatsVisible} />
         </div>
 
-        {/* Testimonials Grid */}
-        <div data-section="testimonials" className="mb-24">
+        {/* Testimonials Carousel */}
+        <div 
+          data-section="testimonials" 
+          className={`mb-24 transition-opacity duration-700 ${isTestimonialsVisible ? "opacity-100" : "opacity-0"}`}
+        >
           <h3 className="text-2xl font-bold text-center mb-10">What Challengers Say</h3>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <TestimonialCard
-                key={testimonial.name}
-                testimonial={testimonial}
-                index={index}
-                isVisible={isTestimonialsVisible}
-              />
-            ))}
-          </div>
+          <TestimonialCarousel testimonials={testimonials} autoplayDelay={5000} />
         </div>
 
         {/* App Showcase */}
