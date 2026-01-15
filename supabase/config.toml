@@ -1,1 +1,7 @@
 project_id = "ousxvijhmftoivdvbetq"
+
+[functions.send-sms]
+verify_jwt = false
+
+[functions.sms-scheduler]
+verify_jwt = false
