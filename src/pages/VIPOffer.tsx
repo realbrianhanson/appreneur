@@ -310,7 +310,7 @@ const VIPOffer = () => {
           {/* Skip Link */}
           <div className="text-center pt-4">
             <Link
-              to="/thank-you"
+              to="/downsell"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               No thanks, I'll do it the slow way →
