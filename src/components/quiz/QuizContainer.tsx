@@ -120,7 +120,7 @@ const QuizContainer = () => {
     }, 400);
   };
 
-  const handleEmailSubmit = async (data: { firstName: string; email: string; phone?: string }) => {
+  const handleEmailSubmit = async (data: { firstName: string; email: string; password: string; phone?: string }) => {
     if (!cohort) return;
     
     setIsSubmitting(true);
@@ -148,11 +148,9 @@ const QuizContainer = () => {
       }
 
       // Step 2: Create user account with Supabase Auth
-      const password = crypto.randomUUID(); // Generate random password for magic link users
-      
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
-        password,
+        password: data.password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
