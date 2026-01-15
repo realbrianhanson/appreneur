@@ -360,7 +360,7 @@ const QuizContainer = () => {
         </h3>
         <p className="text-muted-foreground max-w-md mx-auto">
           Check your inbox for your welcome email and instant access to 
-          "50 Profitable AI App Ideas for 2025".
+          "50 Profitable AI App Ideas for 2026".
         </p>
         <div className="pt-4">
           <p className="text-sm text-muted-foreground">The challenge starts:</p>

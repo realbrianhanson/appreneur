@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -99,14 +100,15 @@ const journeyItems = [
 ];
 
 const Graduation = () => {
+  const { profile } = useAuth();
   const [showConfetti, setShowConfetti] = useState(true);
-  const userName = "Alex";
+  const userName = profile?.first_name || "Builder";
   const completionDate = new Date().toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
-  const isVIP = false;
+  const isVIP = profile?.is_vip || false;
 
   // Stats
   const stats = {

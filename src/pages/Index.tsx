@@ -214,31 +214,37 @@ const Index = () => {
 
             {/* Links */}
             <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
-              <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
+              <a href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</a>
               <span className="text-border hidden md:inline">|</span>
-              <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+              <a href="/terms" className="hover:text-primary transition-colors">Terms of Service</a>
               <span className="text-border hidden md:inline">|</span>
-              <a href="#" className="hover:text-primary transition-colors">Contact</a>
+              <a href="mailto:support@appreneur.ai" className="hover:text-primary transition-colors">Contact</a>
             </div>
 
             {/* Social Icons */}
             <div className="flex items-center gap-4">
               <a
-                href="#"
+                href="https://twitter.com/AIForBeginners"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
                 aria-label="Twitter"
               >
                 <Twitter className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://linkedin.com/company/aiforbeginners"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://youtube.com/@AIForBeginners"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors"
                 aria-label="YouTube"
               >

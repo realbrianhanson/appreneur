@@ -14,6 +14,8 @@ import ThankYou from "./pages/ThankYou";
 import Dashboard from "./pages/Dashboard";
 import DayMission from "./pages/DayMission";
 import Graduation from "./pages/Graduation";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +35,8 @@ const App = () => (
             <Route path="/vip-offer" element={<VIPOffer />} />
             <Route path="/downsell" element={<Downsell />} />
             <Route path="/thank-you" element={<ThankYou />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
             
             {/* Protected Routes */}
             <Route
