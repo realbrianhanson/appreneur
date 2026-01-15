@@ -325,7 +325,9 @@ const DayMission = () => {
 
   // Get current day's progress from the hook
   const currentDayProgress = getDayProgress(day);
-  const isUnlocked = currentDayProgress?.is_unlocked ?? day === 1;
+  // Day 1 is always unlocked, other days require explicit unlock
+  // Also don't redirect if we haven't loaded progress yet
+  const isUnlocked = currentDayProgress?.is_unlocked ?? (day === 1 || progress.length === 0);
   const isDayComplete = currentDayProgress?.is_completed ?? false;
   const tasksCompleted = currentDayProgress?.tasks_completed || {};
 
@@ -338,13 +340,17 @@ const DayMission = () => {
   const allRequiredComplete = completedRequired === requiredItems.length;
   const progressPercent = (completedRequired / requiredItems.length) * 100;
 
-  // Redirect if day is locked
+  // Redirect if day is locked (only after progress has loaded and we know it's locked)
   useEffect(() => {
-    if (!progressLoading && !isUnlocked && progress.length > 0) {
+    // Only redirect if:
+    // 1. Progress has finished loading
+    // 2. We have progress data
+    // 3. The day is explicitly not unlocked
+    if (!progressLoading && progress.length > 0 && currentDayProgress && !currentDayProgress.is_unlocked) {
       showError("This day is not unlocked yet!");
       navigate("/dashboard");
     }
-  }, [isUnlocked, progressLoading, progress.length, navigate]);
+  }, [currentDayProgress, progressLoading, progress.length, navigate]);
 
   // Show confetti when day is complete
   useEffect(() => {
