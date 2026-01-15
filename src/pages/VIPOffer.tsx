@@ -55,17 +55,17 @@ interface StackItemProps {
 }
 
 const StackItem = ({ icon, title, description, value }: StackItemProps) => (
-  <div className="flex items-center justify-between py-4 border-b border-border/50 last:border-0">
-    <div className="flex items-center gap-4">
-      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+  <div className="flex items-center justify-between py-3 md:py-4 border-b border-border/50 last:border-0 gap-3">
+    <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+      <div className="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
         {icon}
       </div>
-      <div>
-        <p className="font-semibold text-foreground">{title}</p>
-        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+      <div className="min-w-0 flex-1">
+        <p className="font-semibold text-foreground text-sm md:text-base truncate">{title}</p>
+        {description && <p className="text-xs md:text-sm text-muted-foreground truncate">{description}</p>}
       </div>
     </div>
-    <span className="text-muted-foreground line-through font-medium">${value}</span>
+    <span className="text-muted-foreground line-through font-medium text-sm md:text-base shrink-0">${value}</span>
   </div>
 );
 
@@ -125,13 +125,13 @@ const VIPOffer = () => {
   const totalValue = stackItems.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Urgent Top Bar */}
-      <div className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 to-red-600 text-white py-3">
+    <div className="min-h-screen bg-background pb-24 md:pb-0">
+      {/* Urgent Top Bar - sticky on all devices */}
+      <div className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 to-red-600 text-white py-2 md:py-3">
         <Container size="wide">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-3 text-center">
-            <p className="font-semibold">
-              WAIT! Your registration is complete, but don't close this page...
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 text-center">
+            <p className="font-semibold text-sm sm:text-base">
+              WAIT! Don't close this page...
             </p>
             <UrgentCountdown />
           </div>
@@ -139,35 +139,35 @@ const VIPOffer = () => {
       </div>
 
       {/* Main Content */}
-      <Container size="tight" className="py-12 md:py-16">
-        <div className="space-y-10">
+      <Container size="tight" className="py-6 md:py-16 px-4 md:px-6">
+        <div className="space-y-6 md:space-y-10">
           {/* Headline */}
-          <div className="text-center space-y-4">
-            <h1 className="text-3xl md:text-5xl font-display font-bold text-foreground">
+          <div className="text-center space-y-2 md:space-y-4">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-foreground">
               Want to Build Your App{" "}
               <span className="text-gradient-primary">10X Faster?</span>
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
               Upgrade to the Appreneur VIP Bundle for Just{" "}
               <span className="text-primary font-bold">$27</span>
             </p>
           </div>
 
           {/* Video Placeholder */}
-          <div className="relative aspect-video rounded-2xl overflow-hidden bg-card border border-border group cursor-pointer">
+          <div className="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden bg-card border border-border group cursor-pointer">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-              <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
-                <Play className="w-8 h-8 text-primary ml-1" fill="currentColor" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform">
+                <Play className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-primary ml-1" fill="currentColor" />
               </div>
             </div>
-            <p className="absolute bottom-4 left-0 right-0 text-center text-sm text-muted-foreground">
+            <p className="absolute bottom-2 md:bottom-4 left-0 right-0 text-center text-xs sm:text-sm text-muted-foreground px-2">
               Watch: Why VIPs finish faster and build better apps
             </p>
           </div>
 
           {/* The Stack */}
-          <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
-            <h2 className="text-xl font-display font-bold text-foreground mb-6 text-center">
+          <div className="rounded-xl md:rounded-2xl border border-border bg-card p-4 md:p-8">
+            <h2 className="text-lg md:text-xl font-display font-bold text-foreground mb-4 md:mb-6 text-center">
               Everything Included in Your VIP Bundle
             </h2>
             <div className="divide-y divide-border/50">
@@ -177,31 +177,31 @@ const VIPOffer = () => {
             </div>
 
             {/* Total Value */}
-            <div className="mt-8 pt-6 border-t border-border">
+            <div className="mt-6 md:mt-8 pt-4 md:pt-6 border-t border-border">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-lg font-semibold text-muted-foreground">Total Value:</span>
-                <span className="text-2xl font-bold text-muted-foreground line-through">
+                <span className="text-base md:text-lg font-semibold text-muted-foreground">Total Value:</span>
+                <span className="text-xl md:text-2xl font-bold text-muted-foreground line-through">
                   ${totalValue}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-xl font-bold text-foreground">TODAY ONLY:</span>
-                <span className="text-4xl font-display font-bold text-primary">$27</span>
+                <span className="text-lg md:text-xl font-bold text-foreground">TODAY ONLY:</span>
+                <span className="text-3xl md:text-4xl font-display font-bold text-primary">$27</span>
               </div>
             </div>
           </div>
 
           {/* Guarantee Box */}
-          <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-6 md:p-8">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                <Shield className="w-6 h-6 text-primary" />
+          <div className="rounded-xl md:rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 md:p-8">
+            <div className="flex items-start gap-3 md:gap-4">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                <Shield className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-foreground mb-2">
+                <h3 className="text-base md:text-lg font-bold text-foreground mb-1 md:mb-2">
                   100% Money-Back Guarantee
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-sm md:text-base text-muted-foreground">
                   If you don't build your app faster with these resources, just email us for a
                   full refund. No questions asked.
                 </p>
@@ -210,28 +210,28 @@ const VIPOffer = () => {
           </div>
 
           {/* Payment Section */}
-          <div className="rounded-2xl border border-border bg-card p-6 md:p-8 space-y-6">
+          <div className="rounded-xl md:rounded-2xl border border-border bg-card p-4 md:p-8 space-y-4 md:space-y-6">
             {/* Bump Offer */}
             <div
-              className={`rounded-xl border-2 p-5 transition-colors cursor-pointer ${
+              className={`rounded-lg md:rounded-xl border-2 p-3 md:p-5 transition-colors cursor-pointer ${
                 bumpOffer
                   ? "border-accent bg-accent/10"
                   : "border-dashed border-border hover:border-accent/50"
               }`}
               onClick={() => setBumpOffer(!bumpOffer)}
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 md:gap-4">
                 <Checkbox
                   checked={bumpOffer}
                   onCheckedChange={(checked) => setBumpOffer(checked as boolean)}
-                  className="mt-1"
+                  className="mt-0.5 md:mt-1"
                 />
                 <div className="flex-1">
-                  <p className="font-bold text-foreground">
+                  <p className="font-bold text-foreground text-sm md:text-base">
                     YES! Add the "Ship It" Launch Kit for just{" "}
                     <span className="text-accent">$7</span>
                   </p>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-xs md:text-sm text-muted-foreground mt-1">
                     Includes: Pre-launch QA checklist, bug-testing template, and "First 100
                     Users" outreach scripts.{" "}
                     <span className="text-foreground font-medium">($47 value)</span>
@@ -241,7 +241,7 @@ const VIPOffer = () => {
             </div>
 
             {/* Card Form */}
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">Card Number</label>
                 <div className="relative">
@@ -251,12 +251,13 @@ const VIPOffer = () => {
                     placeholder="1234 5678 9012 3456"
                     value={cardNumber}
                     onChange={(e) => setCardNumber(e.target.value)}
-                    className="pl-11 h-12"
+                    className="pl-11 h-12 text-base"
+                    inputMode="numeric"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 md:gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">Expiry Date</label>
                   <Input
@@ -264,7 +265,8 @@ const VIPOffer = () => {
                     placeholder="MM/YY"
                     value={expiry}
                     onChange={(e) => setExpiry(e.target.value)}
-                    className="h-12"
+                    className="h-12 text-base"
+                    inputMode="numeric"
                   />
                 </div>
                 <div className="space-y-2">
@@ -274,41 +276,42 @@ const VIPOffer = () => {
                     placeholder="123"
                     value={cvc}
                     onChange={(e) => setCvc(e.target.value)}
-                    className="h-12"
+                    className="h-12 text-base"
+                    inputMode="numeric"
                   />
                 </div>
               </div>
             </div>
 
-            {/* CTA Button */}
+            {/* CTA Button - Hidden on mobile, shown in sticky bar */}
             <Button
               variant="default"
               size="xl"
-              className="w-full bg-green-600 hover:bg-green-700 text-white text-lg h-14"
+              className="w-full bg-green-600 hover:bg-green-700 text-white text-base md:text-lg h-12 md:h-14 hidden md:flex"
             >
               Complete My VIP Upgrade — ${bumpOffer ? "34" : "27"}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
 
             {/* Security Badges */}
-            <div className="flex flex-wrap items-center justify-center gap-6 pt-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Lock className="w-4 h-4" />
+            <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 pt-2 md:pt-4">
+              <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+                <Lock className="w-3 h-3 md:w-4 md:h-4" />
                 <span>SSL Secure</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Shield className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+                <Shield className="w-3 h-3 md:w-4 md:h-4" />
                 <span>256-bit Encryption</span>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Check className="w-4 h-4" />
-                <span>Money-Back Guarantee</span>
+              <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+                <Check className="w-3 h-3 md:w-4 md:h-4" />
+                <span>Money-Back</span>
               </div>
             </div>
           </div>
 
           {/* Skip Link */}
-          <div className="text-center pt-4">
+          <div className="text-center pt-2 md:pt-4 pb-4">
             <Link
               to="/downsell"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -318,6 +321,18 @@ const VIPOffer = () => {
           </div>
         </div>
       </Container>
+
+      {/* Sticky Mobile CTA */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border p-4 md:hidden">
+        <Button
+          variant="default"
+          size="xl"
+          className="w-full bg-green-600 hover:bg-green-700 text-white text-base h-12"
+        >
+          Complete My VIP Upgrade — ${bumpOffer ? "34" : "27"}
+          <ArrowRight className="w-5 h-5 ml-2" />
+        </Button>
+      </div>
     </div>
   );
 };

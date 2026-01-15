@@ -416,32 +416,32 @@ const DayMission = () => {
     <DashboardLayout userName={firstName} currentDay={day} isVIP={isVIP}>
       {showConfetti && <Confetti />}
 
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-4xl mx-auto space-y-4 md:space-y-8">
         {/* Top Section */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-4 flex-wrap">
-            <Badge variant="outline" className="text-primary border-primary">
+        <div className="space-y-3 md:space-y-4">
+          <div className="flex items-center gap-2 md:gap-4 flex-wrap">
+            <Badge variant="outline" className="text-primary border-primary text-xs md:text-sm">
               DAY {day} OF 7
             </Badge>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
+              <Clock className="w-3 h-3 md:w-4 md:h-4" />
               {data.estimatedTime}
             </div>
             {isDayComplete && (
-              <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
+              <Badge className="bg-green-500/20 text-green-500 border-green-500/30 text-xs">
                 <Check className="w-3 h-3 mr-1" />
                 Completed
               </Badge>
             )}
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
+          <h1 className="text-2xl md:text-4xl font-display font-bold text-foreground">
             {data.title}
           </h1>
 
           {/* Progress Bar */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center justify-between text-xs md:text-sm">
               <span className="text-muted-foreground">Mission Progress</span>
               <span className="font-medium text-foreground">
                 {completedRequired} of {requiredItems.length} tasks
@@ -455,14 +455,14 @@ const DayMission = () => {
         <Card className="overflow-hidden">
           <div className="relative aspect-video bg-muted flex items-center justify-center group cursor-pointer">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
-            <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform z-10">
-              <Play className="w-8 h-8 text-primary ml-1" fill="currentColor" />
+            <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform z-10">
+              <Play className="w-6 h-6 md:w-8 md:h-8 text-primary ml-1" fill="currentColor" />
             </div>
           </div>
-          <CardContent className="p-4">
-            <h3 className="font-semibold text-foreground">{data.videoTitle}</h3>
-            <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
-              <Video className="w-4 h-4" />
+          <CardContent className="p-3 md:p-4">
+            <h3 className="font-semibold text-foreground text-sm md:text-base">{data.videoTitle}</h3>
+            <p className="text-xs md:text-sm text-muted-foreground flex items-center gap-2 mt-1">
+              <Video className="w-3 h-3 md:w-4 md:h-4" />
               Watch time: {data.videoLength}
             </p>
           </CardContent>
@@ -470,23 +470,23 @@ const DayMission = () => {
 
         {/* Mission Briefing */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">Today's Mission</CardTitle>
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="text-lg md:text-xl">Today's Mission</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">{data.missionDescription}</p>
+          <CardContent className="space-y-4 p-4 pt-0 md:p-6 md:pt-0">
+            <p className="text-sm md:text-base text-muted-foreground">{data.missionDescription}</p>
 
             <div>
-              <h4 className="font-semibold text-foreground mb-3">
+              <h4 className="font-semibold text-foreground mb-2 md:mb-3 text-sm md:text-base">
                 By the end of today, you'll have:
               </h4>
               <ul className="space-y-2">
                 {data.outcomes.map((outcome, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
-                      <Check className="w-3 h-3 text-primary" />
+                  <li key={index} className="flex items-start gap-2 md:gap-3">
+                    <div className="w-4 h-4 md:w-5 md:h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
+                      <Check className="w-2.5 h-2.5 md:w-3 md:h-3 text-primary" />
                     </div>
-                    <span className="text-foreground">{outcome}</span>
+                    <span className="text-foreground text-sm md:text-base">{outcome}</span>
                   </li>
                 ))}
               </ul>
@@ -498,44 +498,44 @@ const DayMission = () => {
         <Collapsible open={resourcesOpen} onOpenChange={setResourcesOpen}>
           <Card>
             <CollapsibleTrigger className="w-full">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="text-xl">Today's Resources</CardTitle>
+              <CardHeader className="flex flex-row items-center justify-between p-4 md:p-6">
+                <CardTitle className="text-lg md:text-xl">Today's Resources</CardTitle>
                 <ChevronDown
-                  className={`w-5 h-5 text-muted-foreground transition-transform ${
+                  className={`w-4 h-4 md:w-5 md:h-5 text-muted-foreground transition-transform ${
                     resourcesOpen ? "rotate-180" : ""
                   }`}
                 />
               </CardHeader>
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <CardContent className="pt-0">
-                <div className="space-y-3">
+              <CardContent className="pt-0 p-4 md:p-6">
+                <div className="space-y-2 md:space-y-3">
                   {data.resources.map((resource, index) => (
                     <div
                       key={index}
-                      className={`flex items-center justify-between p-3 rounded-lg border ${
+                      className={`flex items-center justify-between p-2.5 md:p-3 rounded-lg border gap-2 ${
                         resource.vipOnly && !isVIP
                           ? "bg-muted/50 border-border"
                           : "bg-card border-border hover:border-primary/50"
                       } transition-colors`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
                         <div
-                          className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                          className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center shrink-0 ${
                             resource.vipOnly && !isVIP
                               ? "bg-muted text-muted-foreground"
                               : "bg-primary/10 text-primary"
                           }`}
                         >
                           {resource.vipOnly && !isVIP ? (
-                            <Lock className="w-4 h-4" />
+                            <Lock className="w-3 h-3 md:w-4 md:h-4" />
                           ) : (
                             resource.icon
                           )}
                         </div>
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <p
-                            className={`font-medium ${
+                            className={`font-medium text-sm md:text-base truncate ${
                               resource.vipOnly && !isVIP
                                 ? "text-muted-foreground"
                                 : "text-foreground"
@@ -544,19 +544,19 @@ const DayMission = () => {
                             {resource.title}
                           </p>
                           {resource.vipOnly && (
-                            <Badge variant="secondary" className="text-xs mt-1">
-                              <Crown className="w-3 h-3 mr-1" />
+                            <Badge variant="secondary" className="text-[10px] md:text-xs mt-1">
+                              <Crown className="w-2.5 h-2.5 md:w-3 md:h-3 mr-1" />
                               VIP Only
                             </Badge>
                           )}
                         </div>
                       </div>
                       {resource.vipOnly && !isVIP ? (
-                        <Button variant="outline" size="sm" asChild>
+                        <Button variant="outline" size="sm" className="text-xs shrink-0" asChild>
                           <Link to="/vip-offer">Upgrade</Link>
                         </Button>
                       ) : (
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" className="shrink-0">
                           {resource.type === "download" && <Download className="w-4 h-4" />}
                           {resource.type === "link" && <ExternalLink className="w-4 h-4" />}
                           {resource.type === "video" && <Play className="w-4 h-4" />}
@@ -572,11 +572,11 @@ const DayMission = () => {
 
         {/* Action Checklist */}
         <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">Action Checklist</CardTitle>
+          <CardHeader className="p-4 md:p-6">
+            <CardTitle className="text-lg md:text-xl">Action Checklist</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+          <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
+            <div className="space-y-2 md:space-y-4">
               {data.checklist.map((item) => {
                 const completed = isTaskCompleted(item.id);
                 const isCompletingThis = completingTask === item.id;
@@ -584,20 +584,42 @@ const DayMission = () => {
                 return (
                   <div
                     key={item.id}
-                    className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
+                    className={`flex items-start gap-3 p-2.5 md:p-3 rounded-lg border transition-colors ${
                       completed
                         ? "bg-primary/5 border-primary/30"
                         : "bg-card border-border"
                     }`}
                   >
                     {isCompletingThis ? (
-                      <Loader2 className="w-4 h-4 animate-spin mt-0.5" />
+                      <Loader2 className="w-4 h-4 animate-spin mt-0.5 shrink-0" />
                     ) : (
                       <Checkbox
                         id={item.id}
                         checked={completed}
                         onCheckedChange={(checked) => handleCheck(item.id, checked as boolean)}
                         disabled={completed || isDayComplete}
+                        className="mt-0.5 shrink-0"
+                      />
+                    )}
+                    <label
+                      htmlFor={item.id}
+                      className={`flex-1 cursor-pointer text-sm md:text-base ${
+                        completed
+                          ? "text-muted-foreground line-through"
+                          : "text-foreground"
+                      }`}
+                    >
+                      {item.label}
+                      {!item.required && (
+                        <span className="text-[10px] md:text-xs text-muted-foreground ml-2">(Optional)</span>
+                      )}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
                       />
                     )}
                     <label
@@ -623,14 +645,14 @@ const DayMission = () => {
         {/* Mission Complete Section */}
         {(allRequiredComplete || isDayComplete) && (
           <Card className="border-primary bg-gradient-to-br from-primary/10 via-card to-accent/10">
-            <CardContent className="p-8 text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-8 h-8 text-primary" />
+            <CardContent className="p-4 md:p-8 text-center">
+              <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-3 md:mb-4">
+                <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-primary" />
               </div>
-              <h2 className="text-2xl font-display font-bold text-foreground mb-2">
+              <h2 className="text-xl md:text-2xl font-display font-bold text-foreground mb-2">
                 🎉 {isDayComplete ? "Mission Complete!" : "All Tasks Done!"}
               </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
                 {isDayComplete
                   ? day < 7
                     ? `Amazing work! Day ${day + 1} is now available.`
@@ -644,6 +666,7 @@ const DayMission = () => {
                   size="lg"
                   onClick={handleCompleteDay}
                   disabled={completingDay}
+                  className="w-full md:w-auto"
                 >
                   {completingDay ? (
                     <Loader2 className="w-5 h-5 animate-spin mr-2" />
@@ -656,9 +679,9 @@ const DayMission = () => {
 
               {/* Next Day Preview */}
               {day < 7 && (
-                <div className="mt-6 p-4 rounded-xl bg-card border border-border text-left">
-                  <p className="text-sm text-muted-foreground mb-1">Coming Next:</p>
-                  <p className="font-medium text-foreground">{data.nextDayPreview}</p>
+                <div className="mt-4 md:mt-6 p-3 md:p-4 rounded-xl bg-card border border-border text-left">
+                  <p className="text-xs md:text-sm text-muted-foreground mb-1">Coming Next:</p>
+                  <p className="font-medium text-foreground text-sm md:text-base">{data.nextDayPreview}</p>
                 </div>
               )}
             </CardContent>
@@ -666,11 +689,12 @@ const DayMission = () => {
         )}
 
         {/* Bottom Navigation */}
-        <div className="flex items-center justify-between pt-4 border-t border-border">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-0 md:justify-between pt-4 border-t border-border">
           <Button
             variant="ghost"
             disabled={day <= 1}
             asChild={day > 1}
+            className="order-2 md:order-1"
           >
             {day > 1 ? (
               <Link to={`/dashboard/day/${day - 1}`}>
@@ -689,6 +713,7 @@ const DayMission = () => {
             variant="cta" 
             disabled={!allRequiredComplete || isDayComplete || completingDay}
             onClick={handleCompleteDay}
+            className="order-1 md:order-2 w-full md:w-auto"
           >
             {completingDay ? (
               <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -706,6 +731,7 @@ const DayMission = () => {
             variant="ghost"
             disabled={day >= 7 || !isDayComplete}
             asChild={day < 7 && isDayComplete}
+            className="order-3"
           >
             {day < 7 ? (
               isDayComplete ? (
