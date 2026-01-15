@@ -3,6 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Badge } from "@/components/ui/badge";
 import { Award, Users, TrendingUp, Heart } from "lucide-react";
+import brianPhoto from "@/assets/brian-hanson.jpeg";
 
 interface CredentialBadgeProps {
   icon: React.ReactNode;
@@ -93,10 +94,12 @@ const AboutHostSection = () => {
                 <div className="relative">
                   {/* Photo container with glow */}
                   <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-primary/30">
-                    {/* Placeholder gradient for photo */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-background to-accent/30 flex items-center justify-center">
-                      <span className="text-6xl font-bold font-display text-primary/50">BH</span>
-                    </div>
+                    {/* Brian's photo */}
+                    <img 
+                      src={brianPhoto} 
+                      alt="Brian Hanson" 
+                      className="w-full h-full object-cover object-center"
+                    />
                     {/* Glow effect */}
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent" />
                   </div>
