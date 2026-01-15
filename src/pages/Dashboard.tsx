@@ -288,7 +288,7 @@ const Dashboard = () => {
   // Show skeleton loading state
   if (isLoading) {
     return (
-      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP}>
+      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP} userProgress={[]}>
         <SEOHead 
           title="Dashboard — Appreneur Challenge"
           description="Track your progress in the Appreneur Challenge."
@@ -302,7 +302,7 @@ const Dashboard = () => {
   // Show error state with retry
   if (hasError) {
     return (
-      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP}>
+      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP} userProgress={[]}>
         <div className="max-w-md mx-auto mt-12">
           <EmptyState
             variant="error"
@@ -320,7 +320,7 @@ const Dashboard = () => {
   // Show empty state for new users
   if (userProgress.length === 0 && !isLoading) {
     return (
-      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP}>
+      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP} userProgress={[]}>
         <div className="max-w-2xl mx-auto mt-12 space-y-8">
           <div className="text-center space-y-4">
             <h1 className="text-3xl font-display font-bold">
@@ -347,6 +347,7 @@ const Dashboard = () => {
       userName={firstName}
       currentDay={currentDay}
       isVIP={isVIP}
+      userProgress={userProgress}
     >
       {/* SEO Head - noindex for authenticated page */}
       <SEOHead 

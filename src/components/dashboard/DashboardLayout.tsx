@@ -4,25 +4,33 @@ import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardTopBar } from "./DashboardTopBar";
 import { MobileBottomNav } from "./MobileBottomNav";
 
+interface UserProgress {
+  day_number: number;
+  is_unlocked: boolean;
+  is_completed: boolean;
+}
+
 interface DashboardLayoutProps {
   children: ReactNode;
   userName?: string;
   currentDay?: number;
   isVIP?: boolean;
+  userProgress?: UserProgress[];
 }
 
 const DashboardLayout = ({
   children,
   userName = "Builder",
-  currentDay = 3,
+  currentDay = 1,
   isVIP = false,
+  userProgress = [],
 }: DashboardLayoutProps) => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
         {/* Desktop sidebar - hidden on mobile */}
         <div className="hidden md:block">
-          <DashboardSidebar userName={userName} currentDay={currentDay} isVIP={isVIP} />
+          <DashboardSidebar userName={userName} currentDay={currentDay} isVIP={isVIP} userProgress={userProgress} />
         </div>
         <div className="flex-1 flex flex-col min-w-0">
           <DashboardTopBar userName={userName} />

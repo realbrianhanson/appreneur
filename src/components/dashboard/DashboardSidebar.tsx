@@ -32,22 +32,21 @@ import {
   Lock,
 } from "lucide-react";
 
-interface DayNavItem {
+interface DayConfig {
   day: number;
   title: string;
   icon: React.ReactNode;
-  status: "completed" | "current" | "locked";
   url: string;
 }
 
-const dayNavItems: DayNavItem[] = [
-  { day: 1, title: "Find Your Idea", icon: <Lightbulb className="w-4 h-4" />, status: "completed", url: "/dashboard/day/1" },
-  { day: 2, title: "Design Blueprint", icon: <PenTool className="w-4 h-4" />, status: "completed", url: "/dashboard/day/2" },
-  { day: 3, title: "Build Core App", icon: <Code className="w-4 h-4" />, status: "current", url: "/dashboard/day/3" },
-  { day: 4, title: "Add AI Magic", icon: <Sparkles className="w-4 h-4" />, status: "locked", url: "/dashboard/day/4" },
-  { day: 5, title: "Polish & Brand", icon: <Palette className="w-4 h-4" />, status: "locked", url: "/dashboard/day/5" },
-  { day: 6, title: "Test & Fix", icon: <Bug className="w-4 h-4" />, status: "locked", url: "/dashboard/day/6" },
-  { day: 7, title: "Ship It!", icon: <Rocket className="w-4 h-4" />, status: "locked", url: "/dashboard/day/7" },
+const dayConfigs: DayConfig[] = [
+  { day: 1, title: "Find Your Idea", icon: <Lightbulb className="w-4 h-4" />, url: "/dashboard/day/1" },
+  { day: 2, title: "Design Blueprint", icon: <PenTool className="w-4 h-4" />, url: "/dashboard/day/2" },
+  { day: 3, title: "Build Core App", icon: <Code className="w-4 h-4" />, url: "/dashboard/day/3" },
+  { day: 4, title: "Add AI Magic", icon: <Sparkles className="w-4 h-4" />, url: "/dashboard/day/4" },
+  { day: 5, title: "Polish & Brand", icon: <Palette className="w-4 h-4" />, url: "/dashboard/day/5" },
+  { day: 6, title: "Test & Fix", icon: <Bug className="w-4 h-4" />, url: "/dashboard/day/6" },
+  { day: 7, title: "Ship It!", icon: <Rocket className="w-4 h-4" />, url: "/dashboard/day/7" },
 ];
 
 const bottomNavItems = [
@@ -56,19 +55,36 @@ const bottomNavItems = [
   { title: "Support", icon: <HelpCircle className="w-4 h-4" />, url: "/dashboard/support" },
 ];
 
+interface UserProgress {
+  day_number: number;
+  is_unlocked: boolean;
+  is_completed: boolean;
+}
+
 interface DashboardSidebarProps {
   userName?: string;
   currentDay?: number;
   isVIP?: boolean;
+  userProgress?: UserProgress[];
 }
 
-const DashboardSidebar = ({ userName = "Builder", currentDay = 3, isVIP = false }: DashboardSidebarProps) => {
+const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false, userProgress = [] }: DashboardSidebarProps) => {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
-  const progress = (currentDay / 7) * 100;
+  
+  const completedDays = userProgress.filter(p => p.is_completed).length;
+  const progress = (completedDays / 7) * 100;
 
-  const getStatusIcon = (status: DayNavItem["status"]) => {
+  // Compute day status from actual progress
+  const getDayStatus = (day: number): "completed" | "current" | "locked" => {
+    const dayProgress = userProgress.find(p => p.day_number === day);
+    if (dayProgress?.is_completed) return "completed";
+    if (dayProgress?.is_unlocked) return "current";
+    return "locked";
+  };
+
+  const getStatusIcon = (status: "completed" | "current" | "locked") => {
     switch (status) {
       case "completed":
         return <Check className="w-3 h-3 text-primary" />;
@@ -138,33 +154,36 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 3, isVIP = false 
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {dayNavItems.map((item) => (
-                <SidebarMenuItem key={item.day}>
-                  <SidebarMenuButton asChild disabled={item.status === "locked"}>
-                    <Link
-                      to={item.status !== "locked" ? item.url : "#"}
-                      className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
-                        item.status === "current"
-                          ? "bg-primary/10 text-primary border border-primary/30"
-                          : item.status === "completed"
-                          ? "hover:bg-muted text-foreground"
-                          : "opacity-50 cursor-not-allowed text-muted-foreground"
-                      }`}
-                      onClick={(e) => item.status === "locked" && e.preventDefault()}
-                    >
-                      <div className="flex items-center gap-3 flex-1">
-                        {item.icon}
-                        {!collapsed && (
-                          <>
-                            <span className="flex-1">Day {item.day}: {item.title}</span>
-                            {getStatusIcon(item.status)}
-                          </>
-                        )}
-                      </div>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {dayConfigs.map((item) => {
+                const status = getDayStatus(item.day);
+                return (
+                  <SidebarMenuItem key={item.day}>
+                    <SidebarMenuButton asChild disabled={status === "locked"}>
+                      <Link
+                        to={status !== "locked" ? item.url : "#"}
+                        className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
+                          status === "current"
+                            ? "bg-primary/10 text-primary border border-primary/30"
+                            : status === "completed"
+                            ? "hover:bg-muted text-foreground"
+                            : "opacity-50 cursor-not-allowed text-muted-foreground"
+                        }`}
+                        onClick={(e) => status === "locked" && e.preventDefault()}
+                      >
+                        <div className="flex items-center gap-3 flex-1">
+                          {item.icon}
+                          {!collapsed && (
+                            <>
+                              <span className="flex-1">Day {item.day}: {item.title}</span>
+                              {getStatusIcon(status)}
+                            </>
+                          )}
+                        </div>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
