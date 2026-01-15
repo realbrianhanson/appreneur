@@ -3,6 +3,8 @@ import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { Link, useSearchParams } from "react-router-dom";
 import CountdownTimer from "@/components/quiz/CountdownTimer";
+import SEOHead from "@/components/seo/SEOHead";
+import { trackPageView, trackRegistrationComplete } from "@/lib/analytics";
 import {
   Mail,
   Calendar,
@@ -103,6 +105,12 @@ const ThankYou = () => {
   // Cohort start date
   const cohortStartDate = new Date("2026-01-20T10:00:00-05:00"); // 10am EST
 
+  // Track page view and registration complete on mount
+  useEffect(() => {
+    trackPageView('/thank-you', 'You\'re In! — Appreneur Challenge');
+    trackRegistrationComplete();
+  }, []);
+
   // Hide confetti after animation
   useEffect(() => {
     const timer = setTimeout(() => setShowConfetti(false), 4000);
@@ -128,6 +136,13 @@ const ThankYou = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* SEO Head - noindex for funnel page */}
+      <SEOHead 
+        title="You're In! — Appreneur Challenge"
+        description="Welcome to the Appreneur Challenge. Your journey to building your first app starts here."
+        noindex={true}
+      />
+      
       {showConfetti && <Confetti />}
 
       <Container size="tight" className="py-12 md:py-16">

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Badge } from "@/components/ui/badge";
@@ -10,12 +11,56 @@ import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { AboutHostSection } from "@/components/landing/AboutHostSection";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { FinalCTASection } from "@/components/landing/FinalCTASection";
+import SEOHead from "@/components/seo/SEOHead";
+import StructuredData from "@/components/seo/StructuredData";
+import { trackPageView } from "@/lib/analytics";
 import heroVideo from "@/assets/hero-video.mp4";
 import { Zap, ArrowDown, Twitter, Linkedin, Youtube } from "lucide-react";
 
+// Next cohort start date for structured data
+const NEXT_COHORT_DATE = "2026-01-20T15:00:00Z";
+
 const Index = () => {
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView('/', 'Appreneur Challenge — Build Your First App in 7 Days');
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
+      {/* SEO Head */}
+      <SEOHead 
+        title="Appreneur Challenge — Build Your First App in 7 Days"
+        description="Join 500+ entrepreneurs building real apps without code. Free 7-day challenge teaches you to go from idea to live app."
+        canonicalUrl="https://appreneur.ai/"
+      />
+      
+      {/* Structured Data */}
+      <StructuredData
+        organization={{
+          name: "AI For Beginners",
+          url: "https://appreneur.ai",
+          sameAs: [
+            "https://twitter.com/AIForBeginners",
+            "https://linkedin.com/company/aiforbeginners",
+            "https://youtube.com/@AIForBeginners"
+          ]
+        }}
+        course={{
+          name: "The Appreneur Challenge",
+          description: "A free 7-day challenge that teaches entrepreneurs to build real apps without coding using AI-powered tools.",
+          provider: "AI For Beginners",
+          url: "https://appreneur.ai"
+        }}
+        event={{
+          name: "Appreneur Challenge - January 2026 Cohort",
+          description: "Join our next cohort and build your first app in 7 days. No coding experience required.",
+          startDate: NEXT_COHORT_DATE,
+          url: "https://appreneur.ai",
+          organizer: "AI For Beginners"
+        }}
+      />
+
       {/* Hero Section - Full viewport */}
       <Section variant="gradient" spacing="xl" className="relative overflow-hidden min-h-screen flex items-center pt-8 md:pt-0">
         {/* Background Video */}

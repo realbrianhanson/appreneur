@@ -1,14 +1,13 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
+# Appreneur Challenge Robots.txt
 User-agent: *
 Allow: /
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /vip-offer
+Disallow: /downsell
+Disallow: /thank-you
+Disallow: /login
+Disallow: /auth/callback
+
+# Sitemaps
+Sitemap: https://appreneur.ai/sitemap.xml

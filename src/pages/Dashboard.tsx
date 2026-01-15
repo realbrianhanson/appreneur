@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { DashboardSkeleton } from "@/components/ui/skeleton-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { showError } from "@/lib/toast-utils";
+import SEOHead from "@/components/seo/SEOHead";
+import { trackPageView } from "@/lib/analytics";
 import {
   ArrowRight,
   Clock,
@@ -101,6 +103,11 @@ const Dashboard = () => {
   const [isRetrying, setIsRetrying] = useState(false);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [userProgress, setUserProgress] = useState<UserProgress[]>([]);
+
+  // Track page view on mount
+  useEffect(() => {
+    trackPageView('/dashboard', 'Dashboard — Appreneur Challenge');
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -242,6 +249,11 @@ const Dashboard = () => {
   if (isLoading) {
     return (
       <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP}>
+        <SEOHead 
+          title="Dashboard — Appreneur Challenge"
+          description="Track your progress in the Appreneur Challenge."
+          noindex={true}
+        />
         <DashboardSkeleton />
       </DashboardLayout>
     );
@@ -296,6 +308,13 @@ const Dashboard = () => {
       currentDay={currentDay}
       isVIP={isVIP}
     >
+      {/* SEO Head - noindex for authenticated page */}
+      <SEOHead 
+        title="Dashboard — Appreneur Challenge"
+        description="Track your progress in the Appreneur Challenge."
+        noindex={true}
+      />
+      
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Announcement Banner */}
         {showAnnouncement && (
