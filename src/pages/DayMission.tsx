@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useProgress } from "@/hooks/useProgress";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,7 +28,20 @@ import {
   Video,
   Code,
   Sparkles,
+  Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
+
+// Task ID mapping to match database schema
+const taskIdMap: Record<number, Record<string, string>> = {
+  1: { video: "watch_video", exercise: "define_idea", validate: "create_wireframe", share: "share_community" },
+  2: { video: "watch_video", wireframe: "setup_project", userflow: "build_layout", bonus: "add_navigation" },
+  3: { video: "watch_video", build: "add_features", features: "connect_data", share: "test_app", bonus: "test_app" },
+  4: { video: "watch_video", integrate: "add_ai_feature", test: "refine_prompts", optimize: "integrate_ai" },
+  5: { video: "watch_video", colors: "add_styling", branding: "create_brand", share: "polish_ui" },
+  6: { video: "watch_video", test: "add_auth", fix: "setup_database", mobile: "deploy_preview" },
+  7: { video: "watch_video", deploy: "final_polish", share: "launch_app", celebrate: "share_success" },
+};
 
 // Day data - would come from database in real app
 const dayData: Record<number, {
@@ -279,33 +294,126 @@ const Confetti = () => {
 
 const DayMission = () => {
   const { dayNumber } = useParams();
-  const day = parseInt(dayNumber || "3");
-  const data = dayData[day] || dayData[3];
-  const isVIP = false; // Would come from user context
+  const navigate = useNavigate();
+  const { profile } = useAuth();
+  const { 
+    progress, 
+    fetchProgress, 
+    completeTask, 
+    completeDay, 
+    getDayProgress,
+    isLoading: progressLoading 
+  } = useProgress();
+  
+  const day = parseInt(dayNumber || "1");
+  const data = dayData[day] || dayData[1];
+  const isVIP = profile?.is_vip || false;
+  const firstName = profile?.first_name || "Builder";
 
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [resourcesOpen, setResourcesOpen] = useState(true);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [completingTask, setCompletingTask] = useState<string | null>(null);
+  const [completingDay, setCompletingDay] = useState(false);
+  const [startTime] = useState(Date.now());
 
+  // Fetch progress on mount
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  // Get current day's progress from the hook
+  const currentDayProgress = getDayProgress(day);
+  const isUnlocked = currentDayProgress?.is_unlocked ?? day === 1;
+  const isDayComplete = currentDayProgress?.is_completed ?? false;
+  const tasksCompleted = currentDayProgress?.tasks_completed || {};
+
+  // Calculate progress
   const requiredItems = data.checklist.filter((item) => item.required);
-  const completedRequired = requiredItems.filter((item) => checkedItems[item.id]).length;
-  const isComplete = completedRequired === requiredItems.length;
+  const completedRequired = requiredItems.filter((item) => {
+    const dbTaskId = taskIdMap[day]?.[item.id] || item.id;
+    return dbTaskId in tasksCompleted;
+  }).length;
+  const allRequiredComplete = completedRequired === requiredItems.length;
   const progressPercent = (completedRequired / requiredItems.length) * 100;
 
-  // Show confetti when complete
+  // Redirect if day is locked
   useEffect(() => {
-    if (isComplete && !showConfetti) {
+    if (!progressLoading && !isUnlocked && progress.length > 0) {
+      toast.error("This day is not unlocked yet!");
+      navigate("/dashboard");
+    }
+  }, [isUnlocked, progressLoading, progress.length, navigate]);
+
+  // Show confetti when day is complete
+  useEffect(() => {
+    if (isDayComplete && !showConfetti) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 4000);
     }
-  }, [isComplete]);
+  }, [isDayComplete, showConfetti]);
 
-  const handleCheck = (id: string, checked: boolean) => {
-    setCheckedItems((prev) => ({ ...prev, [id]: checked }));
+  const handleCheck = async (id: string, checked: boolean) => {
+    if (!checked) return; // Only handle checking, not unchecking
+    
+    const dbTaskId = taskIdMap[day]?.[id] || id;
+    setCompletingTask(id);
+    
+    const result = await completeTask(day, dbTaskId);
+    
+    if (result) {
+      if (result.day_completed) {
+        toast.success("Day complete! Great work! 🎉");
+        if (result.next_day_unlocked) {
+          toast.info(`Day ${day + 1} is now unlocked!`);
+        }
+      } else {
+        toast.success("Task completed!");
+      }
+    }
+    
+    setCompletingTask(null);
   };
 
+  const handleCompleteDay = async () => {
+    if (!allRequiredComplete) return;
+    
+    setCompletingDay(true);
+    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
+    
+    const result = await completeDay(day, timeSpent);
+    
+    if (result) {
+      toast.success("Day complete! 🎉");
+      
+      if (result.is_graduation) {
+        setTimeout(() => {
+          navigate("/dashboard/graduation");
+        }, 2000);
+      } else if (result.next_day_unlocked) {
+        toast.info(`Day ${day + 1} is now unlocked!`);
+      }
+    }
+    
+    setCompletingDay(false);
+  };
+
+  const isTaskCompleted = (id: string): boolean => {
+    const dbTaskId = taskIdMap[day]?.[id] || id;
+    return dbTaskId in tasksCompleted;
+  };
+
+  if (progressLoading && progress.length === 0) {
+    return (
+      <DashboardLayout userName={firstName} currentDay={day} isVIP={isVIP}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
-    <DashboardLayout userName="Builder" currentDay={3}>
+    <DashboardLayout userName={firstName} currentDay={day} isVIP={isVIP}>
       {showConfetti && <Confetti />}
 
       <div className="max-w-4xl mx-auto space-y-8">
@@ -319,6 +427,12 @@ const DayMission = () => {
               <Clock className="w-4 h-4" />
               {data.estimatedTime}
             </div>
+            {isDayComplete && (
+              <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
+                <Check className="w-3 h-3 mr-1" />
+                Completed
+              </Badge>
+            )}
           </div>
 
           <h1 className="text-3xl md:text-4xl font-display font-bold text-foreground">
@@ -463,59 +577,87 @@ const DayMission = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {data.checklist.map((item) => (
-                <div
-                  key={item.id}
-                  className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
-                    checkedItems[item.id]
-                      ? "bg-primary/5 border-primary/30"
-                      : "bg-card border-border"
-                  }`}
-                >
-                  <Checkbox
-                    id={item.id}
-                    checked={checkedItems[item.id] || false}
-                    onCheckedChange={(checked) => handleCheck(item.id, checked as boolean)}
-                  />
-                  <label
-                    htmlFor={item.id}
-                    className={`flex-1 cursor-pointer ${
-                      checkedItems[item.id]
-                        ? "text-muted-foreground line-through"
-                        : "text-foreground"
+              {data.checklist.map((item) => {
+                const completed = isTaskCompleted(item.id);
+                const isCompletingThis = completingTask === item.id;
+                
+                return (
+                  <div
+                    key={item.id}
+                    className={`flex items-start gap-3 p-3 rounded-lg border transition-colors ${
+                      completed
+                        ? "bg-primary/5 border-primary/30"
+                        : "bg-card border-border"
                     }`}
                   >
-                    {item.label}
-                    {!item.required && (
-                      <span className="text-xs text-muted-foreground ml-2">(Optional)</span>
+                    {isCompletingThis ? (
+                      <Loader2 className="w-4 h-4 animate-spin mt-0.5" />
+                    ) : (
+                      <Checkbox
+                        id={item.id}
+                        checked={completed}
+                        onCheckedChange={(checked) => handleCheck(item.id, checked as boolean)}
+                        disabled={completed || isDayComplete}
+                      />
                     )}
-                  </label>
-                </div>
-              ))}
+                    <label
+                      htmlFor={item.id}
+                      className={`flex-1 cursor-pointer ${
+                        completed
+                          ? "text-muted-foreground line-through"
+                          : "text-foreground"
+                      }`}
+                    >
+                      {item.label}
+                      {!item.required && (
+                        <span className="text-xs text-muted-foreground ml-2">(Optional)</span>
+                      )}
+                    </label>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
 
         {/* Mission Complete Section */}
-        {isComplete && (
+        {(allRequiredComplete || isDayComplete) && (
           <Card className="border-primary bg-gradient-to-br from-primary/10 via-card to-accent/10">
             <CardContent className="p-8 text-center">
               <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                 <Sparkles className="w-8 h-8 text-primary" />
               </div>
               <h2 className="text-2xl font-display font-bold text-foreground mb-2">
-                🎉 Mission Complete!
+                🎉 {isDayComplete ? "Mission Complete!" : "All Tasks Done!"}
               </h2>
               <p className="text-muted-foreground mb-6">
-                {day < 7
-                  ? `Amazing work! Day ${day + 1} unlocks tomorrow at 10am EST.`
-                  : "Congratulations! You've completed the entire challenge!"}
+                {isDayComplete
+                  ? day < 7
+                    ? `Amazing work! Day ${day + 1} is now available.`
+                    : "Congratulations! You've completed the entire challenge!"
+                  : "Click below to complete this day and unlock the next one."}
               </p>
+
+              {!isDayComplete && (
+                <Button
+                  variant="cta"
+                  size="lg"
+                  onClick={handleCompleteDay}
+                  disabled={completingDay}
+                >
+                  {completingDay ? (
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  ) : (
+                    <Check className="w-5 h-5 mr-2" />
+                  )}
+                  Complete Day {day}
+                </Button>
+              )}
 
               {/* Next Day Preview */}
               {day < 7 && (
                 <div className="mt-6 p-4 rounded-xl bg-card border border-border text-left">
-                  <p className="text-sm text-muted-foreground mb-1">Coming Tomorrow:</p>
+                  <p className="text-sm text-muted-foreground mb-1">Coming Next:</p>
                   <p className="font-medium text-foreground">{data.nextDayPreview}</p>
                 </div>
               )}
@@ -543,24 +685,30 @@ const DayMission = () => {
             )}
           </Button>
 
-          <Button variant="cta" disabled={!isComplete}>
-            {isComplete ? (
+          <Button 
+            variant="cta" 
+            disabled={!allRequiredComplete || isDayComplete || completingDay}
+            onClick={handleCompleteDay}
+          >
+            {completingDay ? (
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+            ) : isDayComplete ? (
               <>
                 <Check className="w-4 h-4 mr-2" />
                 Completed
               </>
             ) : (
-              "Complete All Tasks"
+              "Complete Day"
             )}
           </Button>
 
           <Button
             variant="ghost"
-            disabled={day >= 7 || !isComplete}
-            asChild={day < 7 && isComplete}
+            disabled={day >= 7 || !isDayComplete}
+            asChild={day < 7 && isDayComplete}
           >
             {day < 7 ? (
-              isComplete ? (
+              isDayComplete ? (
                 <Link to={`/dashboard/day/${day + 1}`}>
                   Day {day + 1}
                   <ChevronRight className="w-4 h-4 ml-2" />
@@ -571,6 +719,11 @@ const DayMission = () => {
                   <Lock className="w-4 h-4 ml-2" />
                 </>
               )
+            ) : isDayComplete ? (
+              <Link to="/dashboard/graduation">
+                Graduate
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Link>
             ) : (
               <>
                 Finish
