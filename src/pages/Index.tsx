@@ -17,7 +17,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section - Full viewport */}
-      <Section variant="gradient" spacing="xl" className="relative overflow-hidden min-h-screen flex items-center">
+      <Section variant="gradient" spacing="xl" className="relative overflow-hidden min-h-screen flex items-center pt-8 md:pt-0">
         {/* Background Video */}
         <div className="absolute inset-0 z-0">
           <video
@@ -37,28 +37,28 @@ const Index = () => {
 
         {/* Background glow effects */}
         <div className="absolute inset-0 bg-glow-primary opacity-30 z-[1]" />
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-radial from-primary/10 via-accent/5 to-transparent blur-3xl z-[1]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-radial from-secondary/10 via-transparent to-transparent blur-3xl z-[1]" />
+        <div className="absolute top-1/4 left-1/4 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full bg-gradient-radial from-primary/10 via-accent/5 to-transparent blur-3xl z-[1]" />
+        <div className="absolute bottom-1/4 right-1/4 w-[200px] md:w-[400px] h-[200px] md:h-[400px] rounded-full bg-gradient-radial from-secondary/10 via-transparent to-transparent blur-3xl z-[1]" />
 
-        <Container size="full" className="relative z-10 py-12">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <Container size="full" className="relative z-10 py-6 md:py-12">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Left Side - Copy + Quiz */}
-            <div className="space-y-8 animate-fade-in">
+            <div className="space-y-4 md:space-y-8 animate-fade-in text-center lg:text-left">
               <Badge variant="glow" className="inline-flex">
                 <Zap className="w-3 h-3 mr-1" />
                 Free 7-Day Challenge
               </Badge>
 
-              <div className="space-y-4">
-                <h1 className="text-glow-primary">
+              <div className="space-y-2 md:space-y-4">
+                <h1 className="text-glow-primary text-3xl md:text-5xl lg:text-6xl">
                   Build Your First App in 7 Days
                 </h1>
-                <p className="text-2xl md:text-3xl font-display font-bold text-gradient-primary">
+                <p className="text-xl md:text-2xl lg:text-3xl font-display font-bold text-gradient-primary">
                   No Coding Required
                 </p>
               </div>
 
-              <p className="text-lg text-muted-foreground max-w-xl">
+              <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
                 Join <span className="text-secondary font-semibold">500+ entrepreneurs</span> in 
                 the next Appreneur Challenge. You'll walk away with a real, working app — even 
                 if you've never written a line of code.
@@ -75,8 +75,8 @@ const Index = () => {
           </div>
         </Container>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-float">
+        {/* Scroll indicator - hidden on mobile */}
+        <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-10 animate-float hidden md:flex">
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <span className="text-xs uppercase tracking-wider">See the Journey</span>
             <ArrowDown className="w-4 h-4" />
@@ -158,21 +158,21 @@ const Index = () => {
       <FinalCTASection />
 
       {/* Footer */}
-      <footer className="border-t border-border py-12 bg-background">
+      <footer className="border-t border-border py-8 md:py-12 bg-background">
         <Container size="wide">
-          <div className="flex flex-col items-center gap-8">
+          <div className="flex flex-col items-center gap-6 md:gap-8">
             {/* Logo */}
             <div className="flex items-center gap-2">
-              <Zap className="w-6 h-6 text-primary" />
-              <span className="font-display font-bold text-xl">Appreneur</span>
+              <Zap className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+              <span className="font-display font-bold text-lg md:text-xl">Appreneur</span>
             </div>
 
             {/* Links */}
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-              <span className="text-border">|</span>
+              <span className="text-border hidden md:inline">|</span>
               <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
-              <span className="text-border">|</span>
+              <span className="text-border hidden md:inline">|</span>
               <a href="#" className="hover:text-primary transition-colors">Contact</a>
             </div>
 
@@ -202,7 +202,7 @@ const Index = () => {
             </div>
 
             {/* Copyright */}
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-xs md:text-sm text-muted-foreground text-center px-4">
               © 2026 AI For Beginners. All rights reserved.
             </p>
           </div>
