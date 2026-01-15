@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
+import { sendWelcomeEmail } from "@/lib/email";
 import { toast } from "sonner";
 import QuizStep from "./QuizStep";
 import EmailCaptureForm from "./EmailCaptureForm";
@@ -245,6 +246,19 @@ const QuizContainer = () => {
           utm_campaign: trackingParams.utm_campaign,
           utm_content: trackingParams.utm_content,
           fb_ad_id: trackingParams.fb_ad_id,
+        });
+
+        // Step 7: Send welcome email
+        const cohortStartDate = new Date(cohort.start_date).toLocaleDateString("en-US", {
+          weekday: "long",
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+        
+        sendWelcomeEmail(data.email, data.firstName, cohortStartDate).catch(err => {
+          console.error("Error sending welcome email:", err);
+          // Don't fail registration if email fails
         });
       }
 
