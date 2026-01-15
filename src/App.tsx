@@ -17,6 +17,7 @@ import Graduation from "./pages/Graduation";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import AdminOverview from "./pages/admin/Overview";
+import AdminUsers from "./pages/admin/Users";
 import WebhooksAdmin from "./pages/admin/Webhooks";
 import NotFound from "./pages/NotFound";
 
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/admin" element={<AdminOverview />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/webhooks" element={<WebhooksAdmin />} />
             
             {/* Protected Routes */}
