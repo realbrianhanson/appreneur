@@ -18,6 +18,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import AdminOverview from "./pages/admin/Overview";
 import AdminUsers from "./pages/admin/Users";
+import AdminCohorts from "./pages/admin/Cohorts";
 import WebhooksAdmin from "./pages/admin/Webhooks";
 import NotFound from "./pages/NotFound";
 
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/terms" element={<Terms />} />
             <Route path="/admin" element={<AdminOverview />} />
             <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/cohorts" element={<AdminCohorts />} />
             <Route path="/admin/webhooks" element={<WebhooksAdmin />} />
             
             {/* Protected Routes */}
