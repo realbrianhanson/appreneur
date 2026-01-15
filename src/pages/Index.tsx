@@ -6,6 +6,7 @@ import HeroVisual from "@/components/landing/HeroVisual";
 import FloatingParticles from "@/components/landing/FloatingParticles";
 import JourneyTimeline from "@/components/landing/JourneyTimeline";
 import ValueStackSection from "@/components/landing/ValueStackSection";
+import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import heroVideo from "@/assets/hero-video.mp4";
 import { Zap, ArrowDown } from "lucide-react";
 
@@ -140,6 +141,9 @@ const Index = () => {
           <ValueStackSection />
         </Container>
       </Section>
+
+      {/* Social Proof Section */}
+      <SocialProofSection />
 
       {/* Footer */}
       <footer className="border-t border-border py-8 bg-background-secondary">
