@@ -10,15 +10,31 @@ import { Badge } from "@/components/ui/badge";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Rocket, Zap, Code, Users } from "lucide-react";
+import heroVideo from "@/assets/hero-video.mp4";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <Section variant="gradient" spacing="xl" className="relative overflow-hidden">
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full h-full object-cover opacity-20"
+          >
+            <source src={heroVideo} type="video/mp4" />
+          </video>
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+        </div>
+        
         {/* Background glow effects */}
-        <div className="absolute inset-0 bg-glow-primary opacity-50" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-primary/10 via-accent/5 to-transparent blur-3xl" />
+        <div className="absolute inset-0 bg-glow-primary opacity-50 z-[1]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-primary/10 via-accent/5 to-transparent blur-3xl z-[1]" />
         
         <Container size="default" className="relative z-10">
           <div className="text-center space-y-8 animate-fade-in">
