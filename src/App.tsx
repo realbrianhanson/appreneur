@@ -14,6 +14,8 @@ import ThankYou from "./pages/ThankYou";
 import Dashboard from "./pages/Dashboard";
 import DayMission from "./pages/DayMission";
 import Graduation from "./pages/Graduation";
+import ProfilePage from "./pages/dashboard/Profile";
+import SettingsPage from "./pages/dashboard/Settings";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import AdminOverview from "./pages/admin/Overview";
@@ -72,6 +74,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Graduation />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
                 </ProtectedRoute>
               }
             />
