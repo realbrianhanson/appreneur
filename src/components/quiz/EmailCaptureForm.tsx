@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Gift, Loader2 } from "lucide-react";
+import { ArrowRight, Gift, Loader2, Phone } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(50),
   email: z.string().trim().email("Please enter a valid email").max(255),
+  phone: z.string().trim().max(20).optional(),
 });
 
 interface EmailCaptureFormProps {
-  onSubmit: (data: { firstName: string; email: string }) => Promise<void>;
+  onSubmit: (data: { firstName: string; email: string; phone?: string }) => Promise<void>;
   isLoading: boolean;
   isVisible: boolean;
 }
@@ -18,6 +19,8 @@ interface EmailCaptureFormProps {
 const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormProps) => {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [showPhone, setShowPhone] = useState(false);
   const [errors, setErrors] = useState<{ firstName?: string; email?: string }>({});
 
   if (!isVisible) return null;
@@ -26,7 +29,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormPr
     e.preventDefault();
     setErrors({});
 
-    const result = formSchema.safeParse({ firstName, email });
+    const result = formSchema.safeParse({ firstName, email, phone: phone || undefined });
     if (!result.success) {
       const fieldErrors: { firstName?: string; email?: string } = {};
       result.error.errors.forEach((err) => {
@@ -37,7 +40,11 @@ const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormPr
       return;
     }
 
-    await onSubmit({ firstName: result.data.firstName, email: result.data.email });
+    await onSubmit({ 
+      firstName: result.data.firstName, 
+      email: result.data.email,
+      phone: result.data.phone,
+    });
   };
 
   return (
@@ -79,6 +86,30 @@ const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormPr
             <p className="text-sm text-destructive">{errors.email}</p>
           )}
         </div>
+
+        {showPhone ? (
+          <div className="space-y-2">
+            <Input
+              type="tel"
+              placeholder="Phone Number (optional)"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              disabled={isLoading}
+            />
+            <p className="text-xs text-muted-foreground">
+              Get SMS reminders when the challenge starts
+            </p>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setShowPhone(true)}
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Phone className="w-4 h-4" />
+            Add phone for SMS reminders (optional)
+          </button>
+        )}
 
         <Button
           type="submit"

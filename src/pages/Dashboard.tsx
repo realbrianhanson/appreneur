@@ -1,6 +1,9 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -23,22 +26,26 @@ import {
   Users,
   Heart,
   X,
+  Loader2,
 } from "lucide-react";
-import { useState } from "react";
 
-// Mock data - would come from database
-const userData = {
-  firstName: "Alex",
-  currentDay: 3,
-  completedDays: 2,
-  currentDayProgress: { completed: 1, total: 4 },
-  streak: 3,
-  totalTime: "4h 23m",
-  rank: 15,
-  isVIP: false,
-};
+interface UserStats {
+  days_completed: number;
+  streak: number;
+  total_time_seconds: number;
+  percentile: number;
+  cohort_rank: number | null;
+  cohort_size: number | null;
+}
 
-const upcomingDays = [
+interface UserProgress {
+  day_number: number;
+  is_unlocked: boolean;
+  is_completed: boolean;
+  tasks_completed: Record<string, unknown>;
+}
+
+const upcomingDaysData = [
   {
     day: 4,
     title: "Add AI Magic",
@@ -84,21 +91,87 @@ const communityPosts = [
 ];
 
 const Dashboard = () => {
+  const { user, profile } = useAuth();
   const [showAnnouncement, setShowAnnouncement] = useState(true);
-  const progress = (userData.completedDays / 7) * 100;
-  const currentMissionProgress =
-    (userData.currentDayProgress.completed / userData.currentDayProgress.total) * 100;
+  const [isLoading, setIsLoading] = useState(true);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [userProgress, setUserProgress] = useState<UserProgress[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserData();
+    }
+  }, [user]);
+
+  const fetchUserData = async () => {
+    if (!user) return;
+    
+    setIsLoading(true);
+    try {
+      // Fetch user progress
+      const { data: progressData, error: progressError } = await supabase
+        .from("user_progress")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("day_number", { ascending: true });
+
+      if (progressError) throw progressError;
+      setUserProgress((progressData || []).map(p => ({
+        day_number: p.day_number,
+        is_unlocked: p.is_unlocked,
+        is_completed: p.is_completed,
+        tasks_completed: (p.tasks_completed as Record<string, unknown>) || {},
+      })));
+
+      // Fetch user stats
+      const { data: statsData, error: statsError } = await supabase.rpc(
+        "get_user_stats",
+        { p_user_id: user.id }
+      );
+
+      if (statsError) throw statsError;
+      if (statsData) {
+        setUserStats(statsData as unknown as UserStats);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Calculate current day and progress
+  const completedDays = userProgress.filter(p => p.is_completed).length;
+  const currentDayProgress = userProgress.find(p => p.is_unlocked && !p.is_completed);
+  const currentDay = currentDayProgress?.day_number || completedDays + 1;
+  
+  const progress = (completedDays / 7) * 100;
+  const tasksCompleted = currentDayProgress ? Object.keys(currentDayProgress.tasks_completed).length : 0;
+  const totalTasks = 4; // Default task count per day
+  const currentMissionProgress = (tasksCompleted / totalTasks) * 100;
+
+  const firstName = profile?.first_name || "Builder";
+  const isVIP = profile?.is_vip || false;
+
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) {
+      return `${hours}h ${minutes}m`;
+    }
+    return `${minutes}m`;
+  };
 
   const stats = [
     {
       label: "Streak",
-      value: `${userData.streak} days`,
+      value: `${userStats?.streak || 0} days`,
       icon: <Zap className="w-5 h-5 text-orange-500" />,
       color: "text-orange-500",
     },
     {
       label: "Total Time",
-      value: userData.totalTime,
+      value: formatTime(userStats?.total_time_seconds || 0),
       icon: <Clock className="w-5 h-5 text-primary" />,
       color: "text-primary",
     },
@@ -110,7 +183,7 @@ const Dashboard = () => {
     },
     {
       label: "Rank",
-      value: `Top ${userData.rank}%`,
+      value: userStats?.percentile ? `Top ${Math.round(100 - userStats.percentile)}%` : "—",
       icon: <Trophy className="w-5 h-5 text-yellow-500" />,
       color: "text-yellow-500",
     },
@@ -140,15 +213,28 @@ const Dashboard = () => {
       icon: <Crown className="w-5 h-5" />,
       url: "/vip-offer",
       color: "bg-yellow-500/10 text-yellow-500",
-      highlight: !userData.isVIP,
+      highlight: !isVIP,
     },
   ];
 
+  // Filter upcoming days based on current progress
+  const upcomingDays = upcomingDaysData.filter(d => d.day > currentDay);
+
+  if (isLoading) {
+    return (
+      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP}>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <DashboardLayout
-      userName={userData.firstName}
-      currentDay={userData.currentDay}
-      isVIP={userData.isVIP}
+      userName={firstName}
+      currentDay={currentDay}
+      isVIP={isVIP}
     >
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Announcement Banner */}
@@ -185,7 +271,7 @@ const Dashboard = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-display font-bold text-foreground">
-                Welcome back, {userData.firstName}! 👋
+                Welcome back, {firstName}! 👋
               </h1>
               <p className="text-muted-foreground mt-1">
                 You're making great progress. Let's keep building!
@@ -199,14 +285,14 @@ const Dashboard = () => {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-2">
                   <Badge variant="outline" className="text-primary border-primary">
-                    Day {userData.currentDay} of 7
+                    Day {currentDay} of 7
                   </Badge>
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-display font-bold text-foreground">
-                      {userData.completedDays} missions completed
+                      {completedDays} missions completed
                     </span>
                     <span className="text-muted-foreground">
-                      • {7 - userData.completedDays} to go
+                      • {7 - completedDays} to go
                     </span>
                   </div>
                 </div>
@@ -238,7 +324,7 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-                  Day {userData.currentDay}: Build Your Core App
+                  Day {currentDay}: Build Your Core App
                 </h2>
                 <p className="text-muted-foreground max-w-xl">
                   Today you'll start building the foundation of your app using AI-powered
@@ -250,8 +336,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Task Progress</span>
                     <span className="font-medium text-foreground">
-                      {userData.currentDayProgress.completed} of{" "}
-                      {userData.currentDayProgress.total} tasks
+                      {tasksCompleted} of {totalTasks} tasks
                     </span>
                   </div>
                   <Progress value={currentMissionProgress} className="h-2" />
@@ -260,7 +345,7 @@ const Dashboard = () => {
 
               <div className="flex flex-col gap-3">
                 <Button variant="cta" size="lg" asChild>
-                  <Link to={`/dashboard/day/${userData.currentDay}`}>
+                  <Link to={`/dashboard/day/${currentDay}`}>
                     Continue Mission
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Link>
@@ -296,37 +381,39 @@ const Dashboard = () => {
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Upcoming Section */}
-            <div className="space-y-4">
-              <h2 className="text-xl font-display font-bold text-foreground">
-                Coming Up Next
-              </h2>
-              <div className="grid md:grid-cols-2 gap-4">
-                {upcomingDays.map((day) => (
-                  <Card
-                    key={day.day}
-                    className="opacity-75 hover:opacity-90 transition-opacity"
-                  >
-                    <CardContent className="p-5">
-                      <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                          {day.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="text-sm text-muted-foreground">Day {day.day}</p>
-                            <Lock className="w-3 h-3 text-muted-foreground" />
+            {upcomingDays.length > 0 && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-display font-bold text-foreground">
+                  Coming Up Next
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {upcomingDays.slice(0, 2).map((day) => (
+                    <Card
+                      key={day.day}
+                      className="opacity-75 hover:opacity-90 transition-opacity"
+                    >
+                      <CardContent className="p-5">
+                        <div className="flex items-start gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                            {day.icon}
                           </div>
-                          <p className="font-semibold text-foreground truncate">{day.title}</p>
-                          <p className="text-sm text-muted-foreground line-clamp-1">
-                            {day.description}
-                          </p>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="text-sm text-muted-foreground">Day {day.day}</p>
+                              <Lock className="w-3 h-3 text-muted-foreground" />
+                            </div>
+                            <p className="font-semibold text-foreground truncate">{day.title}</p>
+                            <p className="text-sm text-muted-foreground line-clamp-1">
+                              {day.description}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Community Highlights */}
             <div className="space-y-4">
@@ -417,7 +504,10 @@ const Dashboard = () => {
                 </div>
                 <p className="text-sm font-medium text-foreground mb-1">Keep going!</p>
                 <p className="text-xs text-muted-foreground">
-                  You're ahead of 85% of participants. Day 7 is closer than you think! 🚀
+                  {userStats?.percentile 
+                    ? `You're ahead of ${Math.round(userStats.percentile)}% of participants.`
+                    : "You're making great progress!"
+                  } Day 7 is closer than you think! 🚀
                 </p>
               </CardContent>
             </Card>

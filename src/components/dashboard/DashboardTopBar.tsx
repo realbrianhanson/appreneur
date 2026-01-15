@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,13 +12,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Bell, Search, User, Settings, LogOut, ChevronDown } from "lucide-react";
+import { toast } from "sonner";
 
 interface DashboardTopBarProps {
   userName?: string;
 }
 
-const DashboardTopBar = ({ userName = "Builder" }: DashboardTopBarProps) => {
+const DashboardTopBar = ({ userName }: DashboardTopBarProps) => {
+  const { profile, signOut } = useAuth();
+  const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
+
+  const displayName = userName || profile?.first_name || "Builder";
+
+  const handleLogout = async () => {
+    await signOut();
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
 
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40">
@@ -66,10 +78,10 @@ const DashboardTopBar = ({ userName = "Builder" }: DashboardTopBarProps) => {
               <Button variant="ghost" className="flex items-center gap-2 px-2">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                   <span className="text-primary text-sm font-semibold">
-                    {userName.charAt(0).toUpperCase()}
+                    {displayName.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <span className="hidden md:inline text-sm font-medium">{userName}</span>
+                <span className="hidden md:inline text-sm font-medium">{displayName}</span>
                 <ChevronDown className="w-4 h-4 text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
@@ -87,7 +99,10 @@ const DashboardTopBar = ({ userName = "Builder" }: DashboardTopBarProps) => {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="flex items-center gap-2 cursor-pointer text-destructive">
+              <DropdownMenuItem 
+                onClick={handleLogout}
+                className="flex items-center gap-2 cursor-pointer text-destructive"
+              >
                 <LogOut className="w-4 h-4" />
                 Logout
               </DropdownMenuItem>
