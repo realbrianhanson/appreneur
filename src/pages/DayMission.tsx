@@ -620,27 +620,6 @@ const DayMission = () => {
             </div>
           </CardContent>
         </Card>
-                      />
-                    )}
-                    <label
-                      htmlFor={item.id}
-                      className={`flex-1 cursor-pointer ${
-                        completed
-                          ? "text-muted-foreground line-through"
-                          : "text-foreground"
-                      }`}
-                    >
-                      {item.label}
-                      {!item.required && (
-                        <span className="text-xs text-muted-foreground ml-2">(Optional)</span>
-                      )}
-                    </label>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Mission Complete Section */}
         {(allRequiredComplete || isDayComplete) && (
