@@ -4,8 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import QuizContainer from "@/components/quiz/QuizContainer";
 import HeroVisual from "@/components/landing/HeroVisual";
 import FloatingParticles from "@/components/landing/FloatingParticles";
+import JourneyTimeline from "@/components/landing/JourneyTimeline";
 import heroVideo from "@/assets/hero-video.mp4";
-import { Zap } from "lucide-react";
+import { Zap, ArrowDown } from "lucide-react";
 
 const Index = () => {
   return (
@@ -66,6 +67,53 @@ const Index = () => {
             <div className="hidden lg:block animate-fade-in" style={{ animationDelay: "0.2s" }}>
               <HeroVisual />
             </div>
+          </div>
+        </Container>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-float">
+          <div className="flex flex-col items-center gap-2 text-muted-foreground">
+            <span className="text-xs uppercase tracking-wider">See the Journey</span>
+            <ArrowDown className="w-4 h-4" />
+          </div>
+        </div>
+      </Section>
+
+      {/* What You'll Build Section */}
+      <Section variant="muted" spacing="xl" className="relative overflow-hidden">
+        {/* Background accents */}
+        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-radial from-primary/5 to-transparent blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-gradient-radial from-accent/5 to-transparent blur-3xl" />
+        
+        <Container size="wide" className="relative z-10">
+          <div className="text-center mb-16 space-y-4">
+            <Badge variant="outline" className="mx-auto">
+              Your 7-Day Transformation
+            </Badge>
+            <h2 className="text-glow-primary">
+              Go From Idea to Live App in 7 Days
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Each day builds on the last. By the end, you'll have a real, working app 
+              that you built yourself.
+            </p>
+          </div>
+
+          <JourneyTimeline />
+
+          {/* Bottom CTA */}
+          <div className="mt-16 text-center">
+            <p className="text-muted-foreground mb-4">
+              Ready to start your journey?
+            </p>
+            <a 
+              href="#" 
+              onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-semibold transition-colors"
+            >
+              <Zap className="w-4 h-4" />
+              Join the Challenge Above
+            </a>
           </div>
         </Container>
       </Section>
