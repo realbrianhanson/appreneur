@@ -7,6 +7,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { DashboardSkeleton } from "@/components/ui/skeleton-card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { showError } from "@/lib/toast-utils";
 import {
   ArrowRight,
   Clock,
@@ -26,7 +29,7 @@ import {
   Users,
   Heart,
   X,
-  Loader2,
+  RefreshCw,
 } from "lucide-react";
 
 interface UserStats {
@@ -94,6 +97,8 @@ const Dashboard = () => {
   const { user, profile } = useAuth();
   const [showAnnouncement, setShowAnnouncement] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [isRetrying, setIsRetrying] = useState(false);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [userProgress, setUserProgress] = useState<UserProgress[]>([]);
 
@@ -107,6 +112,8 @@ const Dashboard = () => {
     if (!user) return;
     
     setIsLoading(true);
+    setHasError(false);
+    
     try {
       // Fetch user progress
       const { data: progressData, error: progressError } = await supabase
@@ -135,9 +142,20 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
+      setHasError(true);
+      showError("Couldn't load your dashboard", {
+        description: "We're having trouble loading your data.",
+        onRetry: handleRetry,
+      });
     } finally {
       setIsLoading(false);
+      setIsRetrying(false);
     }
+  };
+
+  const handleRetry = () => {
+    setIsRetrying(true);
+    fetchUserData();
   };
 
   // Calculate current day and progress
@@ -220,11 +238,53 @@ const Dashboard = () => {
   // Filter upcoming days based on current progress
   const upcomingDays = upcomingDaysData.filter(d => d.day > currentDay);
 
+  // Show skeleton loading state
   if (isLoading) {
     return (
       <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP}>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <DashboardSkeleton />
+      </DashboardLayout>
+    );
+  }
+
+  // Show error state with retry
+  if (hasError) {
+    return (
+      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP}>
+        <div className="max-w-md mx-auto mt-12">
+          <EmptyState
+            variant="error"
+            title="Couldn't Load Dashboard"
+            description="We're having trouble loading your progress. Please try again."
+            actionLabel="Try Again"
+            onAction={handleRetry}
+            isRetrying={isRetrying}
+          />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Show empty state for new users
+  if (userProgress.length === 0 && !isLoading) {
+    return (
+      <DashboardLayout userName={firstName} currentDay={1} isVIP={isVIP}>
+        <div className="max-w-2xl mx-auto mt-12 space-y-8">
+          <div className="text-center space-y-4">
+            <h1 className="text-3xl font-display font-bold">
+              Welcome, {firstName}! 🎉
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Ready to build your first app? Let's get started!
+            </p>
+          </div>
+          <EmptyState
+            variant="no-progress"
+            title="Start Your First Mission!"
+            description="You haven't started the challenge yet. Jump into Day 1 and build something amazing!"
+            actionLabel="Begin Day 1"
+            actionHref="/dashboard/day/1"
+          />
         </div>
       </DashboardLayout>
     );

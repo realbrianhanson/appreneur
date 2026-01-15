@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { MissionSkeleton } from "@/components/ui/skeleton-card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { showSuccess, showError, showInfo } from "@/lib/toast-utils";
 import {
   Collapsible,
   CollapsibleContent,
@@ -30,7 +33,6 @@ import {
   Sparkles,
   Loader2,
 } from "lucide-react";
-import { toast } from "sonner";
 
 // Task ID mapping to match database schema
 const taskIdMap: Record<number, Record<string, string>> = {
@@ -339,7 +341,7 @@ const DayMission = () => {
   // Redirect if day is locked
   useEffect(() => {
     if (!progressLoading && !isUnlocked && progress.length > 0) {
-      toast.error("This day is not unlocked yet!");
+      showError("This day is not unlocked yet!");
       navigate("/dashboard");
     }
   }, [isUnlocked, progressLoading, progress.length, navigate]);
@@ -362,12 +364,12 @@ const DayMission = () => {
     
     if (result) {
       if (result.day_completed) {
-        toast.success("Day complete! Great work! 🎉");
+        showSuccess("Day complete! Great work! 🎉");
         if (result.next_day_unlocked) {
-          toast.info(`Day ${day + 1} is now unlocked!`);
+          showInfo(`Day ${day + 1} is now unlocked!`);
         }
       } else {
-        toast.success("Task completed!");
+        showSuccess("Task completed!");
       }
     }
     
@@ -383,14 +385,14 @@ const DayMission = () => {
     const result = await completeDay(day, timeSpent);
     
     if (result) {
-      toast.success("Day complete! 🎉");
+      showSuccess("Day complete! 🎉");
       
       if (result.is_graduation) {
         setTimeout(() => {
           navigate("/dashboard/graduation");
         }, 2000);
       } else if (result.next_day_unlocked) {
-        toast.info(`Day ${day + 1} is now unlocked!`);
+        showInfo(`Day ${day + 1} is now unlocked!`);
       }
     }
     
@@ -405,9 +407,7 @@ const DayMission = () => {
   if (progressLoading && progress.length === 0) {
     return (
       <DashboardLayout userName={firstName} currentDay={day} isVIP={isVIP}>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        </div>
+        <MissionSkeleton />
       </DashboardLayout>
     );
   }
