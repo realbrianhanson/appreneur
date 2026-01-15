@@ -9,6 +9,7 @@ import Downsell from "./pages/Downsell";
 import ThankYou from "./pages/ThankYou";
 import Dashboard from "./pages/Dashboard";
 import DayMission from "./pages/DayMission";
+import Graduation from "./pages/Graduation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/thank-you" element={<ThankYou />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/day/:dayNumber" element={<DayMission />} />
+          <Route path="/dashboard/graduation" element={<Graduation />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
