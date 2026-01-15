@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import { TestimonialModal } from "@/components/dashboard/TestimonialModal";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -103,6 +104,10 @@ const Dashboard = () => {
   const [isRetrying, setIsRetrying] = useState(false);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [userProgress, setUserProgress] = useState<UserProgress[]>([]);
+  
+  // Testimonial modal state
+  const [showTestimonialModal, setShowTestimonialModal] = useState(false);
+  const [hasShownTestimonialPrompt, setHasShownTestimonialPrompt] = useState(false);
 
   // Track page view on mount
   useEffect(() => {
@@ -177,6 +182,41 @@ const Dashboard = () => {
 
   const firstName = profile?.first_name || "Builder";
   const isVIP = profile?.is_vip || false;
+  
+  // Check if Day 7 is completed and show testimonial modal
+  const day7Progress = userProgress.find(p => p.day_number === 7);
+  const isDay7Completed = day7Progress?.is_completed || false;
+  
+  useEffect(() => {
+    const checkTestimonialPrompt = async () => {
+      if (!user || !isDay7Completed || hasShownTestimonialPrompt) return;
+      
+      // Check if user already submitted a testimonial
+      const { data: existingTestimonial } = await supabase
+        .from("testimonials")
+        .select("id")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      
+      // Check if user dismissed the prompt (stored in localStorage)
+      const dismissedKey = `testimonial_dismissed_${user.id}`;
+      const wasDismissed = localStorage.getItem(dismissedKey);
+      
+      if (!existingTestimonial && !wasDismissed) {
+        setShowTestimonialModal(true);
+      }
+      setHasShownTestimonialPrompt(true);
+    };
+    
+    checkTestimonialPrompt();
+  }, [user, isDay7Completed, hasShownTestimonialPrompt]);
+  
+  const handleMaybeLater = () => {
+    if (user) {
+      localStorage.setItem(`testimonial_dismissed_${user.id}`, "true");
+    }
+    setShowTestimonialModal(false);
+  };
 
   const formatTime = (seconds: number) => {
     const hours = Math.floor(seconds / 3600);
@@ -315,6 +355,12 @@ const Dashboard = () => {
         noindex={true}
       />
       
+      {/* Testimonial Modal */}
+      <TestimonialModal
+        isOpen={showTestimonialModal}
+        onClose={() => setShowTestimonialModal(false)}
+        onMaybeLater={handleMaybeLater}
+      />
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Announcement Banner */}
         {showAnnouncement && (
