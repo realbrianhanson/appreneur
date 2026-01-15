@@ -142,7 +142,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormPr
             Plus, instantly download:
           </p>
           <p className="text-accent font-display">
-            "50 Profitable AI App Ideas for 2025"
+            "50 Profitable AI App Ideas for 2026"
           </p>
         </div>
       </div>

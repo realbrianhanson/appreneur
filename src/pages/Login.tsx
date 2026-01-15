@@ -135,12 +135,16 @@ export default function Login() {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
-                    <Link 
-                      to="/forgot-password" 
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setMode("magic");
+                        toast.info("Use magic link to sign in without a password");
+                      }}
                       className="text-sm text-primary hover:underline"
                     >
                       Forgot password?
-                    </Link>
+                    </button>
                   </div>
                   <Input
                     id="password"
