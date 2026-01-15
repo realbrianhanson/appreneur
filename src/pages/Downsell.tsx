@@ -1,9 +1,18 @@
+import { useEffect } from "react";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import SEOHead from "@/components/seo/SEOHead";
+import { trackPageView, trackDownsellView } from "@/lib/analytics";
 import { Check, ArrowRight, FileText } from "lucide-react";
 
 const Downsell = () => {
+  // Track page view and downsell view on mount
+  useEffect(() => {
+    trackPageView('/downsell', 'Special Offer — Appreneur Challenge');
+    trackDownsellView();
+  }, []);
+
   const features = [
     "47 Copy-Paste Prompts for Lovable",
     "Organized by App Type (SaaS, Mobile, Internal Tools)",
@@ -13,6 +22,12 @@ const Downsell = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center">
+      {/* SEO Head - noindex for funnel page */}
+      <SEOHead 
+        title="Special Offer — Prompt Vault"
+        description="Get 47 copy-paste prompts for building apps with Lovable."
+        noindex={true}
+      />
       <Container size="tight" className="py-12 md:py-16">
         <div className="max-w-xl mx-auto text-center space-y-8">
           {/* Icon */}

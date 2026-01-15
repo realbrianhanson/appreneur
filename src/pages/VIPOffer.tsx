@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
+import SEOHead from "@/components/seo/SEOHead";
+import { trackPageView, trackVIPOfferView } from "@/lib/analytics";
 import {
   Play,
   Check,
@@ -75,6 +77,12 @@ const VIPOffer = () => {
   const [expiry, setExpiry] = useState("");
   const [cvc, setCvc] = useState("");
 
+  // Track page view and VIP offer view on mount
+  useEffect(() => {
+    trackPageView('/vip-offer', 'VIP Offer — Appreneur Challenge');
+    trackVIPOfferView();
+  }, []);
+
   const stackItems: StackItemProps[] = [
     {
       icon: <BookOpen className="w-5 h-5 text-primary" />,
@@ -126,6 +134,13 @@ const VIPOffer = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-0">
+      {/* SEO Head - noindex for funnel page */}
+      <SEOHead 
+        title="VIP Upgrade — Appreneur Challenge"
+        description="Get the complete VIP toolkit for the Appreneur Challenge."
+        noindex={true}
+      />
+
       {/* Urgent Top Bar - sticky on all devices */}
       <div className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 to-red-600 text-white py-2 md:py-3">
         <Container size="wide">
