@@ -166,13 +166,6 @@ const Index = () => {
           </div>
         </Container>
 
-        {/* Scroll indicator - hidden on mobile */}
-        <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-10 animate-float hidden md:flex">
-          <div className="flex flex-col items-center gap-2 text-muted-foreground">
-            <span className="text-xs uppercase tracking-wider">See the Journey</span>
-            <ArrowDown className="w-4 h-4" />
-          </div>
-        </div>
       </Section>
 
       {/* Opening Copy Section - New compelling copy */}
