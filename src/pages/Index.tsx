@@ -14,7 +14,7 @@ import { FinalCTASection } from "@/components/landing/FinalCTASection";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
-import heroVideo from "@/assets/hero-video.mp4";
+import heroVideo from "@/assets/brian-hanson-hero.mp4";
 import { Zap, ArrowDown, Twitter, Linkedin, Youtube } from "lucide-react";
 
 // Next cohort start date for structured data
