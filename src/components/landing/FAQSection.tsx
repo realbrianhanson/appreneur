@@ -11,9 +11,24 @@ import {
 
 const faqs = [
   {
-    question: "Do I need to know how to code?",
+    question: "What if I'm not technical at all?",
     answer:
-      "Absolutely not. We use AI-powered tools that let you describe what you want in plain English. If you can explain your idea, you can build it.",
+      "Perfect. This system is built for entrepreneurs, not engineers. If you can write an email, you can build an app with this method.",
+  },
+  {
+    question: "What if I don't have an app idea?",
+    answer:
+      "That's what the 750 Profitable App Ideas PDF is for. You'll have more ideas than you know what to do with.",
+  },
+  {
+    question: "Is this just theory or do I actually build something?",
+    answer:
+      "You will have a live, working app by Day 7. Not a mockup. Not a wireframe. A real app.",
+  },
+  {
+    question: "Why is this free?",
+    answer:
+      "Because I want you to experience what's possible. When you see how fast you can build, you'll want to go deeper with my other trainings. This is my best foot forward.",
   },
   {
     question: "What kind of apps can I build?",
@@ -31,14 +46,9 @@ const faqs = [
       "You'll have access to all recordings and can catch up at your own pace. Plus, the community is there to help.",
   },
   {
-    question: "Is this really free?",
-    answer:
-      "Yes. The challenge itself is 100% free. We offer optional upgrades for those who want additional resources, but everything you need to build your app is included free.",
-  },
-  {
     question: "What happens after the 7 days?",
     answer:
-      "You'll have a live, working app. We'll also invite you to our 3-Day AI For Business event where you'll learn how to turn your app into a real business.",
+      "You'll have a live, working app. We'll also invite you to our 2-Day AI For Business event where you'll learn how to turn your app into a real business.",
   },
 ];
 

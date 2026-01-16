@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Badge } from "@/components/ui/badge";
-import { Award, Users, TrendingUp, Heart } from "lucide-react";
+import { Award, Users, TrendingUp, Heart, Check } from "lucide-react";
 import brianPhoto from "@/assets/brian-hanson.jpeg";
 
 interface CredentialBadgeProps {
@@ -46,6 +46,14 @@ const CredentialBadge = ({ icon, label, value, delay }: CredentialBadgeProps) =>
   );
 };
 
+const bioBullets = [
+  "4X Inc. 5000 entrepreneur (highest ranking: #80)",
+  "Built multiple 7-figure businesses from the ground up",
+  "Taught 150,000+ people to leverage AI through AI for Business Live",
+  "Currently building Revven, an AI content platform",
+  "I still build apps every week using the exact system I'm teaching you",
+];
+
 const AboutHostSection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -88,7 +96,7 @@ const AboutHostSection = () => {
             {/* Gradient border effect */}
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/20 via-accent/20 to-secondary/20 opacity-50 blur-xl -z-10" />
 
-            <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-center">
+            <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
               {/* Left - Photo */}
               <div className="md:col-span-2 flex justify-center">
                 <div className="relative">
@@ -112,27 +120,31 @@ const AboutHostSection = () => {
               <div className="md:col-span-3 space-y-6">
                 <div className="space-y-2">
                   <Badge variant="outline" className="mb-2">
-                    Meet Your Guide
+                    Your Instructor
                   </Badge>
                   <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
                     Brian Hanson
                   </h2>
+                  <p className="text-lg text-muted-foreground">
+                    I've spent 20+ years in the trenches building businesses. Now I help entrepreneurs skip the hard lessons I learned.
+                  </p>
                 </div>
 
-                <div className="space-y-4 text-muted-foreground">
-                  <p className="text-lg">
-                    <span className="text-foreground font-semibold">4X Inc 5000 entrepreneur.</span> Built 
-                    and sold multiple 7-figure businesses. Taught over{" "}
-                    <span className="text-secondary font-semibold">150,000 people</span> how to leverage 
-                    AI for business growth.
-                  </p>
-                  <p>
-                    I'm not a developer. I'm an entrepreneur who figured out how to build apps 
-                    without writing code — and I've helped thousands of others do the same.
-                  </p>
+                {/* Bio Bullets */}
+                <ul className="space-y-3">
+                  {bioBullets.map((bullet, index) => (
+                    <li key={index} className="flex items-start gap-3 text-muted-foreground">
+                      <Check className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Personal Note */}
+                <div className="pt-4 border-t border-border/50">
                   <p className="text-foreground/90 font-medium italic border-l-2 border-primary pl-4">
-                    "This challenge isn't about becoming a programmer. It's about becoming someone 
-                    who can turn ideas into real, working products."
+                    "I'm not a developer. I'm an entrepreneur who figured out how to make AI do the heavy lifting. 
+                    If I can do this, you definitely can."
                   </p>
                 </div>
               </div>

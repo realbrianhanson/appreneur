@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Check, FileText, Video, Users, Mail, Award, Calendar } from "lucide-react";
+import { Check, FileText, Video, Users, Headphones, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { LucideIcon } from "lucide-react";
@@ -14,42 +14,38 @@ interface StackItem {
 
 const stackItems: StackItem[] = [
   {
-    title: '"50 Profitable AI App Ideas for 2025" (PDF)',
-    caption: "The exact list I use to validate app concepts before building",
+    title: '750 Profitable AI App Ideas for 2025 (PDF)',
+    caption: "Validated ideas already making money. Pick one or use your own.",
     icon: FileText,
-    value: "$47",
+    value: "$97",
   },
   {
     title: "7-Day Appreneur Challenge Access",
-    caption: "Daily video training from idea to deployment",
+    caption: "Daily video training + assignments that take you from zero to live app",
     icon: Video,
-    value: "$197",
+    value: "$497",
   },
   {
     title: "Private Community Access",
-    caption: "Connect with 500+ fellow builders",
+    caption: "Connect with 99+ entrepreneurs building alongside you",
     icon: Users,
-    value: "$97",
+    value: "$197",
   },
   {
-    title: "Daily Mission Emails",
-    caption: "Stay accountable with step-by-step guidance",
-    icon: Mail,
-    value: "$47",
+    title: "Daily Instructor Support from Brian Hanson",
+    caption: "Get unstuck fast. I'm in there with you.",
+    icon: Headphones,
+    value: "$297",
   },
   {
-    title: "Certificate of Completion",
-    caption: "Show off your new skills",
-    icon: Award,
-    value: "$27",
-  },
-  {
-    title: "Auto-Registration to 3-Day AI For Business Event",
-    caption: "Learn how to turn your app into a real business",
+    title: "Auto-Registration: 2-Day AI for Business Live Event",
+    caption: "My flagship event where I go deep on AI for entrepreneurs",
     icon: Calendar,
-    value: "$97",
+    value: "$997",
   },
 ];
+
+const TOTAL_VALUE = "$2,085";
 
 const ValueStackSection = () => {
   const [visibleItems, setVisibleItems] = useState<number[]>([]);
@@ -97,7 +93,7 @@ const ValueStackSection = () => {
               Instant Access
             </Badge>
             <p className="text-muted-foreground">
-              Join now and unlock everything below:
+              Here's what you're getting when you join the challenge:
             </p>
           </div>
 
@@ -142,8 +138,8 @@ const ValueStackSection = () => {
                           {item.title}
                         </h4>
                       </div>
-                      <span className="text-sm text-muted-foreground line-through shrink-0">
-                        {item.value}
+                      <span className="text-sm font-semibold text-secondary shrink-0 whitespace-nowrap">
+                        {item.value} Value
                       </span>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">
@@ -163,7 +159,7 @@ const ValueStackSection = () => {
             <div className="flex items-center justify-center gap-4">
               <div className="text-muted-foreground">
                 <span className="text-sm">Total Value:</span>
-                <span className="ml-2 text-lg line-through">$497</span>
+                <span className="ml-2 text-xl font-bold line-through">{TOTAL_VALUE}</span>
               </div>
             </div>
             
@@ -172,7 +168,7 @@ const ValueStackSection = () => {
                 Your Price Today
               </p>
               <div className="flex items-center justify-center gap-2">
-                <span className="text-5xl md:text-6xl font-display font-bold text-gradient-primary">
+                <span className="text-6xl md:text-7xl font-display font-bold text-gradient-primary animate-pulse">
                   FREE
                 </span>
               </div>
@@ -182,21 +178,21 @@ const ValueStackSection = () => {
             <Button
               variant="cta"
               size="xl"
-              className="w-full md:w-auto md:px-16"
+              className="w-full md:w-auto md:px-16 text-lg py-6"
               onClick={scrollToTop}
             >
-              Get Instant Access
+              Claim Your Free Spot
             </Button>
 
-            <p className="text-xs text-muted-foreground">
-              No credit card required • Instant access • Start building today
+            <p className="text-sm text-muted-foreground italic">
+              Seriously. $0. I just want to prove this works.
             </p>
           </div>
         </div>
       </div>
 
       {/* Extra trust element */}
-      <div className="mt-8 flex items-center justify-center gap-8 text-muted-foreground">
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-6 md:gap-8 text-muted-foreground">
         <div className="flex items-center gap-2">
           <Check className="w-4 h-4 text-primary" />
           <span className="text-sm">100% Free</span>

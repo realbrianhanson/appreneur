@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import QuizContainer from "@/components/quiz/QuizContainer";
 import HeroVisual from "@/components/landing/HeroVisual";
 import FloatingParticles from "@/components/landing/FloatingParticles";
 import JourneyTimeline from "@/components/landing/JourneyTimeline";
 import ValueStackSection from "@/components/landing/ValueStackSection";
+import OpeningCopySection from "@/components/landing/OpeningCopySection";
+import UrgencySection from "@/components/landing/UrgencySection";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { AboutHostSection } from "@/components/landing/AboutHostSection";
 import { FAQSection } from "@/components/landing/FAQSection";
@@ -15,16 +17,27 @@ import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
 import heroVideo from "@/assets/brian-hanson-hero.mp4";
-import { Zap, ArrowDown, Twitter, Linkedin, Youtube } from "lucide-react";
+import brianPhoto from "@/assets/brian-hanson.jpeg";
+import { Zap, ArrowDown, ArrowRight, Twitter, Linkedin, Youtube, Quote } from "lucide-react";
 
-// Next cohort start date for structured data
-const NEXT_COHORT_DATE = "2026-01-20T15:00:00Z";
+// Next cohort start date
+const COHORT_START_DATE = new Date("2026-01-27T09:00:00");
+const NEXT_COHORT_DATE = "2026-01-27T15:00:00Z";
 
 const Index = () => {
   // Track page view on mount
   useEffect(() => {
     trackPageView('/', 'Appreneur Challenge — Build Your First App in 7 Days');
   }, []);
+
+  const scrollToQuiz = () => {
+    const quizElement = document.querySelector('#quiz-section');
+    if (quizElement) {
+      quizElement.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -87,23 +100,60 @@ const Index = () => {
 
         <Container size="full" className="relative z-10 py-6 md:py-12">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-            {/* Left Side - Copy + Quiz */}
-            <div className="space-y-4 md:space-y-8 animate-fade-in text-center lg:text-left">
-
-              <div className="space-y-2 md:space-y-4">
-                <h1 className="text-glow-primary text-3xl md:text-5xl lg:text-6xl">
-                  Build Your First App in 7 Days
+            {/* Left Side - Copy + CTA */}
+            <div className="space-y-6 md:space-y-8 animate-fade-in text-center lg:text-left">
+              {/* New Headline */}
+              <div className="space-y-4">
+                <h1 className="text-glow-primary text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
+                  Go From "I Have an Idea" to "Holy Crap, I Built That" in 7 Days
                 </h1>
-                <p className="text-xl md:text-2xl lg:text-3xl font-display font-bold text-gradient-primary">
-                  No Coding Required
+                <p className="text-xl md:text-2xl lg:text-3xl font-semibold text-foreground/90 leading-relaxed">
+                  No coding. No developers. No $15K budget. Just you, AI, and my step-by-step system that's helped 99+ entrepreneurs ship real, working apps.
                 </p>
               </div>
 
-              <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0">
-                Join <span className="text-secondary font-semibold">500+ entrepreneurs</span> in 
-                the next Appreneur Challenge. You'll walk away with a real, working app — even 
-                if you've never written a line of code.
+              {/* Credibility Bar */}
+              <p className="text-sm md:text-base text-muted-foreground">
+                Taught by <span className="text-foreground font-medium">Brian Hanson</span> — 4X Inc. 5000 Entrepreneur | Built Multiple 7-Figure Businesses | Taught 150,000+ People to Leverage AI
               </p>
+
+              {/* CTA Button Above the Fold */}
+              <div className="space-y-3" id="quiz-section">
+                <Button 
+                  variant="cta" 
+                  size="xl" 
+                  className="text-lg md:text-xl py-7 px-10 w-full md:w-auto"
+                  onClick={scrollToQuiz}
+                >
+                  Join the Free 7-Day Challenge
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <p className="text-sm text-muted-foreground">
+                  No credit card. No fluff. Just building.
+                </p>
+              </div>
+
+              {/* Testimonial Quote in Hero */}
+              <div className="pt-4 border-t border-border/30">
+                <div className="flex items-start gap-4 text-left">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary/30 shrink-0">
+                    <img 
+                      src={brianPhoto} 
+                      alt="Testimonial" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-start gap-2">
+                      <Quote className="w-4 h-4 text-primary shrink-0 mt-1" />
+                      <p className="text-sm md:text-base text-muted-foreground italic">
+                        "I went from never building anything to having a live app in 6 days. Brian breaks it down so anyone can do this."
+                      </p>
+                    </div>
+                    <p className="text-sm text-foreground font-medium mt-2">— Sarah M., TaskFlow Pro</p>
+                  </div>
+                </div>
+              </div>
 
               {/* Quiz Container */}
               <QuizContainer />
@@ -125,6 +175,12 @@ const Index = () => {
         </div>
       </Section>
 
+      {/* Opening Copy Section - New compelling copy */}
+      <OpeningCopySection />
+
+      {/* Urgency Section with Countdown */}
+      <UrgencySection cohortStartDate={COHORT_START_DATE} />
+
       {/* What You'll Build Section */}
       <Section variant="muted" spacing="xl" className="relative overflow-hidden">
         {/* Background accents */}
@@ -133,9 +189,6 @@ const Index = () => {
         
         <Container size="wide" className="relative z-10">
           <div className="text-center mb-16 space-y-4">
-            <Badge variant="outline" className="mx-auto">
-              Your 7-Day Transformation
-            </Badge>
             <h2 className="text-glow-primary">
               Go From Idea to Live App in 7 Days
             </h2>
@@ -149,36 +202,31 @@ const Index = () => {
 
           {/* Bottom CTA */}
           <div className="mt-16 text-center">
-            <p className="text-muted-foreground mb-4">
-              Ready to start your journey?
-            </p>
-            <a 
-              href="#" 
-              onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-              className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-semibold transition-colors"
+            <Button 
+              variant="cta" 
+              size="xl"
+              className="text-lg py-6"
+              onClick={scrollToQuiz}
             >
-              <Zap className="w-4 h-4" />
-              Join the Challenge Above
-            </a>
+              Join the Challenge
+              <Zap className="w-5 h-5 ml-2" />
+            </Button>
           </div>
         </Container>
       </Section>
 
-      {/* What You Get FREE Section */}
+      {/* What You Get FREE Section - Updated Value Stack */}
       <Section variant="default" spacing="xl" className="relative overflow-hidden">
         {/* Background accents */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-secondary/5 via-primary/5 to-transparent blur-3xl" />
         
         <Container size="wide" className="relative z-10">
           <div className="text-center mb-12 space-y-4">
-            <Badge variant="secondary" className="mx-auto">
-              100% Free Access
-            </Badge>
             <h2 className="text-glow-primary">
               Everything You Need to Build Your First App
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Get instant access to the complete challenge toolkit — no strings attached.
+              Here's what you're getting when you join the challenge:
             </p>
           </div>
 
@@ -196,7 +244,7 @@ const Index = () => {
       <FAQSection />
 
       {/* Final CTA Section */}
-      <FinalCTASection />
+      <FinalCTASection cohortStartDate={COHORT_START_DATE} />
 
       {/* Footer */}
       <footer className="border-t border-border py-8 md:py-12 bg-background">
