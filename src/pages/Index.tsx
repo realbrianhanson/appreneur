@@ -89,10 +89,6 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Left Side - Copy + Quiz */}
             <div className="space-y-4 md:space-y-8 animate-fade-in text-center lg:text-left">
-              <Badge variant="glow" className="inline-flex">
-                <Zap className="w-3 h-3 mr-1" />
-                Free 7-Day Challenge
-              </Badge>
 
               <div className="space-y-2 md:space-y-4">
                 <h1 className="text-glow-primary text-3xl md:text-5xl lg:text-6xl">
