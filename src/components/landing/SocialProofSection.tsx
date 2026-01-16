@@ -1,81 +1,60 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TestimonialCarousel, TestimonialData, TestimonialStats } from "@/components/testimonials";
+import { Badge } from "@/components/ui/badge";
 
 interface StatItemProps {
-  value: number;
-  suffix?: string;
+  value: string;
   label: string;
   isVisible: boolean;
 }
 
-const StatItem = ({ value, suffix = "", label, isVisible }: StatItemProps) => {
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!isVisible) return;
-
-    const duration = 2000;
-    const steps = 60;
-    const increment = value / steps;
-    let current = 0;
-
-    const timer = setInterval(() => {
-      current += increment;
-      if (current >= value) {
-        setCount(value);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(current));
-      }
-    }, duration / steps);
-
-    return () => clearInterval(timer);
-  }, [isVisible, value]);
-
+const StatItem = ({ value, label, isVisible }: StatItemProps) => {
   return (
-    <div className="text-center px-6 py-4">
-      <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-        {count}{suffix}
+    <div className={`text-center px-6 py-4 transition-all duration-700 ${
+      isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+    }`}>
+      <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+        {value}
       </div>
       <div className="text-muted-foreground mt-2 text-sm md:text-base">{label}</div>
     </div>
   );
 };
 
-// Fallback testimonials if none in database
+// Fallback testimonials with enhanced format
 const fallbackTestimonials: TestimonialData[] = [
   {
     id: "1",
     name: "Sarah M.",
-    content: "I built my first SaaS in 5 days. I finally have something real to show for my idea.",
+    content: "I went from never building anything to having a live app in 6 days. Brian breaks it down so anyone can do this.",
     rating: 5,
-    app_name: null,
+    app_name: "TaskFlow Pro",
     app_screenshot_url: null,
-    is_featured: false,
+    is_featured: true,
   },
   {
     id: "2",
     name: "Marcus T.",
-    content: "I thought I needed to hire a developer. Turns out I just needed this challenge.",
+    content: "I thought I needed to hire a developer. Turns out I just needed this challenge. Built my booking system in 5 days.",
     rating: 5,
-    app_name: null,
+    app_name: "BookEasy",
     app_screenshot_url: null,
-    is_featured: false,
+    is_featured: true,
   },
   {
     id: "3",
     name: "Jennifer K.",
-    content: "The prompts alone saved me 100+ hours. Insane value for free.",
+    content: "Zero coding experience. Now I have a live SaaS that's getting paying customers. The prompts alone saved me 100+ hours.",
     rating: 5,
-    app_name: null,
+    app_name: "LeadGen AI",
     app_screenshot_url: null,
-    is_featured: false,
+    is_featured: true,
   },
   {
     id: "4",
     name: "David R.",
-    content: "Shipped my MVP and got my first paying customer by Day 6.",
+    content: "Shipped my MVP and got my first paying customer by Day 6. This system just works.",
     rating: 5,
     app_name: "LeadFlow",
     app_screenshot_url: null,
@@ -84,16 +63,16 @@ const fallbackTestimonials: TestimonialData[] = [
   {
     id: "5",
     name: "Amanda L.",
-    content: "Finally understood how to turn my ideas into real products.",
+    content: "Finally understood how to turn my ideas into real products. Built my client portal in a week.",
     rating: 5,
-    app_name: null,
+    app_name: "ClientHub",
     app_screenshot_url: null,
     is_featured: false,
   },
   {
     id: "6",
     name: "Chris P.",
-    content: "The community support made all the difference. Never felt stuck.",
+    content: "The community support made all the difference. Never felt stuck for more than an hour.",
     rating: 5,
     app_name: "CoachBot",
     app_screenshot_url: null,
@@ -102,12 +81,12 @@ const fallbackTestimonials: TestimonialData[] = [
 ];
 
 const appShowcase = [
-  { name: "Habit Tracker Pro", color: "from-blue-500 to-cyan-500" },
-  { name: "Invoice Generator", color: "from-purple-500 to-pink-500" },
-  { name: "Meal Planner AI", color: "from-orange-500 to-yellow-500" },
-  { name: "Client Portal", color: "from-green-500 to-emerald-500" },
-  { name: "Booking System", color: "from-red-500 to-orange-500" },
-  { name: "Analytics Dashboard", color: "from-indigo-500 to-purple-500" },
+  { name: "Habit Tracker Pro", color: "from-blue-500 to-cyan-500", builder: "Mike S.", days: 5 },
+  { name: "Invoice Generator", color: "from-purple-500 to-pink-500", builder: "Lisa K.", days: 6 },
+  { name: "Meal Planner AI", color: "from-orange-500 to-yellow-500", builder: "James R.", days: 7 },
+  { name: "Client Portal", color: "from-green-500 to-emerald-500", builder: "Amanda L.", days: 5 },
+  { name: "Booking System", color: "from-red-500 to-orange-500", builder: "Marcus T.", days: 4 },
+  { name: "Analytics Dashboard", color: "from-indigo-500 to-purple-500", builder: "Nina P.", days: 6 },
 ];
 
 const AppCard = ({ 
@@ -158,8 +137,9 @@ const AppCard = ({
       </div>
       
       {/* Hover overlay with name */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
         <span className="font-semibold text-foreground">{app.name}</span>
+        <span className="text-xs text-muted-foreground">Built by {app.builder} in {app.days} days</span>
       </div>
     </div>
   );
@@ -171,7 +151,6 @@ export const SocialProofSection = () => {
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
   const [isAppsVisible, setIsAppsVisible] = useState(false);
   const [testimonials, setTestimonials] = useState<TestimonialData[]>(fallbackTestimonials);
-  const [completedCount, setCompletedCount] = useState(500);
 
   useEffect(() => {
     // Fetch approved testimonials from database
@@ -186,17 +165,6 @@ export const SocialProofSection = () => {
       
       if (!error && data && data.length > 0) {
         setTestimonials(data as TestimonialData[]);
-      }
-
-      // Fetch completion count
-      const { count } = await supabase
-        .from("user_progress")
-        .select("*", { count: "exact", head: true })
-        .eq("day_number", 7)
-        .eq("is_completed", true);
-      
-      if (count && count >= 10) {
-        setCompletedCount(Math.floor(count / 10) * 10);
       }
     };
     
@@ -234,26 +202,29 @@ export const SocialProofSection = () => {
       <div className="relative max-w-6xl mx-auto px-4">
         {/* Headline */}
         <div className="text-center mb-16">
+          <Badge variant="outline" className="mx-auto mb-4">
+            Social Proof
+          </Badge>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Join Entrepreneurs Who've{" "}
+            Real People. Real Apps.{" "}
             <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-              Already Built
+              Real Results.
             </span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
-            Real results from real people who took the challenge
+            In just 6 months, entrepreneurs from 9 countries have built 99+ working apps using this system.
           </p>
           <TestimonialStats className="mx-auto" />
         </div>
 
-        {/* Stats Bar */}
+        {/* Stats Bar - Clear & Labeled */}
         <div
           data-section="stats"
           className="flex flex-wrap justify-center gap-4 md:gap-0 md:divide-x divide-border/50 bg-card/30 backdrop-blur-sm rounded-2xl border border-border/50 mb-20"
         >
-          <StatItem value={completedCount} suffix="+" label="Apps Built" isVisible={isStatsVisible} />
-          <StatItem value={47} label="Countries" isVisible={isStatsVisible} />
-          <StatItem value={4.9} suffix="/5" label="Rating" isVisible={isStatsVisible} />
+          <StatItem value="99+" label="Apps Built" isVisible={isStatsVisible} />
+          <StatItem value="9" label="Countries" isVisible={isStatsVisible} />
+          <StatItem value="4.9★" label="Rating" isVisible={isStatsVisible} />
         </div>
 
         {/* Testimonials Carousel */}

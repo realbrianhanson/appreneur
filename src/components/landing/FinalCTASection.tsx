@@ -3,8 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import CountdownTimer from "@/components/quiz/CountdownTimer";
-import { ArrowRight, Loader2, Shield, Zap, Users } from "lucide-react";
+import { ArrowRight, Loader2, Shield, Zap, Users, Calendar } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -14,7 +13,11 @@ const formSchema = z.object({
   email: z.string().trim().email("Please enter a valid email").max(255),
 });
 
-const FinalCTASection = () => {
+interface FinalCTASectionProps {
+  cohortStartDate?: Date;
+}
+
+const FinalCTASection = ({ cohortStartDate = new Date("2026-01-27T09:00:00") }: FinalCTASectionProps) => {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<{ firstName?: string; email?: string }>({});
@@ -24,8 +27,13 @@ const FinalCTASection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Cohort start date - January 20th, 2026
-  const cohortStartDate = new Date("2026-01-20T09:00:00");
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -127,24 +135,34 @@ const FinalCTASection = () => {
       <Container size="wide" className="relative z-10">
         <div
           ref={sectionRef}
-          className={`max-w-2xl mx-auto text-center transition-all duration-700 ${
+          className={`max-w-3xl mx-auto text-center transition-all duration-700 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
           {/* Headline */}
-          <div className="space-y-4 mb-8">
+          <div className="space-y-6 mb-10">
             <h2 className="text-3xl md:text-5xl font-display font-bold text-foreground">
-              Your App is Waiting to Be Built
+              Look, You've Got Two Options
             </h2>
-            <p className="text-xl text-muted-foreground">
-              Join the next cohort starting{" "}
-              <span className="text-primary font-semibold">Monday, January 20th</span>
-            </p>
-          </div>
+            
+            <div className="space-y-4 text-left max-w-2xl mx-auto text-lg text-muted-foreground">
+              <p>
+                <span className="text-foreground font-semibold">Option 1:</span> Keep sitting on that app idea. 
+                Watch AI pass you by. Wonder "what if" for another year.
+              </p>
+              <p>
+                <span className="text-foreground font-semibold">Option 2:</span> Spend 7 days with me — for free — 
+                and walk away with an actual app you built yourself.
+              </p>
+            </div>
 
-          {/* Countdown Timer */}
-          <div className="flex justify-center mb-8">
-            <CountdownTimer targetDate={cohortStartDate} />
+            <p className="text-xl text-foreground font-medium">
+              I've made this as easy as I possibly can. No cost. No catch. Just show up and build.
+            </p>
+            
+            <p className="text-2xl font-bold text-gradient-primary">
+              The only question is: are you going to do it?
+            </p>
           </div>
 
           {/* Spots Remaining */}
@@ -169,7 +187,7 @@ const FinalCTASection = () => {
                 You're In! 🎉
               </h3>
               <p className="text-muted-foreground">
-                Check your email for your welcome message and the "50 Profitable AI App Ideas" PDF.
+                Check your email for your welcome message and the "750 Profitable AI App Ideas" PDF.
               </p>
             </div>
           ) : (
@@ -186,7 +204,7 @@ const FinalCTASection = () => {
                       placeholder="First Name"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      className={`h-12 ${errors.firstName ? "border-destructive" : ""}`}
+                      className={`h-14 text-lg ${errors.firstName ? "border-destructive" : ""}`}
                       disabled={isLoading}
                     />
                     {errors.firstName && (
@@ -200,7 +218,7 @@ const FinalCTASection = () => {
                       placeholder="Email Address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={`h-12 ${errors.email ? "border-destructive" : ""}`}
+                      className={`h-14 text-lg ${errors.email ? "border-destructive" : ""}`}
                       disabled={isLoading}
                     />
                     {errors.email && (
@@ -213,7 +231,7 @@ const FinalCTASection = () => {
                   type="submit"
                   variant="cta"
                   size="xl"
-                  className="w-full"
+                  className="w-full text-lg py-7"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -223,15 +241,21 @@ const FinalCTASection = () => {
                     </>
                   ) : (
                     <>
-                      Reserve My Free Spot
+                      Let's Build This Thing
                       <ArrowRight className="w-5 h-5" />
                     </>
                   )}
                 </Button>
               </form>
 
+              {/* Micro text */}
+              <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
+                <Calendar className="w-4 h-4 text-primary" />
+                <span>Free 7-Day Challenge. Starts {formatDate(cohortStartDate)}.</span>
+              </div>
+
               {/* Guarantee */}
-              <div className="flex items-center justify-center gap-2 mt-6 text-sm text-muted-foreground">
+              <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
                 <Shield className="w-4 h-4 text-primary" />
                 <span>100% free. No credit card required. Unsubscribe anytime.</span>
               </div>
