@@ -70,7 +70,7 @@ const Index = () => {
             loop
             muted
             playsInline
-            className="w-full h-full object-cover opacity-10"
+            className="w-full h-full object-cover opacity-30"
           >
             <source src={heroVideo} type="video/mp4" />
           </video>
