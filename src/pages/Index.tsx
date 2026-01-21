@@ -27,7 +27,7 @@ const NEXT_COHORT_DATE = "2026-01-27T15:00:00Z";
 const Index = () => {
   // Track page view on mount
   useEffect(() => {
-    trackPageView('/', 'Appreneur Challenge — Build Your First App in 7 Days');
+    trackPageView('/', 'Appreneur Challenge — Build Your First App in 5 Days');
   }, []);
 
   const scrollToQuiz = () => {
@@ -43,8 +43,8 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* SEO Head */}
       <SEOHead 
-        title="Appreneur Challenge — Build Your First App in 7 Days"
-        description="Join 500+ entrepreneurs building real apps without code. Free 7-day challenge teaches you to go from idea to live app."
+        title="Appreneur Challenge — Build Your First App in 5 Days"
+        description="Join 500+ entrepreneurs building real apps without code. Free 5-day challenge teaches you to go from idea to live app."
         canonicalUrl="https://appreneur.ai/"
       />
       
@@ -61,13 +61,13 @@ const Index = () => {
         }}
         course={{
           name: "The Appreneur Challenge",
-          description: "A free 7-day challenge that teaches entrepreneurs to build real apps without coding using AI-powered tools.",
+          description: "A free 5-day challenge that teaches entrepreneurs to build real apps without coding using AI-powered tools.",
           provider: "AI For Beginners",
           url: "https://appreneur.ai"
         }}
         event={{
           name: "Appreneur Challenge - January 2026 Cohort",
-          description: "Join our next cohort and build your first app in 7 days. No coding experience required.",
+          description: "Join our next cohort and build your first app in 5 days. No coding experience required.",
           startDate: NEXT_COHORT_DATE,
           url: "https://appreneur.ai",
           organizer: "AI For Beginners"
@@ -105,7 +105,7 @@ const Index = () => {
               {/* New Headline */}
               <div className="space-y-4">
                 <h1 className="text-glow-primary text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
-                  Go From "I Have an Idea" to "Holy Crap, I Built That" in 7 Days
+                  Go From "I Have an Idea" to "Holy Crap, I Built That" in 5 Days
                 </h1>
                 <p className="text-xl md:text-2xl lg:text-3xl font-semibold text-foreground/90 leading-relaxed">
                   No coding. No developers. No $15K budget. Just you, AI, and my step-by-step system that's helped 99+ entrepreneurs ship real, working apps.
@@ -125,7 +125,7 @@ const Index = () => {
                   className="text-lg md:text-xl py-7 px-10 w-full md:w-auto"
                   onClick={scrollToQuiz}
                 >
-                  Join the Free 7-Day Challenge
+                  Join the Free 5-Day Challenge
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <p className="text-sm text-muted-foreground">
@@ -183,7 +183,7 @@ const Index = () => {
         <Container size="wide" className="relative z-10">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-glow-primary">
-              Go From Idea to Live App in 7 Days
+              Go From Idea to Live App in 5 Days
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Each day builds on the last. By the end, you'll have a real, working app 

@@ -15,7 +15,7 @@ const days: DayCard[] = [
   {
     day: 1,
     title: "Find Your Winning Idea",
-    description: "Use AI to discover and validate 3 profitable app ideas",
+    description: "Use AI to discover and validate profitable app ideas",
     icon: Lightbulb,
   },
   {
@@ -32,24 +32,12 @@ const days: DayCard[] = [
   },
   {
     day: 4,
-    title: "Add the Magic",
-    description: "Integrate AI features that make your app powerful",
+    title: "Polish & Add Magic",
+    description: "Integrate AI features, branding, and finishing touches",
     icon: Sparkles,
   },
   {
     day: 5,
-    title: "Polish & Brand It",
-    description: "Logo, colors, copy — make it yours",
-    icon: Paintbrush,
-  },
-  {
-    day: 6,
-    title: "Test & Fix",
-    description: "QA and user testing to ship with confidence",
-    icon: CheckCircle,
-  },
-  {
-    day: 7,
     title: "SHIP IT",
     description: "Deploy live and share with the world",
     icon: Rocket,
