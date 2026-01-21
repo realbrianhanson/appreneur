@@ -14,7 +14,7 @@ interface StackItem {
 
 const stackItems: StackItem[] = [
   {
-    title: '750 Profitable AI App Ideas for 2025 (PDF)',
+    title: '50 Profitable App Ideas (PDF)',
     caption: "Validated ideas already making money. Pick one or use your own.",
     icon: FileText,
     value: "$97",
