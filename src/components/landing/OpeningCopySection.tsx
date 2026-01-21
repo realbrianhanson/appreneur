@@ -67,7 +67,7 @@ const OpeningCopySection = () => {
             </p>
             
             <p className="text-muted-foreground">
-              You can now build a real, working app in 7 days. Not a toy. Not a "prototype." 
+              You can now build a real, working app in 5 days. Not a toy. Not a "prototype." 
               An actual app people can use.
             </p>
             

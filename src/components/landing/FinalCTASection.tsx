@@ -151,7 +151,7 @@ const FinalCTASection = ({ cohortStartDate = new Date("2026-01-27T09:00:00") }: 
                 Watch AI pass you by. Wonder "what if" for another year.
               </p>
               <p>
-                <span className="text-foreground font-semibold">Option 2:</span> Spend 7 days with me — for free — 
+                <span className="text-foreground font-semibold">Option 2:</span> Spend 5 days with me — for free — 
                 and walk away with an actual app you built yourself.
               </p>
             </div>
@@ -251,7 +251,7 @@ const FinalCTASection = ({ cohortStartDate = new Date("2026-01-27T09:00:00") }: 
               {/* Micro text */}
               <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
                 <Calendar className="w-4 h-4 text-primary" />
-                <span>Free 7-Day Challenge. Starts {formatDate(cohortStartDate)}.</span>
+                <span>Free 5-Day Challenge. Starts {formatDate(cohortStartDate)}.</span>
               </div>
 
               {/* Guarantee */}

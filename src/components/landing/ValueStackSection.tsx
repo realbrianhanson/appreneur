@@ -20,7 +20,7 @@ const stackItems: StackItem[] = [
     value: "$97",
   },
   {
-    title: "7-Day Appreneur Challenge Access",
+    title: "5-Day Appreneur Challenge Access",
     caption: "Daily video training + assignments that take you from zero to live app",
     icon: Video,
     value: "$497",

@@ -23,7 +23,7 @@ const faqs = [
   {
     question: "Is this just theory or do I actually build something?",
     answer:
-      "You will have a live, working app by Day 7. Not a mockup. Not a wireframe. A real app.",
+      "You will have a live, working app by Day 5. Not a mockup. Not a wireframe. A real app.",
   },
   {
     question: "Why is this free?",
@@ -46,7 +46,7 @@ const faqs = [
       "You'll have access to all recordings and can catch up at your own pace. Plus, the community is there to help.",
   },
   {
-    question: "What happens after the 7 days?",
+    question: "What happens after the 5 days?",
     answer:
       "You'll have a live, working app. We'll also invite you to our 2-Day AI For Business event where you'll learn how to turn your app into a real business.",
   },
