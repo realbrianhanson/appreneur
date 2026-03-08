@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { COMMUNITY_URL } from "@/lib/constants";
 import {
   LayoutDashboard,
   Rocket,
