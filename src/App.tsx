@@ -63,14 +63,14 @@ const App = () => (
               <Route path="/thank-you" element={<ThankYou />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
-              <Route path="/admin" element={<AdminOverview />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/cohorts" element={<AdminCohorts />} />
-              <Route path="/admin/revenue" element={<AdminRevenue />} />
-              <Route path="/admin/analytics" element={<AdminAnalytics />} />
-              <Route path="/admin/testimonials" element={<AdminTestimonials />} />
-              <Route path="/admin/webhooks" element={<WebhooksAdmin />} />
-              <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route path="/admin" element={<ProtectedRoute><AdminOverview /></ProtectedRoute>} />
+              <Route path="/admin/users" element={<ProtectedRoute><AdminUsers /></ProtectedRoute>} />
+              <Route path="/admin/cohorts" element={<ProtectedRoute><AdminCohorts /></ProtectedRoute>} />
+              <Route path="/admin/revenue" element={<ProtectedRoute><AdminRevenue /></ProtectedRoute>} />
+              <Route path="/admin/analytics" element={<ProtectedRoute><AdminAnalytics /></ProtectedRoute>} />
+              <Route path="/admin/testimonials" element={<ProtectedRoute><AdminTestimonials /></ProtectedRoute>} />
+              <Route path="/admin/webhooks" element={<ProtectedRoute><WebhooksAdmin /></ProtectedRoute>} />
+              <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
               
               {/* Protected Routes */}
               <Route
