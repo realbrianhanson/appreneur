@@ -124,6 +124,7 @@ const dayData: Record<number, {
     estimatedTime: "60-90 minutes",
     videoTitle: "Building Your App with AI (The Fun Part!)",
     videoLength: "23 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "This is where the magic happens. Today you'll use AI-powered tools to build the core of your app. By the end, you'll have a working prototype.",
     outcomes: [
       "Working app prototype",
