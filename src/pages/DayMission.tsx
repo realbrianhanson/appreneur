@@ -204,6 +204,7 @@ const dayData: Record<number, {
     estimatedTime: "45-60 minutes",
     videoTitle: "Finding and Fixing Bugs (Without Coding)",
     videoLength: "18 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll test your app thoroughly and fix any issues. You'll learn how to identify bugs and use AI to fix them — no coding knowledge required.",
     outcomes: [
       "All major bugs fixed",
