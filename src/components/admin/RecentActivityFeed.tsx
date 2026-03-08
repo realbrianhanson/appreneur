@@ -81,7 +81,7 @@ export function RecentActivityFeed() {
         allActivities.push({
           id: `comp-${c.id}`,
           type: "completion",
-          message: `User completed Day 7!`,
+          message: `User completed Day 5!`,
           timestamp: c.completed_at || c.user_id,
         });
       });
