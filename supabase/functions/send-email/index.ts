@@ -199,7 +199,7 @@ const templates = {
     <div style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 16px; padding: 32px;">
       <div style="text-align: center; margin-bottom: 24px;">
         <span style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #ffffff; font-size: 14px; font-weight: 600; padding: 8px 16px; border-radius: 9999px;">
-          DAY ${data.dayNumber} OF 7
+          DAY ${data.dayNumber} OF 5
         </span>
       </div>
       
