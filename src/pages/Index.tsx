@@ -75,18 +75,15 @@ const Index = () => {
 
       {/* Hero Section - Full viewport */}
       <Section variant="gradient" spacing="xl" className="relative overflow-hidden min-h-screen flex items-center pt-8 md:pt-0">
-        {/* Background Video */}
+        {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="w-full h-full object-cover opacity-60"
-          >
-            <source src={heroVideo} type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background/80" />
+          <img
+            src={brianPhoto}
+            alt=""
+            loading="eager"
+            className="w-full h-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/90" />
         </div>
 
         {/* Floating Particles */}
