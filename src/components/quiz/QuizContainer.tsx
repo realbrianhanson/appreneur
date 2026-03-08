@@ -448,17 +448,23 @@ const QuizContainer = () => {
         )}
       </div>
 
-      {/* Trust Badges */}
-      <div className="text-center space-y-3">
-        <p className="text-sm text-muted-foreground">
-          Join entrepreneurs from companies like
-        </p>
-        <div className="flex items-center justify-center gap-6 md:gap-8 opacity-60">
-          <span className="text-lg font-display font-bold">Google</span>
-          <span className="text-lg font-display font-bold">Shopify</span>
-          <span className="text-lg font-display font-bold">Amazon</span>
-          <span className="text-lg font-display font-bold hidden md:block">Meta</span>
+      {/* Social Proof */}
+      <div className="text-center space-y-2">
+        <div className="flex items-center justify-center gap-2">
+          <div className="flex -space-x-2">
+            {[1,2,3,4,5].map(i => (
+              <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/40 to-accent/40 border-2 border-background flex items-center justify-center text-[10px] font-bold text-primary-foreground">
+                {['JM','SK','AR','LP','TC'][i-1]}
+              </div>
+            ))}
+          </div>
+          <span className="text-sm text-muted-foreground ml-2">
+            500+ entrepreneurs enrolled
+          </span>
         </div>
+        <p className="text-xs text-muted-foreground">
+          No coding experience required. 60 minutes a day for 5 days.
+        </p>
       </div>
     </div>
   );

@@ -415,18 +415,33 @@ const DayMission = () => {
 
         {/* Video Section */}
         <Card className="overflow-hidden">
-          <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
-            <iframe
-              src={data.videoUrl}
-              title={`Day ${day}: ${data.videoTitle}`}
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-              className="absolute inset-0"
-            />
-          </div>
+          {(() => {
+            const isPlaceholderVideo = !data.videoUrl || data.videoUrl.includes('dQw4w9WgXcQ') || data.videoUrl === '#';
+            return isPlaceholderVideo ? (
+              <div className="relative aspect-video bg-muted/50 rounded-lg flex flex-col items-center justify-center gap-3 border border-border">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Video className="w-8 h-8 text-primary/50" />
+                </div>
+                <div className="text-center">
+                  <p className="font-semibold text-foreground">Video Coming Soon</p>
+                  <p className="text-sm text-muted-foreground">Training video will be available when the challenge starts</p>
+                </div>
+              </div>
+            ) : (
+              <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+                <iframe
+                  src={data.videoUrl}
+                  title={`Day ${day}: ${data.videoTitle}`}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="absolute inset-0"
+                />
+              </div>
+            );
+          })()}
           {!isTaskCompleted("video") && (
             <div className="px-3 pt-3 md:px-4 md:pt-4">
               <Button
