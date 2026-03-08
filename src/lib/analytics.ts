@@ -146,16 +146,16 @@ export const trackVIPPurchase = (value: number, currency: string = 'USD') => {
 };
 
 /**
- * Track challenge completion (all 7 days done)
+ * Track challenge completion (all 5 days done)
  */
 export const trackChallengeComplete = () => {
   trackGA4Event('challenge_complete', {
-    challenge_name: 'appreneur_7_day_challenge',
-    days_completed: 7,
+    challenge_name: 'appreneur_5_day_challenge',
+    days_completed: 5,
   });
 
   trackFBCustomEvent('ChallengeComplete', {
-    content_name: 'Appreneur 7-Day Challenge',
+    content_name: 'Appreneur 5-Day Challenge',
     status: 'complete',
   });
 
