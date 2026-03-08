@@ -106,14 +106,22 @@ const journeyItems = [
 
 const Graduation = () => {
   const { profile } = useAuth();
+  const { progress, fetchProgress } = useProgress();
   const [showConfetti, setShowConfetti] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const certRef = useRef<HTMLDivElement>(null);
   const userName = profile?.first_name || "Builder";
-  const completionDate = new Date().toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
   const isVIP = profile?.is_vip || false;
+
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  // Get Day 7 completion date or fallback to today
+  const day7Progress = progress.find(p => p.day_number === 7 && p.is_completed);
+  const completionDate = day7Progress?.completed_at
+    ? new Date(day7Progress.completed_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
   // Stats
   const stats = {
