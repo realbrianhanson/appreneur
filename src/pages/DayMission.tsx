@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { useProgress } from "@/hooks/useProgress";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,6 +59,7 @@ const dayData: Record<number, {
     title: string;
     type: "download" | "link" | "video";
     icon: React.ReactNode;
+    url: string;
     vipOnly?: boolean;
   }>;
   checklist: Array<{
@@ -81,9 +83,9 @@ const dayData: Record<number, {
       "Unique value proposition defined",
     ],
     resources: [
-      { title: "50 Profitable AI App Ideas PDF", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Idea Validation Worksheet", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Market Research Template", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "50 Profitable AI App Ideas PDF", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Idea Validation Worksheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Market Research Template", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -107,9 +109,9 @@ const dayData: Record<number, {
       "Design inspiration collected",
     ],
     resources: [
-      { title: "Blueprint Template (Figma)", type: "link", icon: <ExternalLink className="w-4 h-4" /> },
-      { title: "User Flow Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Design System Starter Kit", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "Blueprint Template (Figma)", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
+      { title: "User Flow Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Design System Starter Kit", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -133,10 +135,10 @@ const dayData: Record<number, {
       "Database connected (if needed)",
     ],
     resources: [
-      { title: "Lovable Prompt Templates", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Component Library Reference", type: "link", icon: <ExternalLink className="w-4 h-4" /> },
-      { title: "Done-For-You App Template", type: "download", icon: <Code className="w-4 h-4" />, vipOnly: true },
-      { title: "Advanced Prompts Vault", type: "download", icon: <Sparkles className="w-4 h-4" />, vipOnly: true },
+      { title: "Lovable Prompt Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Component Library Reference", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
+      { title: "Done-For-You App Template", type: "download", icon: <Code className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "Advanced Prompts Vault", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -161,9 +163,9 @@ const dayData: Record<number, {
       "Error handling in place",
     ],
     resources: [
-      { title: "AI Integration Guide", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Prompt Engineering Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Advanced AI Templates", type: "download", icon: <Sparkles className="w-4 h-4" />, vipOnly: true },
+      { title: "AI Integration Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Prompt Engineering Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Advanced AI Templates", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -187,9 +189,9 @@ const dayData: Record<number, {
       "Micro-interactions added",
     ],
     resources: [
-      { title: "Color Palette Generator", type: "link", icon: <ExternalLink className="w-4 h-4" /> },
-      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Premium Icon Pack", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "Color Palette Generator", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
+      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Premium Icon Pack", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -213,9 +215,9 @@ const dayData: Record<number, {
       "Performance optimized",
     ],
     resources: [
-      { title: "QA Testing Checklist", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Bug Fixing Prompts", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Performance Optimization Guide", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "QA Testing Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Bug Fixing Prompts", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Performance Optimization Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -239,9 +241,9 @@ const dayData: Record<number, {
       "First users invited",
     ],
     resources: [
-      { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Social Announcement Templates", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Social Announcement Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -600,11 +602,45 @@ const DayMission = () => {
                         <Button variant="outline" size="sm" className="text-xs shrink-0" asChild>
                           <Link to="/vip-offer">Upgrade</Link>
                         </Button>
+                      ) : resource.type === "download" ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="shrink-0"
+                          asChild
+                          onClick={() => {
+                            showSuccess(`Downloading ${resource.title}...`);
+                            // Fire-and-forget download log
+                            if (profile?.id) {
+                              supabase.from("downloads").insert({
+                                user_id: profile.id,
+                                resource_key: resource.title,
+                                user_agent: navigator.userAgent,
+                              });
+                            }
+                          }}
+                        >
+                          <a href={resource.url} download target="_blank" rel="noopener noreferrer">
+                            <Download className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      ) : resource.type === "link" ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="shrink-0"
+                          onClick={() => window.open(resource.url, '_blank')}
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
                       ) : (
-                        <Button variant="ghost" size="sm" className="shrink-0">
-                          {resource.type === "download" && <Download className="w-4 h-4" />}
-                          {resource.type === "link" && <ExternalLink className="w-4 h-4" />}
-                          {resource.type === "video" && <Play className="w-4 h-4" />}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="shrink-0"
+                          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        >
+                          <Play className="w-4 h-4" />
                         </Button>
                       )}
                     </div>
