@@ -124,7 +124,7 @@ const Graduation = () => {
   // Stats
   const stats = {
     totalTime: "8h 45m",
-    missionsCompleted: 7,
+    missionsCompleted: 5,
     resourcesDownloaded: 12,
   };
 
