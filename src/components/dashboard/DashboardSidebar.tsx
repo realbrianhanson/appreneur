@@ -60,6 +60,7 @@ interface UserProgress {
   day_number: number;
   is_unlocked: boolean;
   is_completed: boolean;
+  tasks_completed?: Record<string, unknown>;
 }
 
 interface DashboardSidebarProps {
