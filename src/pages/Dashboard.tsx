@@ -111,6 +111,18 @@ const Dashboard = () => {
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const [hasShownTestimonialPrompt, setHasShownTestimonialPrompt] = useState(false);
 
+  // Onboarding wizard state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const key = `onboarding_completed_${user.id}`;
+      if (!localStorage.getItem(key)) {
+        setShowOnboarding(true);
+      }
+    }
+  }, [user]);
+
   // Track page view on mount
   useEffect(() => {
     trackPageView('/dashboard', 'Dashboard — Appreneur Challenge');
