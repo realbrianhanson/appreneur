@@ -144,6 +144,28 @@ const Graduation = () => {
   );
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
+  const handleDownloadCertificate = useCallback(async () => {
+    if (!certRef.current) return;
+    setIsGenerating(true);
+    try {
+      const canvas = await html2canvas(certRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#0a0a1a",
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "landscape", unit: "in", format: "letter" });
+      pdf.addImage(imgData, "PNG", 0, 0, 11, 8.5);
+      pdf.save(`appreneur-certificate-${userName.toLowerCase()}.pdf`);
+      showSuccess("Certificate downloaded!");
+    } catch (err) {
+      console.error("Certificate generation failed:", err);
+      showError("Failed to generate certificate. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [userName]);
+
   return (
     <DashboardLayout userName={userName} currentDay={7} isVIP={isVIP}>
       {showConfetti && <Confetti />}
