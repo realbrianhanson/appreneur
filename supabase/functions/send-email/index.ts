@@ -10,7 +10,8 @@ async function sendResendEmail(to: string, subject: string, html: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Appreneur Challenge <onboarding@resend.dev>",
+      // TODO: Verify this domain in Resend dashboard before going live
+      from: "Appreneur Challenge <hello@appreneur.ai>",
       to: [to],
       subject,
       html,
