@@ -302,10 +302,10 @@ const VIPOffer = () => {
             <Button
               variant="default"
               size="xl"
-              className="w-full bg-green-600 hover:bg-green-700 text-white text-base md:text-lg h-12 md:h-14 hidden md:flex"
+              disabled
+              className="w-full bg-green-600 text-white text-base md:text-lg h-12 md:h-14 hidden md:flex opacity-50 cursor-not-allowed"
             >
-              Complete My VIP Upgrade — ${bumpOffer ? "34" : "27"}
-              <ArrowRight className="w-5 h-5 ml-2" />
+              Coming Soon
             </Button>
 
             {/* Security Badges */}
@@ -342,10 +342,10 @@ const VIPOffer = () => {
         <Button
           variant="default"
           size="xl"
-          className="w-full bg-green-600 hover:bg-green-700 text-white text-base h-12"
+          disabled
+          className="w-full bg-green-600 text-white text-base h-12 opacity-50 cursor-not-allowed"
         >
-          Complete My VIP Upgrade — ${bumpOffer ? "34" : "27"}
-          <ArrowRight className="w-5 h-5 ml-2" />
+          Coming Soon
         </Button>
       </div>
     </div>
