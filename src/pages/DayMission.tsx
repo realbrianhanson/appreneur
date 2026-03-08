@@ -230,6 +230,7 @@ const dayData: Record<number, {
     estimatedTime: "30-45 minutes",
     videoTitle: "Launch Day: Shipping Your App to the World",
     videoLength: "15 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "This is it — launch day! Today you'll deploy your app and share it with the world. You did it!",
     outcomes: [
       "App deployed and live",
