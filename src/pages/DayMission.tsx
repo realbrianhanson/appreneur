@@ -136,10 +136,10 @@ const dayData: Record<number, {
       "Database connected (if needed)",
     ],
     resources: [
-      { title: "Lovable Prompt Templates", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Component Library Reference", type: "link", icon: <ExternalLink className="w-4 h-4" /> },
-      { title: "Done-For-You App Template", type: "download", icon: <Code className="w-4 h-4" />, vipOnly: true },
-      { title: "Advanced Prompts Vault", type: "download", icon: <Sparkles className="w-4 h-4" />, vipOnly: true },
+      { title: "Lovable Prompt Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Component Library Reference", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
+      { title: "Done-For-You App Template", type: "download", icon: <Code className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "Advanced Prompts Vault", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
