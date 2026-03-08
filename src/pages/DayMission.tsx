@@ -274,6 +274,47 @@ const DayMission = () => {
   const [completingTask, setCompletingTask] = useState<string | null>(null);
   const [completingDay, setCompletingDay] = useState(false);
   const [startTime] = useState(Date.now());
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Live timer
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [startTime]);
+
+  // Save time on unmount via edge function
+  const saveTimeSpent = useCallback(async () => {
+    const seconds = Math.floor((Date.now() - startTime) / 1000);
+    if (seconds < 5) return; // Don't save trivial visits
+    try {
+      await supabase.from("user_progress")
+        .update({ time_spent_seconds: (currentDayProgress?.time_spent_seconds || 0) + seconds })
+        .eq("user_id", profile?.id || "")
+        .eq("day_number", day);
+    } catch (e) {
+      console.error("Failed to save time:", e);
+    }
+  }, [startTime, day, profile?.id, currentDayProgress?.time_spent_seconds]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => saveTimeSpent();
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      saveTimeSpent();
+    };
+  }, [saveTimeSpent]);
+
+  const formatElapsed = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  };
 
   // Fetch progress on mount
   useEffect(() => {
