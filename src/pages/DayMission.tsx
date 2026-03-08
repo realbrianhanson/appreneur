@@ -152,6 +152,7 @@ const dayData: Record<number, {
     estimatedTime: "60-75 minutes",
     videoTitle: "Adding AI Features That Wow Users",
     videoLength: "25 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll add AI capabilities to your app — think chatbots, content generation, image analysis, and more. This is what makes your app feel like magic.",
     outcomes: [
       "AI feature integrated",
