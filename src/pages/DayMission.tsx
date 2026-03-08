@@ -41,9 +41,7 @@ const taskIdMap: Record<number, Record<string, string>> = {
   2: { video: "watch_video", wireframe: "setup_project", userflow: "build_layout", bonus: "add_navigation" },
   3: { video: "watch_video", build: "add_features", features: "connect_data", share: "test_app", bonus: "test_app" },
   4: { video: "watch_video", integrate: "add_ai_feature", test: "refine_prompts", optimize: "integrate_ai" },
-  5: { video: "watch_video", colors: "add_styling", branding: "create_brand", share: "polish_ui" },
-  6: { video: "watch_video", test: "add_auth", fix: "setup_database", mobile: "deploy_preview" },
-  7: { video: "watch_video", deploy: "final_polish", share: "launch_app", celebrate: "share_success" },
+  5: { video: "watch_video", deploy: "deploy_app", share: "launch_app", celebrate: "share_success" },
 };
 
 // Day data - would come from database in real app
