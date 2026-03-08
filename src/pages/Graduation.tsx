@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProgress } from "@/hooks/useProgress";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { showSuccess, showError } from "@/lib/toast-utils";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import {
   Download,
   Share2,
@@ -29,6 +33,7 @@ import {
   Bug,
   Rocket,
   Award,
+  Loader2,
 } from "lucide-react";
 
 // Confetti Component
