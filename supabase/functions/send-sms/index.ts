@@ -21,12 +21,10 @@ const messageTemplates: Record<string, (data: { name: string; day?: number; link
   daily_unlock: ({ name, day, link }) => {
     const messages: Record<number, string> = {
       1: `${name}, Day 1 is LIVE! Today you'll find your winning app idea. Let's go → ${link}`,
-      2: `${name}, Day 2 unlocked! Time to validate your idea with real data. → ${link}`,
+      2: `${name}, Day 2 unlocked! Time to design your app blueprint. → ${link}`,
       3: `Day 3: Time to BUILD. Today your app comes to life. → ${link}`,
       4: `${name}, Day 4! Add AI features that make your app stand out. → ${link}`,
-      5: `Day 5: Polish time! Make your app beautiful and user-friendly. → ${link}`,
-      6: `${name}, Day 6: Get ready for launch! Final testing today. → ${link}`,
-      7: `🚀 SHIP DAY! This is it. Deploy your app and show the world. → ${link}`,
+      5: `🚀 SHIP DAY! Polish, test, and launch your app to the world. → ${link}`,
     };
     return messages[day || 1] || `${name}, your daily mission is ready! → ${link}`;
   },
