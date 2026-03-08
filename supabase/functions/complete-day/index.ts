@@ -105,7 +105,7 @@ serve(async (req) => {
 
     // Unlock next day if not the last day
     let nextDayUnlocked = false;
-    if (day_number < 7) {
+    if (day_number < 5) {
       const { error: unlockError } = await supabase
         .from("user_progress")
         .update({ is_unlocked: true })
