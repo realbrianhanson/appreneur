@@ -10,7 +10,10 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        // Get the auth params from the URL hash or query
+        // Check if this is a password recovery flow
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const type = hashParams.get("type");
+
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -20,10 +23,13 @@ export default function AuthCallback() {
         }
 
         if (data.session) {
-          // Successfully authenticated, redirect to dashboard
-          navigate("/dashboard", { replace: true });
+          // Redirect recovery flows to settings so user can set new password
+          if (type === "recovery") {
+            navigate("/dashboard/settings", { replace: true });
+          } else {
+            navigate("/dashboard", { replace: true });
+          }
         } else {
-          // No session, redirect to login
           navigate("/login", { replace: true });
         }
       } catch (err) {
