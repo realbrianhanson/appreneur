@@ -154,7 +154,7 @@ serve(async (req: Request) => {
         const startDate = new Date(cohort.start_date);
         const dayNumber = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         
-        if (dayNumber < 1 || dayNumber > 7) continue;
+        if (dayNumber < 1 || dayNumber > 5) continue;
 
         const { data: users } = await supabase
           .from('profiles')
