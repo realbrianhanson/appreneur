@@ -91,7 +91,7 @@ serve(async (req: Request) => {
         const startDate = new Date(cohort.start_date);
         const dayNumber = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         
-        if (dayNumber < 1 || dayNumber > 7) continue;
+        if (dayNumber < 1 || dayNumber > 5) continue;
 
         // Get users in this cohort with phones who haven't completed this day
         const { data: users } = await supabase
