@@ -183,9 +183,9 @@ const Dashboard = () => {
   const firstName = profile?.first_name || "Builder";
   const isVIP = profile?.is_vip || false;
   
-  // Check if Day 7 is completed and show testimonial modal
-  const day7Progress = userProgress.find(p => p.day_number === 7);
-  const isDay7Completed = day7Progress?.is_completed || false;
+  // Check if Day 5 is completed and show testimonial modal
+  const day5Progress = userProgress.find(p => p.day_number === 5);
+  const isDay5Completed = day5Progress?.is_completed || false;
   
   useEffect(() => {
     const checkTestimonialPrompt = async () => {
