@@ -153,6 +153,7 @@ const Index = () => {
               <div className="pt-4 border-t border-border/30">
                 <div className="flex items-start gap-4 text-left">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/60 to-accent/60 flex items-center justify-center text-white font-semibold text-sm shrink-0">
+                    <span>SM</span>
                   </div>
                   <div>
                     <div className="flex items-start gap-2">
