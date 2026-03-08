@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { showError } from "@/lib/toast-utils";
 import SEOHead from "@/components/seo/SEOHead";
 import { trackPageView } from "@/lib/analytics";
+import { COMMUNITY_URL } from "@/lib/constants";
 import {
   ArrowRight,
   Clock,
