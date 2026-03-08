@@ -20,10 +20,13 @@ export function AdminLayout({ children, requiredRole }: AdminLayoutProps) {
   const location = useLocation();
   const hasShownToast = useRef(false);
 
-  const isLoading = authLoading || roleLoading;
+  // Skip auth checks in development
+  const isDev = import.meta.env.DEV;
+  const isLoading = isDev ? false : (authLoading || roleLoading);
 
   // Check access level
   const hasAccess = () => {
+    if (isDev) return true;
     if (!isAdmin && !isSupport) return false;
     
     if (requiredRole === "super_admin") return isSuperAdmin;
@@ -51,7 +54,7 @@ export function AdminLayout({ children, requiredRole }: AdminLayoutProps) {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isDev) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
