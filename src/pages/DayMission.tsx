@@ -467,12 +467,43 @@ const DayMission = () => {
 
         {/* Video Section */}
         <Card className="overflow-hidden">
-          <div className="relative aspect-video bg-muted flex items-center justify-center group cursor-pointer">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
-            <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform z-10">
-              <Play className="w-6 h-6 md:w-8 md:h-8 text-primary ml-1" fill="currentColor" />
-            </div>
+          <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+            <iframe
+              src={data.videoUrl}
+              title={`Day ${day}: ${data.videoTitle}`}
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="absolute inset-0"
+            />
           </div>
+          {!isTaskCompleted("video") && (
+            <div className="px-3 pt-3 md:px-4 md:pt-4">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => handleCheck("video", true)}
+                disabled={completingTask === "video"}
+              >
+                {completingTask === "video" ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                ) : (
+                  <Check className="w-4 h-4 mr-1" />
+                )}
+                Mark as Watched
+              </Button>
+            </div>
+          )}
+          {isTaskCompleted("video") && (
+            <div className="px-3 pt-3 md:px-4 md:pt-4">
+              <span className="inline-flex items-center text-sm text-green-500 font-medium">
+                <Check className="w-4 h-4 mr-1" />
+                Watched
+              </span>
+            </div>
+          )}
           <CardContent className="p-3 md:p-4">
             <h3 className="font-semibold text-foreground text-sm md:text-base">{data.videoTitle}</h3>
             <p className="text-xs md:text-sm text-muted-foreground flex items-center gap-2 mt-1">
