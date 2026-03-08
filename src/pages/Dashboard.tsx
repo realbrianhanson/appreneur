@@ -209,7 +209,7 @@ const Dashboard = () => {
     };
     
     checkTestimonialPrompt();
-  }, [user, isDay7Completed, hasShownTestimonialPrompt]);
+  }, [user, isDay5Completed, hasShownTestimonialPrompt]);
   
   const handleMaybeLater = () => {
     if (user) {
