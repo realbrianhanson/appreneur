@@ -603,11 +603,45 @@ const DayMission = () => {
                         <Button variant="outline" size="sm" className="text-xs shrink-0" asChild>
                           <Link to="/vip-offer">Upgrade</Link>
                         </Button>
+                      ) : resource.type === "download" ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="shrink-0"
+                          asChild
+                          onClick={() => {
+                            showSuccess(`Downloading ${resource.title}...`);
+                            // Fire-and-forget download log
+                            if (profile?.id) {
+                              supabase.from("downloads").insert({
+                                user_id: profile.id,
+                                resource_key: resource.title,
+                                user_agent: navigator.userAgent,
+                              });
+                            }
+                          }}
+                        >
+                          <a href={resource.url} download target="_blank" rel="noopener noreferrer">
+                            <Download className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      ) : resource.type === "link" ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="shrink-0"
+                          onClick={() => window.open(resource.url, '_blank')}
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Button>
                       ) : (
-                        <Button variant="ghost" size="sm" className="shrink-0">
-                          {resource.type === "download" && <Download className="w-4 h-4" />}
-                          {resource.type === "link" && <ExternalLink className="w-4 h-4" />}
-                          {resource.type === "video" && <Play className="w-4 h-4" />}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="shrink-0"
+                          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        >
+                          <Play className="w-4 h-4" />
                         </Button>
                       )}
                     </div>
