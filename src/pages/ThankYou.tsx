@@ -118,7 +118,7 @@ const ThankYou = () => {
   }, []);
 
   const shareText = encodeURIComponent(
-    "I just signed up for the Appreneur Challenge — building my first app in 7 days! 🚀 Join me:"
+    "I just signed up for the Appreneur Challenge — building my first app in 5 days! 🚀 Join me:"
   );
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
