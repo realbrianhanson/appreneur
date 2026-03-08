@@ -39,11 +39,11 @@ export function RecentActivityFeed() {
         .order("created_at", { ascending: false })
         .limit(10);
 
-      // Fetch recent completions (Day 7)
+      // Fetch recent completions (Day 5)
       const { data: completions } = await supabase
         .from("user_progress")
         .select("id, user_id, day_number, completed_at")
-        .eq("day_number", 7)
+        .eq("day_number", 5)
         .eq("is_completed", true)
         .order("completed_at", { ascending: false })
         .limit(10);
