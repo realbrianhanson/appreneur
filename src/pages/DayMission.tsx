@@ -164,9 +164,9 @@ const dayData: Record<number, {
       "Error handling in place",
     ],
     resources: [
-      { title: "AI Integration Guide", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Prompt Engineering Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Advanced AI Templates", type: "download", icon: <Sparkles className="w-4 h-4" />, vipOnly: true },
+      { title: "AI Integration Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Prompt Engineering Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Advanced AI Templates", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
