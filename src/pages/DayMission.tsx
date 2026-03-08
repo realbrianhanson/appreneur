@@ -242,9 +242,9 @@ const dayData: Record<number, {
       "First users invited",
     ],
     resources: [
-      { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Social Announcement Templates", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Social Announcement Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
