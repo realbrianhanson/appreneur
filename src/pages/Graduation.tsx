@@ -227,9 +227,13 @@ const Graduation = () => {
 
               {/* Share Buttons */}
               <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
-                <Button variant="outline" size="lg">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Certificate
+                <Button variant="outline" size="lg" onClick={handleDownloadCertificate} disabled={isGenerating}>
+                  {isGenerating ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4 mr-2" />
+                  )}
+                  {isGenerating ? "Generating..." : "Download Certificate"}
                 </Button>
                 <Button
                   variant="outline"
