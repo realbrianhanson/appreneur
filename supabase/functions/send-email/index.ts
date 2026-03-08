@@ -88,7 +88,7 @@ const templates = {
         <ol style="font-size: 14px; line-height: 1.8; color: #a1a1aa; margin: 0; padding-left: 20px;">
           <li>Download your "50 AI App Ideas" PDF from the dashboard</li>
           <li>Add the challenge start date to your calendar</li>
-          <li>Join our community and introduce yourself</li>
+          <li><a href="https://www.facebook.com/groups/918528500613193" style="color: #8b5cf6; text-decoration: underline;">Join our community</a> and introduce yourself</li>
           <li>Get excited — you're about to build something amazing!</li>
         </ol>
       </div>
