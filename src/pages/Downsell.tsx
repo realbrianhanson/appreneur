@@ -1,17 +1,57 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "@/components/layout/Container";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { Link, useNavigate } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
-import { trackPageView, trackDownsellView } from "@/lib/analytics";
+import { trackPageView, trackDownsellView, trackGA4Event, trackFBEvent } from "@/lib/analytics";
 import { Check, ArrowRight, FileText } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { showError } from "@/lib/toast-utils";
 
 const Downsell = () => {
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
   // Track page view and downsell view on mount
   useEffect(() => {
     trackPageView('/downsell', 'Special Offer — Appreneur Challenge');
     trackDownsellView();
   }, []);
+
+  const handleCheckout = async () => {
+    if (!isAuthenticated || !user) {
+      navigate("/login");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      trackGA4Event('begin_checkout', { value: 7, item: 'prompt_vault' });
+      trackFBEvent('InitiateCheckout', { value: 7 });
+
+      const { data, error } = await supabase.functions.invoke('create-checkout-session', {
+        body: {
+          product_type: 'prompt_vault',
+          user_id: user.id,
+          email: user.email,
+        },
+      });
+
+      if (error) throw error;
+      if (!data?.url) throw new Error('No checkout URL returned');
+
+      window.location.href = data.url;
+    } catch (err) {
+      console.error('Checkout error:', err);
+      showError('Could not start checkout', {
+        description: err instanceof Error ? err.message : 'Please try again.',
+        onRetry: handleCheckout,
+      });
+      setIsLoading(false);
+    }
+  };
 
   const features = [
     "47 Copy-Paste Prompts for Lovable",
@@ -87,14 +127,17 @@ const Downsell = () => {
           </div>
 
           {/* CTA Button */}
-          <Button
+          <LoadingButton
             variant="cta"
             size="xl"
             className="w-full"
+            onClick={handleCheckout}
+            isLoading={isLoading}
+            loadingText="Redirecting to checkout..."
           >
             Get the Prompt Vault — $7
             <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
+          </LoadingButton>
 
           {/* Skip Link */}
           <div className="pt-4">
