@@ -110,9 +110,9 @@ const dayData: Record<number, {
       "Design inspiration collected",
     ],
     resources: [
-      { title: "Blueprint Template (Figma)", type: "link", icon: <ExternalLink className="w-4 h-4" /> },
-      { title: "User Flow Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Design System Starter Kit", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "Blueprint Template (Figma)", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
+      { title: "User Flow Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Design System Starter Kit", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
