@@ -190,9 +190,9 @@ const dayData: Record<number, {
       "Micro-interactions added",
     ],
     resources: [
-      { title: "Color Palette Generator", type: "link", icon: <ExternalLink className="w-4 h-4" /> },
-      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Premium Icon Pack", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "Color Palette Generator", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
+      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Premium Icon Pack", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
