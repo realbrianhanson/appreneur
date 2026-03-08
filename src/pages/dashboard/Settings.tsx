@@ -204,6 +204,40 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Onboarding */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <RotateCcw className="w-5 h-5" />
+              Onboarding
+            </CardTitle>
+            <CardDescription>
+              Re-watch the welcome walkthrough
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Reset Onboarding Wizard</Label>
+                <p className="text-sm text-muted-foreground">
+                  Show the welcome wizard again on your next dashboard visit
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (user) {
+                    localStorage.removeItem(`onboarding_completed_${user.id}`);
+                    toast.success("Onboarding wizard will show on your next dashboard visit");
+                  }
+                }}
+              >
+                Reset
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </DashboardLayout>
   );
