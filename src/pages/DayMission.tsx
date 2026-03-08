@@ -178,6 +178,7 @@ const dayData: Record<number, {
     estimatedTime: "45-60 minutes",
     videoTitle: "Making Your App Look Professional",
     videoLength: "20 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll transform your app from 'prototype' to 'polished product'. We'll add branding, improve the UI, and make everything feel cohesive.",
     outcomes: [
       "Consistent color scheme applied",
