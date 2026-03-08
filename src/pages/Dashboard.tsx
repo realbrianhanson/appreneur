@@ -418,7 +418,7 @@ const Dashboard = () => {
                       {completedDays} missions completed
                     </span>
                     <span className="text-muted-foreground">
-                      • {7 - completedDays} to go
+                      • {5 - completedDays} to go
                     </span>
                   </div>
                 </div>
