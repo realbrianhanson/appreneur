@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProgress } from "@/hooks/useProgress";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { showSuccess, showError } from "@/lib/toast-utils";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import {
   Download,
   Share2,
@@ -29,6 +33,7 @@ import {
   Bug,
   Rocket,
   Award,
+  Loader2,
 } from "lucide-react";
 
 // Confetti Component
@@ -101,14 +106,22 @@ const journeyItems = [
 
 const Graduation = () => {
   const { profile } = useAuth();
+  const { progress, fetchProgress } = useProgress();
   const [showConfetti, setShowConfetti] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const certRef = useRef<HTMLDivElement>(null);
   const userName = profile?.first_name || "Builder";
-  const completionDate = new Date().toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
   const isVIP = profile?.is_vip || false;
+
+  useEffect(() => {
+    fetchProgress();
+  }, [fetchProgress]);
+
+  // Get Day 7 completion date or fallback to today
+  const day7Progress = progress.find(p => p.day_number === 7 && p.is_completed);
+  const completionDate = day7Progress?.completed_at
+    ? new Date(day7Progress.completed_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
   // Stats
   const stats = {
@@ -131,9 +144,104 @@ const Graduation = () => {
   );
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
+  const handleDownloadCertificate = useCallback(async () => {
+    if (!certRef.current) return;
+    setIsGenerating(true);
+    try {
+      const canvas = await html2canvas(certRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#0a0a1a",
+      });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ orientation: "landscape", unit: "in", format: "letter" });
+      pdf.addImage(imgData, "PNG", 0, 0, 11, 8.5);
+      pdf.save(`appreneur-certificate-${userName.toLowerCase()}.pdf`);
+      showSuccess("Certificate downloaded!");
+    } catch (err) {
+      console.error("Certificate generation failed:", err);
+      showError("Failed to generate certificate. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [userName]);
+
   return (
     <DashboardLayout userName={userName} currentDay={7} isVIP={isVIP}>
       {showConfetti && <Confetti />}
+
+      {/* Hidden certificate render target for html2canvas */}
+      <div
+        ref={certRef}
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: 0,
+          width: 1056,
+          height: 816,
+          backgroundColor: "#0a0a1a",
+          fontFamily: "'Georgia', serif",
+          color: "#e2e8f0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {/* Outer border */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 16,
+            border: "3px solid #c8a84e",
+            borderRadius: 8,
+          }}
+        />
+        {/* Inner border */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 28,
+            border: "1px solid #c8a84e55",
+            borderRadius: 4,
+          }}
+        />
+        <div style={{ textAlign: "center", padding: 60, zIndex: 1 }}>
+          {/* Logo icon */}
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              margin: "0 auto 16px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(168, 85, 247, 0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <p style={{ fontSize: 13, letterSpacing: 6, textTransform: "uppercase", color: "#94a3b8", marginBottom: 8 }}>
+            Certificate of Completion
+          </p>
+          <h1 style={{ fontSize: 18, color: "#c8a84e", marginBottom: 32, fontWeight: 400, letterSpacing: 2 }}>
+            The Appreneur Challenge
+          </h1>
+          <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 8 }}>This certifies that</p>
+          <h2 style={{ fontSize: 42, fontWeight: 700, color: "#ffffff", marginBottom: 12 }}>{userName}</h2>
+          <p style={{ fontSize: 16, color: "#cbd5e1", marginBottom: 32 }}>
+            has successfully completed the 7-Day Appreneur Challenge
+          </p>
+          <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 48 }}>{completionDate}</p>
+          {/* Signature */}
+          <div style={{ borderTop: "1px solid #334155", width: 240, margin: "0 auto", paddingTop: 12 }}>
+            <p style={{ fontSize: 18, fontStyle: "italic", color: "#e2e8f0", marginBottom: 4 }}>Brian Hanson</p>
+            <p style={{ fontSize: 12, color: "#64748b" }}>Founder, AI For Beginners</p>
+          </div>
+        </div>
+      </div>
 
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Celebration Header */}
@@ -192,9 +300,13 @@ const Graduation = () => {
 
               {/* Share Buttons */}
               <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
-                <Button variant="outline" size="lg">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Certificate
+                <Button variant="outline" size="lg" onClick={handleDownloadCertificate} disabled={isGenerating}>
+                  {isGenerating ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4 mr-2" />
+                  )}
+                  {isGenerating ? "Generating..." : "Download Certificate"}
                 </Button>
                 <Button
                   variant="outline"
