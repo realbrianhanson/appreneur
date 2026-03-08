@@ -315,7 +315,29 @@ const DayMission = () => {
   const allRequiredComplete = completedRequired === requiredItems.length;
   const progressPercent = (completedRequired / requiredItems.length) * 100;
 
-  // Redirect if day is locked (only after progress has loaded and we know it's locked)
+  // Save time on unmount
+  const saveTimeSpent = useCallback(async () => {
+    const seconds = Math.floor((Date.now() - startTime) / 1000);
+    if (seconds < 5) return;
+    try {
+      await supabase.from("user_progress")
+        .update({ time_spent_seconds: (currentDayProgress?.time_spent_seconds || 0) + seconds })
+        .eq("user_id", profile?.id || "")
+        .eq("day_number", day);
+    } catch (e) {
+      console.error("Failed to save time:", e);
+    }
+  }, [startTime, day, profile?.id, currentDayProgress?.time_spent_seconds]);
+
+  useEffect(() => {
+    const handleBeforeUnload = () => saveTimeSpent();
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      saveTimeSpent();
+    };
+  }, [saveTimeSpent]);
+
   useEffect(() => {
     // Only redirect if:
     // 1. Progress has finished loading
