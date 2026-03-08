@@ -370,6 +370,19 @@ const Dashboard = () => {
         noindex={true}
       />
       
+      {/* Onboarding Wizard */}
+      {showOnboarding && (
+        <OnboardingWizard
+          firstName={firstName}
+          onComplete={() => {
+            if (user) {
+              localStorage.setItem(`onboarding_completed_${user.id}`, "true");
+            }
+            setShowOnboarding(false);
+          }}
+        />
+      )}
+
       {/* Testimonial Modal */}
       <TestimonialModal
         isOpen={showTestimonialModal}
