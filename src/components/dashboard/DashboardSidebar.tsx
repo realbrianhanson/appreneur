@@ -60,6 +60,7 @@ interface UserProgress {
   day_number: number;
   is_unlocked: boolean;
   is_completed: boolean;
+  tasks_completed?: Record<string, unknown>;
 }
 
 interface DashboardSidebarProps {
@@ -83,6 +84,13 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false,
     if (dayProgress?.is_completed) return "completed";
     if (dayProgress?.is_unlocked) return "current";
     return "locked";
+  };
+
+  // Check if a day is unlocked but not started (no tasks completed)
+  const isDayUnstarted = (day: number): boolean => {
+    const dayProgress = userProgress.find(p => p.day_number === day);
+    if (!dayProgress) return false;
+    return dayProgress.is_unlocked && !dayProgress.is_completed && Object.keys(dayProgress.tasks_completed || {}).length === 0;
   };
 
   const getStatusIcon = (status: "completed" | "current" | "locked") => {
@@ -171,13 +179,16 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false,
                         }`}
                         onClick={(e) => status === "locked" && e.preventDefault()}
                       >
-                        <div className="flex items-center gap-3 flex-1">
+                        <div className="flex items-center gap-3 flex-1 relative">
                           {item.icon}
                           {!collapsed && (
                             <>
                               <span className="flex-1">Day {item.day}: {item.title}</span>
                               {getStatusIcon(status)}
                             </>
+                          )}
+                          {isDayUnstarted(item.day) && (
+                            <div className="w-2 h-2 rounded-full bg-destructive absolute -top-0.5 -right-0.5" />
                           )}
                         </div>
                       </Link>

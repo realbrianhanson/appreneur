@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { TestimonialModal } from "@/components/dashboard/TestimonialModal";
 import { OnboardingWizard } from "@/components/dashboard/OnboardingWizard";
+import { NotificationBanner } from "@/components/dashboard/NotificationBanner";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -389,6 +390,9 @@ const Dashboard = () => {
         onClose={() => setShowTestimonialModal(false)}
         onMaybeLater={handleMaybeLater}
       />
+      {/* Notification Banner */}
+      <NotificationBanner userProgress={userProgress} />
+
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Announcement Banner */}
         {showAnnouncement && (
