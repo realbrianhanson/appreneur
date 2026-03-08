@@ -58,7 +58,7 @@ const templates = {
       </h2>
       
       <p style="font-size: 16px; line-height: 1.6; color: #a1a1aa; margin: 0 0 24px 0;">
-        You're officially registered for the 7-Day Appreneur Challenge! Get ready to build your first app — no coding required.
+        You're officially registered for the 5-Day Appreneur Challenge! Get ready to build your first app — no coding required.
       </p>
       
       <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
