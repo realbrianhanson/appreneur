@@ -252,7 +252,7 @@ const Graduation = () => {
             Congratulations, <span className="text-primary font-semibold">{userName}</span>!
           </p>
           <p className="text-lg text-muted-foreground">
-            You've completed the 7-Day Appreneur Challenge
+            You've completed the 5-Day Appreneur Challenge
           </p>
         </div>
 
