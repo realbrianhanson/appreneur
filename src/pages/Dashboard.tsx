@@ -175,7 +175,7 @@ const Dashboard = () => {
   const currentDayProgress = userProgress.find(p => p.is_unlocked && !p.is_completed);
   const currentDay = currentDayProgress?.day_number || completedDays + 1;
   
-  const progress = (completedDays / 7) * 100;
+  const progress = (completedDays / 5) * 100;
   const tasksCompleted = currentDayProgress ? Object.keys(currentDayProgress.tasks_completed).length : 0;
   const totalTasks = 4; // Default task count per day
   const currentMissionProgress = (tasksCompleted / totalTasks) * 100;
