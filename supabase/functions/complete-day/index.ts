@@ -118,7 +118,7 @@ serve(async (req) => {
     }
 
     // Check if this was the final day
-    const isGraduation = day_number === 7;
+    const isGraduation = day_number === 5;
 
     return new Response(
       JSON.stringify({ 

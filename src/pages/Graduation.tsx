@@ -385,7 +385,7 @@ const Graduation = () => {
                   <Trophy className="w-4 h-4 text-accent" />
                 </div>
                 <p className="text-2xl font-display font-bold text-foreground">
-                  {stats.missionsCompleted}/7
+                  {stats.missionsCompleted}/5
                 </p>
                 <p className="text-xs text-muted-foreground">Missions Complete</p>
               </div>

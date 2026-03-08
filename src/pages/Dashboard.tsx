@@ -633,7 +633,7 @@ const Dashboard = () => {
                   {userStats?.percentile 
                     ? `You're ahead of ${Math.round(userStats.percentile)}% of participants.`
                     : "You're making great progress!"
-                  } Day 7 is closer than you think! 🚀
+                  } Day 5 is closer than you think! 🚀
                 </p>
               </CardContent>
             </Card>

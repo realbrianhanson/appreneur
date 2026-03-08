@@ -167,7 +167,7 @@ export const trackChallengeComplete = () => {
  */
 export const trackDayComplete = (dayNumber: number) => {
   trackGA4Event('day_complete', {
-    challenge_name: 'appreneur_7_day_challenge',
+    challenge_name: 'appreneur_5_day_challenge',
     day_number: dayNumber,
   });
 

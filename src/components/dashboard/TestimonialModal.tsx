@@ -135,7 +135,7 @@ export const TestimonialModal = ({
                 Congratulations! 🎉
               </DialogTitle>
               <DialogDescription className="text-base mt-2">
-                You've completed the 7-Day Appreneur Challenge! Would you mind
+                You've completed the 5-Day Appreneur Challenge! Would you mind
                 sharing your experience to help inspire others?
               </DialogDescription>
             </DialogHeader>

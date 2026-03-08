@@ -48,9 +48,9 @@ serve(async (req) => {
       );
     }
 
-    if (day_number < 1 || day_number > 7) {
+    if (day_number < 1 || day_number > 5) {
       return new Response(
-        JSON.stringify({ error: "day_number must be between 1 and 7" }),
+        JSON.stringify({ error: "day_number must be between 1 and 5" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

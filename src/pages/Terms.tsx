@@ -46,7 +46,7 @@ const Terms = () => {
 
             <h2 className="text-xl font-semibold text-foreground">2. Description of Service</h2>
             <p>
-              The Appreneur Challenge is a free 7-day educational program designed to teach participants 
+              The Appreneur Challenge is a free 5-day educational program designed to teach participants 
               how to build applications using no-code and AI-powered tools.
             </p>
 

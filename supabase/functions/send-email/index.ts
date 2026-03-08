@@ -258,7 +258,7 @@ const templates = {
       </h2>
       
       <p style="font-size: 18px; line-height: 1.6; color: #22c55e; margin: 0 0 24px 0; font-weight: 600;">
-        You've completed the 7-Day Appreneur Challenge!
+        You've completed the 5-Day Appreneur Challenge!
       </p>
       
       <p style="font-size: 16px; line-height: 1.6; color: #a1a1aa; margin: 0 0 32px 0;">

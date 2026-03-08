@@ -383,7 +383,7 @@ const DayMission = () => {
         <div className="space-y-3 md:space-y-4">
           <div className="flex items-center gap-2 md:gap-4 flex-wrap">
             <Badge variant="outline" className="text-primary border-primary text-xs md:text-sm">
-              DAY {day} OF 7
+              DAY {day} OF 5
             </Badge>
             <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
               <Clock className="w-3 h-3 md:w-4 md:h-4" />

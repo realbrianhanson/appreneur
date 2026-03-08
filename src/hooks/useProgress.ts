@@ -192,9 +192,9 @@ export function useProgress() {
     if (currentDayProgress) {
       return currentDayProgress.day_number;
     }
-    // If all days are completed, return 7
+    // If all days are completed, return 5
     const completedDays = progress.filter(p => p.is_completed).length;
-    return completedDays === 7 ? 7 : completedDays + 1;
+    return completedDays === 5 ? 5 : completedDays + 1;
   }, [progress]);
 
   const isTaskCompleted = useCallback((dayNumber: number, taskId: string): boolean => {

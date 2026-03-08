@@ -126,8 +126,8 @@ serve(async (req: Request) => {
       );
     }
 
-    // Check rate limit - max 1 SMS per user per day (except Day 7)
-    if (user_id && day_number !== 7) {
+    // Check rate limit - max 1 SMS per user per day (except Day 5)
+    if (user_id && day_number !== 5) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
