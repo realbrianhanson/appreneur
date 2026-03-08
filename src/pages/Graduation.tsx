@@ -115,8 +115,8 @@ const Graduation = () => {
     fetchProgress();
   }, [fetchProgress]);
 
-  // Get Day 7 completion date or fallback to today
-  const day7Progress = progress.find(p => p.day_number === 7 && p.is_completed);
+  // Get Day 5 completion date or fallback to today
+  const day5Progress = progress.find(p => p.day_number === 5 && p.is_completed);
   const completionDate = day7Progress?.completed_at
     ? new Date(day7Progress.completed_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
     : new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
