@@ -34,16 +34,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     
-    <!-- Google Analytics 4 (GA4) - Replace G-XXXXXXXXXX with your ID -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <!-- Analytics IDs — Replace with your real IDs -->
+    <!-- Replace G-XXXXXXXXXX with your real GA4 Measurement ID -->
+    <meta name="ga4-id" content="G-XXXXXXXXXX" />
+    <!-- Replace XXXXXXXXXXXXXXXX with your real Facebook Pixel ID -->
+    <meta name="fb-pixel-id" content="XXXXXXXXXXXXXXXX" />
+
+    <!-- Google Analytics 4 (GA4) -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
+      (function() {
+        var ga4Id = document.querySelector('meta[name="ga4-id"]')?.getAttribute('content');
+        if (ga4Id && ga4Id !== 'G-XXXXXXXXXX') {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga4Id;
+          document.head.appendChild(s);
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', ga4Id);
+        }
+      })();
     </script>
     
-    <!-- Facebook Pixel - Replace XXXXXXXXXXXXXXXX with your Pixel ID -->
+    <!-- Facebook Pixel -->
     <script>
       !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -53,8 +68,13 @@
       t.src=v;s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', 'XXXXXXXXXXXXXXXX');
-      fbq('track', 'PageView');
+      (function() {
+        var fbId = document.querySelector('meta[name="fb-pixel-id"]')?.getAttribute('content');
+        if (fbId && fbId !== 'XXXXXXXXXXXXXXXX') {
+          fbq('init', fbId);
+          fbq('track', 'PageView');
+        }
+      })();
     </script>
   </head>
 
