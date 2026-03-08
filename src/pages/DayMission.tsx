@@ -51,6 +51,7 @@ const dayData: Record<number, {
   estimatedTime: string;
   videoTitle: string;
   videoLength: string;
+  videoUrl: string;
   missionDescription: string;
   outcomes: string[];
   resources: Array<{
@@ -71,6 +72,7 @@ const dayData: Record<number, {
     estimatedTime: "45-60 minutes",
     videoTitle: "How to Find Your Million-Dollar App Idea",
     videoLength: "18 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll help you discover the perfect app idea that matches your skills, interests, and market opportunity. No more guessing — we use a proven framework.",
     outcomes: [
       "Validated app idea with clear target audience",
@@ -96,6 +98,7 @@ const dayData: Record<number, {
     estimatedTime: "60-75 minutes",
     videoTitle: "Creating Your App Blueprint (No Design Skills Needed)",
     videoLength: "22 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll create a visual map of your entire app. You'll define every screen, button, and user flow before writing a single line of code.",
     outcomes: [
       "Complete app wireframe/blueprint",
@@ -121,6 +124,7 @@ const dayData: Record<number, {
     estimatedTime: "60-90 minutes",
     videoTitle: "Building Your App with AI (The Fun Part!)",
     videoLength: "23 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "This is where the magic happens. Today you'll use AI-powered tools to build the core of your app. By the end, you'll have a working prototype.",
     outcomes: [
       "Working app prototype",
@@ -148,6 +152,7 @@ const dayData: Record<number, {
     estimatedTime: "60-75 minutes",
     videoTitle: "Adding AI Features That Wow Users",
     videoLength: "25 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll add AI capabilities to your app — think chatbots, content generation, image analysis, and more. This is what makes your app feel like magic.",
     outcomes: [
       "AI feature integrated",
@@ -173,6 +178,7 @@ const dayData: Record<number, {
     estimatedTime: "45-60 minutes",
     videoTitle: "Making Your App Look Professional",
     videoLength: "20 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll transform your app from 'prototype' to 'polished product'. We'll add branding, improve the UI, and make everything feel cohesive.",
     outcomes: [
       "Consistent color scheme applied",
@@ -198,6 +204,7 @@ const dayData: Record<number, {
     estimatedTime: "45-60 minutes",
     videoTitle: "Finding and Fixing Bugs (Without Coding)",
     videoLength: "18 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll test your app thoroughly and fix any issues. You'll learn how to identify bugs and use AI to fix them — no coding knowledge required.",
     outcomes: [
       "All major bugs fixed",
@@ -223,6 +230,7 @@ const dayData: Record<number, {
     estimatedTime: "30-45 minutes",
     videoTitle: "Launch Day: Shipping Your App to the World",
     videoLength: "15 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "This is it — launch day! Today you'll deploy your app and share it with the world. You did it!",
     outcomes: [
       "App deployed and live",
@@ -459,12 +467,43 @@ const DayMission = () => {
 
         {/* Video Section */}
         <Card className="overflow-hidden">
-          <div className="relative aspect-video bg-muted flex items-center justify-center group cursor-pointer">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
-            <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-white/90 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform z-10">
-              <Play className="w-6 h-6 md:w-8 md:h-8 text-primary ml-1" fill="currentColor" />
-            </div>
+          <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+            <iframe
+              src={data.videoUrl}
+              title={`Day ${day}: ${data.videoTitle}`}
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              className="absolute inset-0"
+            />
           </div>
+          {!isTaskCompleted("video") && (
+            <div className="px-3 pt-3 md:px-4 md:pt-4">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => handleCheck("video", true)}
+                disabled={completingTask === "video"}
+              >
+                {completingTask === "video" ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                ) : (
+                  <Check className="w-4 h-4 mr-1" />
+                )}
+                Mark as Watched
+              </Button>
+            </div>
+          )}
+          {isTaskCompleted("video") && (
+            <div className="px-3 pt-3 md:px-4 md:pt-4">
+              <span className="inline-flex items-center text-sm text-green-500 font-medium">
+                <Check className="w-4 h-4 mr-1" />
+                Watched
+              </span>
+            </div>
+          )}
           <CardContent className="p-3 md:p-4">
             <h3 className="font-semibold text-foreground text-sm md:text-base">{data.videoTitle}</h3>
             <p className="text-xs md:text-sm text-muted-foreground flex items-center gap-2 mt-1">
