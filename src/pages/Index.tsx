@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
@@ -16,17 +16,35 @@ import { FinalCTASection } from "@/components/landing/FinalCTASection";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
+import { supabase } from "@/integrations/supabase/client";
 import brianPhoto from "@/assets/brian-hanson.jpeg";
 import { Zap, ArrowDown, ArrowRight, Twitter, Linkedin, Youtube, Quote } from "lucide-react";
 
-// Next cohort start date
-const COHORT_START_DATE = new Date("2026-01-27T09:00:00");
-const NEXT_COHORT_DATE = "2026-01-27T15:00:00Z";
-
 const Index = () => {
+  const [nextCohortDate, setNextCohortDate] = useState<string | null>(null);
+
   // Track page view on mount
   useEffect(() => {
     trackPageView('/', 'Appreneur Challenge — Build Your First App in 5 Days');
+  }, []);
+
+  // Fetch active cohort date for structured data
+  useEffect(() => {
+    const fetchCohortDate = async () => {
+      const { data } = await supabase
+        .from("cohorts")
+        .select("start_date")
+        .eq("is_active", true)
+        .eq("is_accepting_registrations", true)
+        .order("start_date", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (data) {
+        setNextCohortDate(new Date(data.start_date).toISOString());
+      }
+    };
+    fetchCohortDate();
   }, []);
 
   const scrollToQuiz = () => {
@@ -64,13 +82,15 @@ const Index = () => {
           provider: "AI For Beginners",
           url: "https://appreneur.ai"
         }}
-        event={{
-          name: "Appreneur Challenge - January 2026 Cohort",
-          description: "Join our next cohort and build your first app in 5 days. No coding experience required.",
-          startDate: NEXT_COHORT_DATE,
-          url: "https://appreneur.ai",
-          organizer: "AI For Beginners"
-        }}
+        {...(nextCohortDate && {
+          event: {
+            name: "Appreneur Challenge - Next Cohort",
+            description: "Join our next cohort and build your first app in 5 days. No coding experience required.",
+            startDate: nextCohortDate,
+            url: "https://appreneur.ai",
+            organizer: "AI For Beginners"
+          }
+        })}
       />
 
       {/* Hero Section - Full viewport */}
@@ -114,7 +134,7 @@ const Index = () => {
               </p>
 
               {/* CTA Button Above the Fold */}
-              <div className="space-y-3" id="quiz-section">
+              <div className="space-y-3">
                 <Button 
                   variant="cta" 
                   size="xl" 
@@ -167,8 +187,8 @@ const Index = () => {
       {/* Opening Copy Section - New compelling copy */}
       <OpeningCopySection />
 
-      {/* Urgency Section with Countdown */}
-      <UrgencySection cohortStartDate={COHORT_START_DATE} />
+      {/* Urgency Section with Countdown - fetches its own date */}
+      <UrgencySection />
 
       {/* What You'll Build Section */}
       <Section variant="muted" spacing="xl" className="relative overflow-hidden">
@@ -232,8 +252,8 @@ const Index = () => {
       {/* FAQ Section */}
       <FAQSection />
 
-      {/* Final CTA Section */}
-      <FinalCTASection cohortStartDate={COHORT_START_DATE} />
+      {/* Final CTA Section - fetches its own date */}
+      <FinalCTASection />
 
       {/* Footer */}
       <footer className="border-t border-border py-8 md:py-12 bg-background">

@@ -371,7 +371,7 @@ const QuizContainer = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div id="quiz-section" className="space-y-6">
       {/* Urgency Elements */}
       {(cohort || nextCohort) && (
         <div className="space-y-4">
