@@ -179,13 +179,16 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false,
                         }`}
                         onClick={(e) => status === "locked" && e.preventDefault()}
                       >
-                        <div className="flex items-center gap-3 flex-1">
+                        <div className="flex items-center gap-3 flex-1 relative">
                           {item.icon}
                           {!collapsed && (
                             <>
                               <span className="flex-1">Day {item.day}: {item.title}</span>
                               {getStatusIcon(status)}
                             </>
+                          )}
+                          {isDayUnstarted(item.day) && (
+                            <div className="w-2 h-2 rounded-full bg-destructive absolute -top-0.5 -right-0.5" />
                           )}
                         </div>
                       </Link>

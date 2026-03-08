@@ -390,6 +390,9 @@ const Dashboard = () => {
         onClose={() => setShowTestimonialModal(false)}
         onMaybeLater={handleMaybeLater}
       />
+      {/* Notification Banner */}
+      <NotificationBanner userProgress={userProgress} />
+
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Announcement Banner */}
         {showAnnouncement && (
