@@ -99,9 +99,7 @@ const journeyItems = [
   { day: 2, title: "Created blueprint", icon: <PenTool className="w-4 h-4" /> },
   { day: 3, title: "Built core app", icon: <Code className="w-4 h-4" /> },
   { day: 4, title: "Added AI features", icon: <Sparkles className="w-4 h-4" /> },
-  { day: 5, title: "Polished & branded", icon: <Palette className="w-4 h-4" /> },
-  { day: 6, title: "Tested & fixed", icon: <Bug className="w-4 h-4" /> },
-  { day: 7, title: "SHIPPED!", icon: <Rocket className="w-4 h-4" /> },
+  { day: 5, title: "SHIPPED!", icon: <Rocket className="w-4 h-4" /> },
 ];
 
 const Graduation = () => {
