@@ -1,7 +1,20 @@
 /**
  * Analytics utility functions for GA4 and Facebook Pixel tracking
- * Replace placeholder IDs in index.html before using
+ * Replace placeholder IDs in index.html meta tags before using
  */
+
+// Warn if analytics IDs are still placeholders
+if (typeof document !== 'undefined') {
+  const ga4Id = document.querySelector('meta[name="ga4-id"]')?.getAttribute('content');
+  const fbId = document.querySelector('meta[name="fb-pixel-id"]')?.getAttribute('content');
+
+  if (!ga4Id || ga4Id === 'G-XXXXXXXXXX') {
+    console.warn('[Analytics] GA4 Measurement ID is not configured. Replace G-XXXXXXXXXX in the ga4-id meta tag in index.html.');
+  }
+  if (!fbId || fbId === 'XXXXXXXXXXXXXXXX') {
+    console.warn('[Analytics] Facebook Pixel ID is not configured. Replace XXXXXXXXXXXXXXXX in the fb-pixel-id meta tag in index.html.');
+  }
+}
 
 // Declare global types for analytics
 declare global {
