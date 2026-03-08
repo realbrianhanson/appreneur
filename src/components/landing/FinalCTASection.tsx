@@ -3,6 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight, Loader2, Shield, Zap, Users, Calendar } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,13 +18,15 @@ interface FinalCTASectionProps {
   cohortStartDate?: Date;
 }
 
-const FinalCTASection = ({ cohortStartDate = new Date("2026-01-27T09:00:00") }: FinalCTASectionProps) => {
+const FinalCTASection = ({ cohortStartDate: propDate }: FinalCTASectionProps) => {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<{ firstName?: string; email?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [spotsRemaining, setSpotsRemaining] = useState<number | null>(null);
+  const [cohortStartDate, setCohortStartDate] = useState<Date | null>(propDate || null);
+  const [isFetchingCohort, setIsFetchingCohort] = useState(!propDate);
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -49,21 +52,34 @@ const FinalCTASection = ({ cohortStartDate = new Date("2026-01-27T09:00:00") }: 
     return () => observer.disconnect();
   }, []);
 
-  // Fetch spots remaining
+  // Fetch active cohort for date and spots
   useEffect(() => {
-    const fetchSpots = async () => {
-      const { data } = await supabase
-        .from("cohorts")
-        .select("max_participants, spots_taken")
-        .eq("is_active", true)
-        .single();
+    const fetchCohort = async () => {
+      setIsFetchingCohort(true);
+      try {
+        const { data } = await supabase
+          .from("cohorts")
+          .select("start_date, max_participants, spots_taken")
+          .eq("is_active", true)
+          .eq("is_accepting_registrations", true)
+          .order("start_date", { ascending: true })
+          .limit(1)
+          .maybeSingle();
 
-      if (data) {
-        setSpotsRemaining(data.max_participants - data.spots_taken);
+        if (data) {
+          if (!propDate) {
+            setCohortStartDate(new Date(data.start_date));
+          }
+          setSpotsRemaining(data.max_participants - data.spots_taken);
+        }
+      } catch (error) {
+        console.error("Error fetching cohort:", error);
+      } finally {
+        setIsFetchingCohort(false);
       }
     };
-    fetchSpots();
-  }, []);
+    fetchCohort();
+  }, [propDate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -251,7 +267,13 @@ const FinalCTASection = ({ cohortStartDate = new Date("2026-01-27T09:00:00") }: 
               {/* Micro text */}
               <div className="flex items-center justify-center gap-2 mt-4 text-sm text-muted-foreground">
                 <Calendar className="w-4 h-4 text-primary" />
-                <span>Free 5-Day Challenge. Starts {formatDate(cohortStartDate)}.</span>
+                {isFetchingCohort ? (
+                  <Skeleton className="h-4 w-48" />
+                ) : cohortStartDate ? (
+                  <span>Free 5-Day Challenge. Starts {formatDate(cohortStartDate)}.</span>
+                ) : (
+                  <span>Free 5-Day Challenge. Coming Soon.</span>
+                )}
               </div>
 
               {/* Guarantee */}
