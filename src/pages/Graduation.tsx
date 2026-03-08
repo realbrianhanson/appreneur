@@ -170,6 +170,79 @@ const Graduation = () => {
     <DashboardLayout userName={userName} currentDay={7} isVIP={isVIP}>
       {showConfetti && <Confetti />}
 
+      {/* Hidden certificate render target for html2canvas */}
+      <div
+        ref={certRef}
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          top: 0,
+          width: 1056,
+          height: 816,
+          backgroundColor: "#0a0a1a",
+          fontFamily: "'Georgia', serif",
+          color: "#e2e8f0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {/* Outer border */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 16,
+            border: "3px solid #c8a84e",
+            borderRadius: 8,
+          }}
+        />
+        {/* Inner border */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 28,
+            border: "1px solid #c8a84e55",
+            borderRadius: 4,
+          }}
+        />
+        <div style={{ textAlign: "center", padding: 60, zIndex: 1 }}>
+          {/* Logo icon */}
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              margin: "0 auto 16px",
+              borderRadius: "50%",
+              backgroundColor: "rgba(168, 85, 247, 0.2)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+          </div>
+          <p style={{ fontSize: 13, letterSpacing: 6, textTransform: "uppercase", color: "#94a3b8", marginBottom: 8 }}>
+            Certificate of Completion
+          </p>
+          <h1 style={{ fontSize: 18, color: "#c8a84e", marginBottom: 32, fontWeight: 400, letterSpacing: 2 }}>
+            The Appreneur Challenge
+          </h1>
+          <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 8 }}>This certifies that</p>
+          <h2 style={{ fontSize: 42, fontWeight: 700, color: "#ffffff", marginBottom: 12 }}>{userName}</h2>
+          <p style={{ fontSize: 16, color: "#cbd5e1", marginBottom: 32 }}>
+            has successfully completed the 7-Day Appreneur Challenge
+          </p>
+          <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 48 }}>{completionDate}</p>
+          {/* Signature */}
+          <div style={{ borderTop: "1px solid #334155", width: 240, margin: "0 auto", paddingTop: 12 }}>
+            <p style={{ fontSize: 18, fontStyle: "italic", color: "#e2e8f0", marginBottom: 4 }}>Brian Hanson</p>
+            <p style={{ fontSize: 12, color: "#64748b" }}>Founder, AI For Beginners</p>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Celebration Header */}
         <div className="text-center space-y-4 py-8">
