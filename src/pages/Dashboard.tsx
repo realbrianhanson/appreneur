@@ -411,7 +411,7 @@ const Dashboard = () => {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-2">
                   <Badge variant="outline" className="text-primary border-primary">
-                    Day {currentDay} of 7
+                    Day {currentDay} of 5
                   </Badge>
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-display font-bold text-foreground">
