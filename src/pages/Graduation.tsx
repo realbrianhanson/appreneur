@@ -230,7 +230,7 @@ const Graduation = () => {
           <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 8 }}>This certifies that</p>
           <h2 style={{ fontSize: 42, fontWeight: 700, color: "#ffffff", marginBottom: 12 }}>{userName}</h2>
           <p style={{ fontSize: 16, color: "#cbd5e1", marginBottom: 32 }}>
-            has successfully completed the 7-Day Appreneur Challenge
+            has successfully completed the 5-Day Appreneur Challenge
           </p>
           <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 48 }}>{completionDate}</p>
           {/* Signature */}
