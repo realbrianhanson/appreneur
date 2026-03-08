@@ -16,7 +16,6 @@ import { FinalCTASection } from "@/components/landing/FinalCTASection";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
-import heroVideo from "@/assets/brian-hanson-hero.mp4";
 import brianPhoto from "@/assets/brian-hanson.jpeg";
 import { Zap, ArrowDown, ArrowRight, Twitter, Linkedin, Youtube, Quote } from "lucide-react";
 
