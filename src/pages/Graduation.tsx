@@ -138,7 +138,7 @@ const Graduation = () => {
   }, []);
 
   const shareText = encodeURIComponent(
-    `I just completed the 7-Day Appreneur Challenge and built my first app! 🚀 #Appreneur #NoCode #AI`
+    `I just completed the 5-Day Appreneur Challenge and built my first app! 🚀 #Appreneur #NoCode #AI`
   );
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
