@@ -51,6 +51,7 @@ const dayData: Record<number, {
   estimatedTime: string;
   videoTitle: string;
   videoLength: string;
+  videoUrl: string;
   missionDescription: string;
   outcomes: string[];
   resources: Array<{
