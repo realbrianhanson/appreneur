@@ -216,9 +216,9 @@ const dayData: Record<number, {
       "Performance optimized",
     ],
     resources: [
-      { title: "QA Testing Checklist", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Bug Fixing Prompts", type: "download", icon: <FileText className="w-4 h-4" /> },
-      { title: "Performance Optimization Guide", type: "download", icon: <FileText className="w-4 h-4" />, vipOnly: true },
+      { title: "QA Testing Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Bug Fixing Prompts", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
+      { title: "Performance Optimization Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
