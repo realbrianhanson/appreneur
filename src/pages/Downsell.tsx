@@ -127,14 +127,17 @@ const Downsell = () => {
           </div>
 
           {/* CTA Button */}
-          <Button
+          <LoadingButton
             variant="cta"
             size="xl"
             className="w-full"
+            onClick={handleCheckout}
+            isLoading={isLoading}
+            loadingText="Redirecting to checkout..."
           >
             Get the Prompt Vault — $7
             <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
+          </LoadingButton>
 
           {/* Skip Link */}
           <div className="pt-4">
