@@ -74,7 +74,7 @@ const templates = {
       </h3>
       
       <p style="font-size: 16px; line-height: 1.6; color: #a1a1aa; margin: 0 0 24px 0;">
-        As promised, here's your exclusive PDF: <strong style="color: #ffffff;">"50 Profitable AI App Ideas for 2025"</strong>
+        As promised, here's your exclusive PDF: <strong style="color: #ffffff;">"50 Profitable AI App Ideas for 2026"</strong>
       </p>
       
       <a href="${data.loginUrl}" style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; margin-bottom: 24px;">
