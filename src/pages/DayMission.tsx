@@ -41,9 +41,7 @@ const taskIdMap: Record<number, Record<string, string>> = {
   2: { video: "watch_video", wireframe: "setup_project", userflow: "build_layout", bonus: "add_navigation" },
   3: { video: "watch_video", build: "add_features", features: "connect_data", share: "test_app", bonus: "test_app" },
   4: { video: "watch_video", integrate: "add_ai_feature", test: "refine_prompts", optimize: "integrate_ai" },
-  5: { video: "watch_video", colors: "add_styling", branding: "create_brand", share: "polish_ui" },
-  6: { video: "watch_video", test: "add_auth", fix: "setup_database", mobile: "deploy_preview" },
-  7: { video: "watch_video", deploy: "final_polish", share: "launch_app", celebrate: "share_success" },
+  5: { video: "watch_video", deploy: "deploy_app", share: "launch_app", celebrate: "share_success" },
 };
 
 // Day data - would come from database in real app
@@ -176,78 +174,26 @@ const dayData: Record<number, {
     nextDayPreview: "Tomorrow we'll polish your app — colors, fonts, branding, and that professional feel.",
   },
   5: {
-    title: "Polish & Brand",
-    estimatedTime: "45-60 minutes",
-    videoTitle: "Making Your App Look Professional",
-    videoLength: "20 minutes",
+    title: "Ship It! 🚀",
+    estimatedTime: "60-90 minutes",
+    videoTitle: "Polish, Test & Launch Your App",
+    videoLength: "25 minutes",
     videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    missionDescription: "Today we'll transform your app from 'prototype' to 'polished product'. We'll add branding, improve the UI, and make everything feel cohesive.",
+    missionDescription: "Today you'll add the finishing touches — styling, branding, testing — and then deploy your app live to the world. This is launch day!",
     outcomes: [
-      "Consistent color scheme applied",
-      "Logo and branding added",
-      "Typography refined",
-      "Micro-interactions added",
-    ],
-    resources: [
-      { title: "Color Palette Generator", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
-      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Premium Icon Pack", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
-    ],
-    checklist: [
-      { id: "video", label: "Watch the training video", required: true },
-      { id: "colors", label: "Apply your color scheme", required: true },
-      { id: "branding", label: "Add logo and branding", required: true },
-      { id: "share", label: "Share before/after in community", required: false },
-    ],
-    nextDayPreview: "Tomorrow we'll test everything and fix any bugs before launch!",
-  },
-  6: {
-    title: "Test & Fix",
-    estimatedTime: "45-60 minutes",
-    videoTitle: "Finding and Fixing Bugs (Without Coding)",
-    videoLength: "18 minutes",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    missionDescription: "Today we'll test your app thoroughly and fix any issues. You'll learn how to identify bugs and use AI to fix them — no coding knowledge required.",
-    outcomes: [
-      "All major bugs fixed",
-      "Mobile responsiveness verified",
-      "User testing completed",
-      "Performance optimized",
-    ],
-    resources: [
-      { title: "QA Testing Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Bug Fixing Prompts", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Performance Optimization Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
-    ],
-    checklist: [
-      { id: "video", label: "Watch the training video", required: true },
-      { id: "test", label: "Complete testing checklist", required: true },
-      { id: "fix", label: "Fix identified issues", required: true },
-      { id: "mobile", label: "Verify mobile experience", required: true },
-    ],
-    nextDayPreview: "Tomorrow is LAUNCH DAY! 🚀 Get ready to ship your app to the world!",
-  },
-  7: {
-    title: "Ship It!",
-    estimatedTime: "30-45 minutes",
-    videoTitle: "Launch Day: Shipping Your App to the World",
-    videoLength: "15 minutes",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    missionDescription: "This is it — launch day! Today you'll deploy your app and share it with the world. You did it!",
-    outcomes: [
+      "Professional styling and branding applied",
+      "All major bugs fixed and tested",
       "App deployed and live",
-      "Custom domain connected (optional)",
       "Launch announcement posted",
-      "First users invited",
     ],
     resources: [
+      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
       { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Social Announcement Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
       { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
-      { id: "deploy", label: "Deploy your app", required: true },
+      { id: "deploy", label: "Polish, test, and deploy your app", required: true },
       { id: "share", label: "Share your launch in community", required: true },
       { id: "celebrate", label: "Celebrate your achievement! 🎉", required: true },
     ],
@@ -437,7 +383,7 @@ const DayMission = () => {
         <div className="space-y-3 md:space-y-4">
           <div className="flex items-center gap-2 md:gap-4 flex-wrap">
             <Badge variant="outline" className="text-primary border-primary text-xs md:text-sm">
-              DAY {day} OF 7
+              DAY {day} OF 5
             </Badge>
             <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground">
               <Clock className="w-3 h-3 md:w-4 md:h-4" />

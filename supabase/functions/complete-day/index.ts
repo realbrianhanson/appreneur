@@ -39,9 +39,9 @@ serve(async (req) => {
       );
     }
 
-    if (day_number < 1 || day_number > 7) {
+    if (day_number < 1 || day_number > 5) {
       return new Response(
-        JSON.stringify({ error: "day_number must be between 1 and 7" }),
+        JSON.stringify({ error: "day_number must be between 1 and 5" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -105,7 +105,7 @@ serve(async (req) => {
 
     // Unlock next day if not the last day
     let nextDayUnlocked = false;
-    if (day_number < 7) {
+    if (day_number < 5) {
       const { error: unlockError } = await supabase
         .from("user_progress")
         .update({ is_unlocked: true })
@@ -118,7 +118,7 @@ serve(async (req) => {
     }
 
     // Check if this was the final day
-    const isGraduation = day_number === 7;
+    const isGraduation = day_number === 5;
 
     return new Response(
       JSON.stringify({ 

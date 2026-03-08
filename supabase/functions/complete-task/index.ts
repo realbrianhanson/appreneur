@@ -12,9 +12,7 @@ const dayTasks: Record<number, string[]> = {
   2: ["watch_video", "setup_project", "build_layout", "add_navigation"],
   3: ["watch_video", "add_features", "connect_data", "test_app"],
   4: ["watch_video", "add_ai_feature", "refine_prompts", "integrate_ai"],
-  5: ["watch_video", "add_styling", "create_brand", "polish_ui"],
-  6: ["watch_video", "add_auth", "setup_database", "deploy_preview"],
-  7: ["watch_video", "final_polish", "launch_app", "share_success"],
+  5: ["watch_video", "deploy_app", "launch_app", "share_success"],
 };
 
 serve(async (req) => {
@@ -50,9 +48,9 @@ serve(async (req) => {
       );
     }
 
-    if (day_number < 1 || day_number > 7) {
+    if (day_number < 1 || day_number > 5) {
       return new Response(
-        JSON.stringify({ error: "day_number must be between 1 and 7" }),
+        JSON.stringify({ error: "day_number must be between 1 and 5" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }

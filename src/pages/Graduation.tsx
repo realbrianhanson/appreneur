@@ -99,9 +99,7 @@ const journeyItems = [
   { day: 2, title: "Created blueprint", icon: <PenTool className="w-4 h-4" /> },
   { day: 3, title: "Built core app", icon: <Code className="w-4 h-4" /> },
   { day: 4, title: "Added AI features", icon: <Sparkles className="w-4 h-4" /> },
-  { day: 5, title: "Polished & branded", icon: <Palette className="w-4 h-4" /> },
-  { day: 6, title: "Tested & fixed", icon: <Bug className="w-4 h-4" /> },
-  { day: 7, title: "SHIPPED!", icon: <Rocket className="w-4 h-4" /> },
+  { day: 5, title: "SHIPPED!", icon: <Rocket className="w-4 h-4" /> },
 ];
 
 const Graduation = () => {
@@ -117,16 +115,16 @@ const Graduation = () => {
     fetchProgress();
   }, [fetchProgress]);
 
-  // Get Day 7 completion date or fallback to today
-  const day7Progress = progress.find(p => p.day_number === 7 && p.is_completed);
-  const completionDate = day7Progress?.completed_at
-    ? new Date(day7Progress.completed_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+  // Get Day 5 completion date or fallback to today
+  const day5Progress = progress.find(p => p.day_number === 5 && p.is_completed);
+  const completionDate = day5Progress?.completed_at
+    ? new Date(day5Progress.completed_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
     : new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
   // Stats
   const stats = {
     totalTime: "8h 45m",
-    missionsCompleted: 7,
+    missionsCompleted: 5,
     resourcesDownloaded: 12,
   };
 
@@ -140,7 +138,7 @@ const Graduation = () => {
   }, []);
 
   const shareText = encodeURIComponent(
-    `I just completed the 7-Day Appreneur Challenge and built my first app! 🚀 #Appreneur #NoCode #AI`
+    `I just completed the 5-Day Appreneur Challenge and built my first app! 🚀 #Appreneur #NoCode #AI`
   );
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
@@ -232,7 +230,7 @@ const Graduation = () => {
           <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 8 }}>This certifies that</p>
           <h2 style={{ fontSize: 42, fontWeight: 700, color: "#ffffff", marginBottom: 12 }}>{userName}</h2>
           <p style={{ fontSize: 16, color: "#cbd5e1", marginBottom: 32 }}>
-            has successfully completed the 7-Day Appreneur Challenge
+            has successfully completed the 5-Day Appreneur Challenge
           </p>
           <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 48 }}>{completionDate}</p>
           {/* Signature */}
@@ -254,7 +252,7 @@ const Graduation = () => {
             Congratulations, <span className="text-primary font-semibold">{userName}</span>!
           </p>
           <p className="text-lg text-muted-foreground">
-            You've completed the 7-Day Appreneur Challenge
+            You've completed the 5-Day Appreneur Challenge
           </p>
         </div>
 
@@ -284,7 +282,7 @@ const Graduation = () => {
                     has successfully completed the
                   </p>
                   <p className="text-xl font-display font-bold text-primary">
-                    7-Day Appreneur Challenge
+                    5-Day Appreneur Challenge
                   </p>
                   <p className="text-sm text-muted-foreground">{completionDate}</p>
 
@@ -347,7 +345,7 @@ const Graduation = () => {
             <CardTitle className="text-xl text-center">Your Journey</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-7 gap-4">
+            <div className="grid md:grid-cols-5 gap-4">
               {journeyItems.map((item, index) => (
                 <div
                   key={item.day}
@@ -355,7 +353,7 @@ const Graduation = () => {
                 >
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      item.day === 7
+                      item.day === 5
                         ? "bg-gradient-to-br from-primary to-accent text-white"
                         : "bg-primary/20 text-primary"
                     }`}
@@ -387,7 +385,7 @@ const Graduation = () => {
                   <Trophy className="w-4 h-4 text-accent" />
                 </div>
                 <p className="text-2xl font-display font-bold text-foreground">
-                  {stats.missionsCompleted}/7
+                  {stats.missionsCompleted}/5
                 </p>
                 <p className="text-xs text-muted-foreground">Missions Complete</p>
               </div>

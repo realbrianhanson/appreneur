@@ -175,7 +175,7 @@ const Dashboard = () => {
   const currentDayProgress = userProgress.find(p => p.is_unlocked && !p.is_completed);
   const currentDay = currentDayProgress?.day_number || completedDays + 1;
   
-  const progress = (completedDays / 7) * 100;
+  const progress = (completedDays / 5) * 100;
   const tasksCompleted = currentDayProgress ? Object.keys(currentDayProgress.tasks_completed).length : 0;
   const totalTasks = 4; // Default task count per day
   const currentMissionProgress = (tasksCompleted / totalTasks) * 100;
@@ -183,13 +183,13 @@ const Dashboard = () => {
   const firstName = profile?.first_name || "Builder";
   const isVIP = profile?.is_vip || false;
   
-  // Check if Day 7 is completed and show testimonial modal
-  const day7Progress = userProgress.find(p => p.day_number === 7);
-  const isDay7Completed = day7Progress?.is_completed || false;
+  // Check if Day 5 is completed and show testimonial modal
+  const day5Progress = userProgress.find(p => p.day_number === 5);
+  const isDay5Completed = day5Progress?.is_completed || false;
   
   useEffect(() => {
     const checkTestimonialPrompt = async () => {
-      if (!user || !isDay7Completed || hasShownTestimonialPrompt) return;
+      if (!user || !isDay5Completed || hasShownTestimonialPrompt) return;
       
       // Check if user already submitted a testimonial
       const { data: existingTestimonial } = await supabase
@@ -209,7 +209,7 @@ const Dashboard = () => {
     };
     
     checkTestimonialPrompt();
-  }, [user, isDay7Completed, hasShownTestimonialPrompt]);
+  }, [user, isDay5Completed, hasShownTestimonialPrompt]);
   
   const handleMaybeLater = () => {
     if (user) {
@@ -411,14 +411,14 @@ const Dashboard = () => {
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-2">
                   <Badge variant="outline" className="text-primary border-primary">
-                    Day {currentDay} of 7
+                    Day {currentDay} of 5
                   </Badge>
                   <div className="flex items-baseline gap-2">
                     <span className="text-2xl font-display font-bold text-foreground">
                       {completedDays} missions completed
                     </span>
                     <span className="text-muted-foreground">
-                      • {7 - completedDays} to go
+                      • {5 - completedDays} to go
                     </span>
                   </div>
                 </div>
@@ -633,7 +633,7 @@ const Dashboard = () => {
                   {userStats?.percentile 
                     ? `You're ahead of ${Math.round(userStats.percentile)}% of participants.`
                     : "You're making great progress!"
-                  } Day 7 is closer than you think! 🚀
+                  } Day 5 is closer than you think! 🚀
                 </p>
               </CardContent>
             </Card>

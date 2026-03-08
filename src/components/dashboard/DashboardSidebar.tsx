@@ -117,7 +117,7 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false,
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-foreground truncate">{userName}</p>
-                <p className="text-xs text-muted-foreground">Day {currentDay} of 7</p>
+                <p className="text-xs text-muted-foreground">Day {currentDay} of 5</p>
               </div>
             </div>
             <Progress value={progress} className="h-2" />

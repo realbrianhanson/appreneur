@@ -118,7 +118,7 @@ const ThankYou = () => {
   }, []);
 
   const shareText = encodeURIComponent(
-    "I just signed up for the Appreneur Challenge — building my first app in 7 days! 🚀 Join me:"
+    "I just signed up for the Appreneur Challenge — building my first app in 5 days! 🚀 Join me:"
   );
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
@@ -131,7 +131,7 @@ const ThankYou = () => {
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
     "Appreneur Challenge Starts!"
   )}&dates=20260120T150000Z/20260120T160000Z&details=${encodeURIComponent(
-    "Your 7-day app building challenge begins! Head to appreneur.ai to get started."
+    "Your 5-day app building challenge begins! Head to appreneur.ai to get started."
   )}`;
 
   return (

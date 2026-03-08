@@ -70,11 +70,11 @@ export default function AdminOverview() {
 
       const revenueToday = todayPurchases?.reduce((sum, p) => sum + p.amount_cents, 0) || 0;
 
-      // Today's completions (Day 7)
+      // Today's completions (Day 5)
       const { count: completionsCount } = await supabase
         .from("user_progress")
         .select("*", { count: "exact", head: true })
-        .eq("day_number", 7)
+        .eq("day_number", 5)
         .eq("is_completed", true)
         .gte("completed_at", todayStart)
         .lte("completed_at", todayEnd);
@@ -113,11 +113,11 @@ export default function AdminOverview() {
         ? ((vipPurchases || 0) / totalProfiles) * 100 
         : 0;
 
-      // Completion rate (Day 7 completions / total registrations)
+      // Completion rate (Day 5 completions / total registrations)
       const { count: totalCompletions } = await supabase
         .from("user_progress")
         .select("*", { count: "exact", head: true })
-        .eq("day_number", 7)
+        .eq("day_number", 5)
         .eq("is_completed", true);
 
       const compRate = totalProfiles && totalProfiles > 0 
