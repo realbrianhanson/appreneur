@@ -98,6 +98,7 @@ const dayData: Record<number, {
     estimatedTime: "60-75 minutes",
     videoTitle: "Creating Your App Blueprint (No Design Skills Needed)",
     videoLength: "22 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll create a visual map of your entire app. You'll define every screen, button, and user flow before writing a single line of code.",
     outcomes: [
       "Complete app wireframe/blueprint",
