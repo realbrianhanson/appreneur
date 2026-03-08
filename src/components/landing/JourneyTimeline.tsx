@@ -54,10 +54,10 @@ const JourneyTimeline = () => {
       {/* Desktop: Horizontal Timeline */}
       <div className="hidden lg:block relative">
         {/* Connection Line */}
-        <div className="absolute top-[60px] left-[calc(100%/14)] right-[calc(100%/14)] h-0.5 bg-gradient-to-r from-primary/50 via-accent/50 to-secondary/50" />
+        <div className="absolute top-[60px] left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-primary/50 via-accent/50 to-secondary/50" />
         
         {/* Progress dots on line */}
-        <div className="absolute top-[60px] left-[calc(100%/14)] right-[calc(100%/14)] flex justify-between -translate-y-1/2">
+        <div className="absolute top-[60px] left-[10%] right-[10%] flex justify-between -translate-y-1/2">
           {days.map((_, idx) => (
             <div
               key={idx}
@@ -72,7 +72,7 @@ const JourneyTimeline = () => {
         </div>
 
         {/* Day Cards */}
-        <div className="grid grid-cols-7 gap-4">
+        <div className="grid grid-cols-5 gap-6">
           {days.map((day) => {
             const Icon = day.icon;
             const isActive = activeDay === day.day;
