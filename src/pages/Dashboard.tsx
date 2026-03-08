@@ -640,7 +640,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Community Card */}
-            <Card>
+            <Card className="border-primary/30">
               <CardContent className="p-5">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -649,11 +649,17 @@ const Dashboard = () => {
                   <div>
                     <p className="font-medium text-foreground">Join the Community</p>
                     <p className="text-xs text-muted-foreground">
-                      500+ builders helping each other
+                      Connect with other Appreneurs, share your progress, and get help
                     </p>
                   </div>
                 </div>
-                <Button variant="outline" className="w-full" size="sm">
+                <Badge variant="secondary" className="text-xs mb-3">500+ members</Badge>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  size="sm"
+                  onClick={() => window.open(COMMUNITY_URL, '_blank')}
+                >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Open Community
                 </Button>
