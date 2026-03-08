@@ -81,15 +81,15 @@ const MobileBottomNav = ({ currentDay = 1, isVIP = false }: MobileBottomNavProps
         </Link>
 
         {/* Community */}
-        <Link
-          to="#"
-          className={`flex flex-col items-center justify-center gap-1 flex-1 h-full ${
-            path.includes("community") ? "text-primary" : "text-muted-foreground"
-          }`}
+        <a
+          href={COMMUNITY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`flex flex-col items-center justify-center gap-1 flex-1 h-full text-muted-foreground`}
         >
           <Users className="w-5 h-5" />
           <span className="text-[10px] font-medium">Community</span>
-        </Link>
+        </a>
 
         {/* VIP Upgrade or Menu */}
         {!isVIP ? (

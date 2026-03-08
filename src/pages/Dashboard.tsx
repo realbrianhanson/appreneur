@@ -548,7 +548,12 @@ const Dashboard = () => {
                 <h2 className="text-xl font-display font-bold text-foreground">
                   What Others Are Building
                 </h2>
-                <Button variant="ghost" size="sm" className="text-primary">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-primary"
+                  onClick={() => window.open(COMMUNITY_URL, '_blank')}
+                >
                   See All
                   <ExternalLink className="w-4 h-4 ml-2" />
                 </Button>

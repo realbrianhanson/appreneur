@@ -644,19 +644,31 @@ const DayMission = () => {
                         className="mt-0.5 shrink-0"
                       />
                     )}
-                    <label
-                      htmlFor={item.id}
-                      className={`flex-1 cursor-pointer text-sm md:text-base ${
-                        completed
-                          ? "text-muted-foreground line-through"
-                          : "text-foreground"
-                      }`}
-                    >
-                      {item.label}
-                      {!item.required && (
-                        <span className="text-[10px] md:text-xs text-muted-foreground ml-2">(Optional)</span>
+                    <div className="flex-1">
+                      <label
+                        htmlFor={item.id}
+                        className={`cursor-pointer text-sm md:text-base ${
+                          completed
+                            ? "text-muted-foreground line-through"
+                            : "text-foreground"
+                        }`}
+                      >
+                        {item.label}
+                        {!item.required && (
+                          <span className="text-[10px] md:text-xs text-muted-foreground ml-2">(Optional)</span>
+                        )}
+                      </label>
+                      {/share|community/i.test(item.label) && (
+                        <a
+                          href={COMMUNITY_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-xs text-primary hover:underline mt-1"
+                        >
+                          Share in the community →
+                        </a>
                       )}
-                    </label>
+                    </div>
                   </div>
                 );
               })}

@@ -51,7 +51,7 @@ const dayConfigs: DayConfig[] = [
 ];
 
 const bottomNavItems = [
-  { title: "Community", icon: <Users className="w-4 h-4" />, url: "https://www.facebook.com/groups/918528500613193", external: true },
+  { title: "Community", icon: <Users className="w-4 h-4" />, url: COMMUNITY_URL, external: true },
   { title: "Resources", icon: <FolderOpen className="w-4 h-4" />, url: "/dashboard/resources" },
   { title: "Support", icon: <HelpCircle className="w-4 h-4" />, url: "/dashboard/support" },
 ];
