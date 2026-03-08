@@ -85,6 +85,13 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false,
     return "locked";
   };
 
+  // Check if a day is unlocked but not started (no tasks completed)
+  const isDayUnstarted = (day: number): boolean => {
+    const dayProgress = userProgress.find(p => p.day_number === day);
+    if (!dayProgress) return false;
+    return dayProgress.is_unlocked && !dayProgress.is_completed && Object.keys(dayProgress.tasks_completed || {}).length === 0;
+  };
+
   const getStatusIcon = (status: "completed" | "current" | "locked") => {
     switch (status) {
       case "completed":
