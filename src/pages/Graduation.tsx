@@ -353,7 +353,7 @@ const Graduation = () => {
                 >
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      item.day === 7
+                      item.day === 5
                         ? "bg-gradient-to-br from-primary to-accent text-white"
                         : "bg-primary/20 text-primary"
                     }`}
