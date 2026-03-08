@@ -72,6 +72,7 @@ const dayData: Record<number, {
     estimatedTime: "45-60 minutes",
     videoTitle: "How to Find Your Million-Dollar App Idea",
     videoLength: "18 minutes",
+    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     missionDescription: "Today we'll help you discover the perfect app idea that matches your skills, interests, and market opportunity. No more guessing — we use a proven framework.",
     outcomes: [
       "Validated app idea with clear target audience",
