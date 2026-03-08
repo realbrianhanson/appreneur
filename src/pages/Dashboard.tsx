@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { TestimonialModal } from "@/components/dashboard/TestimonialModal";
+import { OnboardingWizard } from "@/components/dashboard/OnboardingWizard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -109,6 +110,18 @@ const Dashboard = () => {
   // Testimonial modal state
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
   const [hasShownTestimonialPrompt, setHasShownTestimonialPrompt] = useState(false);
+
+  // Onboarding wizard state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const key = `onboarding_completed_${user.id}`;
+      if (!localStorage.getItem(key)) {
+        setShowOnboarding(true);
+      }
+    }
+  }, [user]);
 
   // Track page view on mount
   useEffect(() => {
@@ -357,6 +370,19 @@ const Dashboard = () => {
         noindex={true}
       />
       
+      {/* Onboarding Wizard */}
+      {showOnboarding && (
+        <OnboardingWizard
+          firstName={firstName}
+          onComplete={() => {
+            if (user) {
+              localStorage.setItem(`onboarding_completed_${user.id}`, "true");
+            }
+            setShowOnboarding(false);
+          }}
+        />
+      )}
+
       {/* Testimonial Modal */}
       <TestimonialModal
         isOpen={showTestimonialModal}
