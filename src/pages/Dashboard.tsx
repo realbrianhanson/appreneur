@@ -189,7 +189,7 @@ const Dashboard = () => {
   
   useEffect(() => {
     const checkTestimonialPrompt = async () => {
-      if (!user || !isDay7Completed || hasShownTestimonialPrompt) return;
+      if (!user || !isDay5Completed || hasShownTestimonialPrompt) return;
       
       // Check if user already submitted a testimonial
       const { data: existingTestimonial } = await supabase
