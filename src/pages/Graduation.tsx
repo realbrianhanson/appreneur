@@ -1,23 +1,17 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProgress } from "@/hooks/useProgress";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { showSuccess, showError } from "@/lib/toast-utils";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 import {
   Download,
-  Share2,
   Twitter,
   Linkedin,
   Check,
   Trophy,
   Clock,
-  FileText,
   Calendar,
   Zap,
   Users,
@@ -29,12 +23,11 @@ import {
   PenTool,
   Code,
   Sparkles,
-  Palette,
-  Bug,
   Rocket,
   Award,
-  Loader2,
 } from "lucide-react";
+import jsPDF from "jspdf";
+import { showSuccess, showError } from "@/lib/toast-utils";
 
 // Confetti Component
 const Confetti = () => {
@@ -57,35 +50,32 @@ const Confetti = () => {
       "#FFD700",
       "#FF6B6B",
       "#4ECDC4",
-      "#45B7D1",
-      "#96CEB4",
     ];
-
-    const newParticles = Array.from({ length: 80 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      delay: Math.random() * 2,
-      duration: 3 + Math.random() * 3,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      size: 8 + Math.random() * 8,
-    }));
-
-    setParticles(newParticles);
+    setParticles(
+      Array.from({ length: 60 }, (_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        delay: Math.random() * 2,
+        duration: 3 + Math.random() * 3,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: 8 + Math.random() * 8,
+      }))
+    );
   }, []);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-      {particles.map((particle) => (
+      {particles.map((p) => (
         <div
-          key={particle.id}
+          key={p.id}
           className="absolute rounded-full animate-confetti"
           style={{
-            left: `${particle.x}%`,
-            backgroundColor: particle.color,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            animationDelay: `${particle.delay}s`,
-            animationDuration: `${particle.duration}s`,
+            left: `${p.x}%`,
+            backgroundColor: p.color,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            animationDelay: `${p.delay}s`,
+            animationDuration: `${p.duration}s`,
           }}
         />
       ))}
@@ -93,21 +83,26 @@ const Confetti = () => {
   );
 };
 
-// Journey items
 const journeyItems = [
-  { day: 1, title: "Found winning idea", icon: <Lightbulb className="w-4 h-4" /> },
-  { day: 2, title: "Created blueprint", icon: <PenTool className="w-4 h-4" /> },
-  { day: 3, title: "Built core app", icon: <Code className="w-4 h-4" /> },
-  { day: 4, title: "Added AI features", icon: <Sparkles className="w-4 h-4" /> },
-  { day: 5, title: "SHIPPED!", icon: <Rocket className="w-4 h-4" /> },
+  { day: 1, title: "Found winning idea", icon: Lightbulb },
+  { day: 2, title: "Created blueprint", icon: PenTool },
+  { day: 3, title: "Built core app", icon: Code },
+  { day: 4, title: "Added AI features", icon: Sparkles },
+  { day: 5, title: "SHIPPED!", icon: Rocket },
 ];
+
+function formatTime(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
 
 const Graduation = () => {
   const { profile } = useAuth();
-  const { progress, fetchProgress } = useProgress();
+  const { progress, stats, fetchProgress } = useProgress();
   const [showConfetti, setShowConfetti] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  const certRef = useRef<HTMLDivElement>(null);
   const userName = profile?.first_name || "Builder";
   const isVIP = profile?.is_vip || false;
 
@@ -115,131 +110,96 @@ const Graduation = () => {
     fetchProgress();
   }, [fetchProgress]);
 
-  // Get Day 5 completion date or fallback to today
-  const day5Progress = progress.find(p => p.day_number === 5 && p.is_completed);
-  const completionDate = day5Progress?.completed_at
-    ? new Date(day5Progress.completed_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
-    : new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-
-  // Stats
-  const stats = {
-    totalTime: "8h 45m",
-    missionsCompleted: 5,
-    resourcesDownloaded: 12,
-  };
-
-  // Event date (next Monday)
-  const eventDate = "January 27, 2026";
-
-  // Hide confetti after animation
   useEffect(() => {
-    const timer = setTimeout(() => setShowConfetti(false), 6000);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setShowConfetti(false), 6000);
+    return () => clearTimeout(t);
   }, []);
 
+  const completionDate = useMemo(() => {
+    const day5 = progress.find((p) => p.day_number === 5 && p.is_completed);
+    const d = day5?.completed_at ? new Date(day5.completed_at) : new Date();
+    return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  }, [progress]);
+
+  const totalTime = useMemo(() => {
+    return formatTime(stats?.total_time_seconds ?? 0);
+  }, [stats]);
+
+  const daysCompleted = stats?.days_completed ?? progress.filter((p) => p.is_completed).length;
+
   const shareText = encodeURIComponent(
-    `I just completed the 5-Day Appreneur Challenge and built my first app! 🚀 #Appreneur #NoCode #AI`
+    "I just completed the 5-Day Appreneur Challenge and built my first app! 🚀 #Appreneur #NoCode #AI"
   );
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
-  const handleDownloadCertificate = useCallback(async () => {
-    if (!certRef.current) return;
+  const handleDownloadCertificate = async () => {
     setIsGenerating(true);
     try {
-      const canvas = await html2canvas(certRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: "#0a0a1a",
-      });
-      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({ orientation: "landscape", unit: "in", format: "letter" });
-      pdf.addImage(imgData, "PNG", 0, 0, 11, 8.5);
+      const w = 11;
+      const h = 8.5;
+
+      // Background
+      pdf.setFillColor(10, 10, 26);
+      pdf.rect(0, 0, w, h, "F");
+
+      // Gold border
+      pdf.setDrawColor(200, 168, 78);
+      pdf.setLineWidth(0.03);
+      pdf.rect(0.3, 0.3, w - 0.6, h - 0.6);
+      pdf.setLineWidth(0.01);
+      pdf.rect(0.5, 0.5, w - 1, h - 1);
+
+      // Title
+      pdf.setTextColor(148, 163, 184);
+      pdf.setFontSize(11);
+      pdf.text("CERTIFICATE OF COMPLETION", w / 2, 2.2, { align: "center" });
+
+      pdf.setTextColor(200, 168, 78);
+      pdf.setFontSize(16);
+      pdf.text("The Appreneur Challenge", w / 2, 2.8, { align: "center" });
+
+      pdf.setTextColor(148, 163, 184);
+      pdf.setFontSize(12);
+      pdf.text("This certifies that", w / 2, 3.5, { align: "center" });
+
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(36);
+      pdf.text(userName, w / 2, 4.4, { align: "center" });
+
+      pdf.setTextColor(203, 213, 225);
+      pdf.setFontSize(14);
+      pdf.text("has successfully completed the 5-Day Appreneur Challenge", w / 2, 5.1, { align: "center" });
+
+      pdf.setTextColor(148, 163, 184);
+      pdf.setFontSize(12);
+      pdf.text(completionDate, w / 2, 5.7, { align: "center" });
+
+      // Signature line
+      pdf.setDrawColor(51, 65, 85);
+      pdf.setLineWidth(0.01);
+      pdf.line(w / 2 - 1.2, 6.8, w / 2 + 1.2, 6.8);
+
+      pdf.setTextColor(226, 232, 240);
+      pdf.setFontSize(16);
+      pdf.text("Brian Hanson", w / 2, 7.1, { align: "center" });
+
+      pdf.setTextColor(100, 116, 139);
+      pdf.setFontSize(10);
+      pdf.text("Founder, AI For Beginners", w / 2, 7.4, { align: "center" });
+
       pdf.save(`appreneur-certificate-${userName.toLowerCase()}.pdf`);
       showSuccess("Certificate downloaded!");
-    } catch (err) {
-      console.error("Certificate generation failed:", err);
+    } catch {
       showError("Failed to generate certificate. Please try again.");
     } finally {
       setIsGenerating(false);
     }
-  }, [userName]);
+  };
 
   return (
-    <DashboardLayout userName={userName} currentDay={7} isVIP={isVIP}>
+    <DashboardLayout userName={userName} currentDay={5} isVIP={isVIP} userProgress={progress}>
       {showConfetti && <Confetti />}
-
-      {/* Hidden certificate render target for html2canvas */}
-      <div
-        ref={certRef}
-        style={{
-          position: "absolute",
-          left: "-9999px",
-          top: 0,
-          width: 1056,
-          height: 816,
-          backgroundColor: "#0a0a1a",
-          fontFamily: "'Georgia', serif",
-          color: "#e2e8f0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {/* Outer border */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 16,
-            border: "3px solid #c8a84e",
-            borderRadius: 8,
-          }}
-        />
-        {/* Inner border */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 28,
-            border: "1px solid #c8a84e55",
-            borderRadius: 4,
-          }}
-        />
-        <div style={{ textAlign: "center", padding: 60, zIndex: 1 }}>
-          {/* Logo icon */}
-          <div
-            style={{
-              width: 56,
-              height: 56,
-              margin: "0 auto 16px",
-              borderRadius: "50%",
-              backgroundColor: "rgba(168, 85, 247, 0.2)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a855f7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
-          </div>
-          <p style={{ fontSize: 13, letterSpacing: 6, textTransform: "uppercase", color: "#94a3b8", marginBottom: 8 }}>
-            Certificate of Completion
-          </p>
-          <h1 style={{ fontSize: 18, color: "#c8a84e", marginBottom: 32, fontWeight: 400, letterSpacing: 2 }}>
-            The Appreneur Challenge
-          </h1>
-          <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 8 }}>This certifies that</p>
-          <h2 style={{ fontSize: 42, fontWeight: 700, color: "#ffffff", marginBottom: 12 }}>{userName}</h2>
-          <p style={{ fontSize: 16, color: "#cbd5e1", marginBottom: 32 }}>
-            has successfully completed the 5-Day Appreneur Challenge
-          </p>
-          <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 48 }}>{completionDate}</p>
-          {/* Signature */}
-          <div style={{ borderTop: "1px solid #334155", width: 240, margin: "0 auto", paddingTop: 12 }}>
-            <p style={{ fontSize: 18, fontStyle: "italic", color: "#e2e8f0", marginBottom: 4 }}>Brian Hanson</p>
-            <p style={{ fontSize: 12, color: "#64748b" }}>Founder, AI For Beginners</p>
-          </div>
-        </div>
-      </div>
 
       <div className="max-w-4xl mx-auto space-y-10">
         {/* Celebration Header */}
@@ -256,11 +216,10 @@ const Graduation = () => {
           </p>
         </div>
 
-        {/* Achievement Display / Certificate */}
+        {/* Certificate Card */}
         <Card className="border-2 border-primary/30 bg-gradient-to-br from-primary/5 via-card to-accent/5 overflow-hidden">
           <CardContent className="p-8 md:p-12">
             <div className="text-center space-y-6">
-              {/* Certificate Design */}
               <div className="relative mx-auto max-w-lg p-8 rounded-2xl border-2 border-primary/20 bg-card">
                 {/* Corner decorations */}
                 <div className="absolute top-4 left-4 w-8 h-8 border-l-2 border-t-2 border-primary/40" />
@@ -275,20 +234,12 @@ const Graduation = () => {
                   <p className="text-sm uppercase tracking-widest text-muted-foreground">
                     Certificate of Completion
                   </p>
-                  <h2 className="text-3xl font-display font-bold text-foreground">
-                    {userName}
-                  </h2>
-                  <p className="text-muted-foreground">
-                    has successfully completed the
-                  </p>
-                  <p className="text-xl font-display font-bold text-primary">
-                    5-Day Appreneur Challenge
-                  </p>
+                  <h2 className="text-3xl font-display font-bold text-foreground">{userName}</h2>
+                  <p className="text-muted-foreground">has successfully completed the</p>
+                  <p className="text-xl font-display font-bold text-primary">5-Day Appreneur Challenge</p>
                   <p className="text-sm text-muted-foreground">{completionDate}</p>
-
-                  {/* Badge */}
                   <div className="pt-4">
-                    <Badge className="bg-gradient-to-r from-primary to-accent text-white px-4 py-1">
+                    <Badge className="bg-gradient-to-r from-primary to-accent text-primary-foreground px-4 py-1">
                       <Trophy className="w-3 h-3 mr-2" />
                       Appreneur Graduate
                     </Badge>
@@ -299,39 +250,27 @@ const Graduation = () => {
               {/* Share Buttons */}
               <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
                 <Button variant="outline" size="lg" onClick={handleDownloadCertificate} disabled={isGenerating}>
-                  {isGenerating ? (
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  ) : (
-                    <Download className="w-4 h-4 mr-2" />
-                  )}
+                  <Download className="w-4 h-4 mr-2" />
                   {isGenerating ? "Generating..." : "Download Certificate"}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  asChild
-                >
+                <Button variant="outline" size="lg" asChild>
                   <a
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Linkedin className="w-4 h-4 mr-2" />
-                    Share on LinkedIn
+                    LinkedIn
                   </a>
                 </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  asChild
-                >
+                <Button variant="outline" size="lg" asChild>
                   <a
                     href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <Twitter className="w-4 h-4 mr-2" />
-                    Share on Twitter
+                    Twitter
                   </a>
                 </Button>
               </div>
@@ -345,108 +284,87 @@ const Graduation = () => {
             <CardTitle className="text-xl text-center">Your Journey</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-5 gap-4">
-              {journeyItems.map((item, index) => (
-                <div
-                  key={item.day}
-                  className="flex flex-col items-center text-center space-y-2"
-                >
-                  <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      item.day === 5
-                        ? "bg-gradient-to-br from-primary to-accent text-white"
-                        : "bg-primary/20 text-primary"
-                    }`}
-                  >
-                    {item.icon}
+            <div className="grid grid-cols-5 gap-3 md:gap-4">
+              {journeyItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.day} className="flex flex-col items-center text-center space-y-2">
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                        item.day === 5
+                          ? "bg-gradient-to-br from-primary to-accent text-primary-foreground"
+                          : "bg-primary/20 text-primary"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Day {item.day}</p>
+                      <p className="text-xs md:text-sm font-medium text-foreground">{item.title}</p>
+                    </div>
+                    <Check className="w-4 h-4 text-primary" />
                   </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Day {item.day}</p>
-                    <p className="text-sm font-medium text-foreground">{item.title}</p>
-                  </div>
-                  <Check className="w-4 h-4 text-primary" />
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            {/* Stats */}
+            {/* Real Stats */}
             <div className="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-border">
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Clock className="w-4 h-4 text-primary" />
-                </div>
-                <p className="text-2xl font-display font-bold text-foreground">
-                  {stats.totalTime}
-                </p>
+                <Clock className="w-4 h-4 text-primary mx-auto mb-1" />
+                <p className="text-2xl font-display font-bold text-foreground">{totalTime}</p>
                 <p className="text-xs text-muted-foreground">Time Invested</p>
               </div>
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <Trophy className="w-4 h-4 text-accent" />
-                </div>
-                <p className="text-2xl font-display font-bold text-foreground">
-                  {stats.missionsCompleted}/5
-                </p>
+                <Trophy className="w-4 h-4 text-accent mx-auto mb-1" />
+                <p className="text-2xl font-display font-bold text-foreground">{daysCompleted}/5</p>
                 <p className="text-xs text-muted-foreground">Missions Complete</p>
               </div>
               <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-1">
-                  <FileText className="w-4 h-4 text-secondary" />
-                </div>
-                <p className="text-2xl font-display font-bold text-foreground">
-                  {stats.resourcesDownloaded}
-                </p>
-                <p className="text-xs text-muted-foreground">Resources Downloaded</p>
+                <Zap className="w-4 h-4 text-secondary mx-auto mb-1" />
+                <p className="text-2xl font-display font-bold text-foreground">{stats?.streak ?? 0}</p>
+                <p className="text-xs text-muted-foreground">Day Streak</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* What's Next Section */}
+        {/* What's Next — Event CTA */}
         <Card className="border-accent/30 bg-gradient-to-br from-accent/10 via-card to-secondary/10 overflow-hidden">
           <CardContent className="p-8 md:p-10">
             <div className="text-center space-y-6">
-              <Badge variant="secondary" className="mb-2">
-                What's Next
-              </Badge>
+              <Badge variant="secondary">What's Next</Badge>
               <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
                 Your App is Live. Now Let's Build a Business.
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                You've proven you can build. But an app without users is just a hobby.
-                Join me at the <span className="text-foreground font-semibold">FREE 3-Day AI For Business</span> live 
-                event where I'll show you how to turn your app into a real business.
+                You've proven you can build. Join me at the{" "}
+                <span className="text-foreground font-semibold">FREE 3-Day AI For Business</span> live event
+                where I'll show you how to turn your app into a real business.
               </p>
 
-              {/* What you'll learn */}
               <div className="grid md:grid-cols-3 gap-4 py-6">
-                <div className="p-4 rounded-xl bg-card border border-border">
-                  <Users className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="font-medium text-foreground">Get Your First 100 Users</p>
-                </div>
-                <div className="p-4 rounded-xl bg-card border border-border">
-                  <Zap className="w-6 h-6 text-accent mx-auto mb-2" />
-                  <p className="font-medium text-foreground">Monetize Your App</p>
-                </div>
-                <div className="p-4 rounded-xl bg-card border border-border">
-                  <Sparkles className="w-6 h-6 text-secondary mx-auto mb-2" />
-                  <p className="font-medium text-foreground">Scale with AI Automation</p>
-                </div>
+                {[
+                  { icon: Users, label: "Get Your First 100 Users" },
+                  { icon: Zap, label: "Monetize Your App" },
+                  { icon: Sparkles, label: "Scale with AI Automation" },
+                ].map(({ icon: Icon, label }) => (
+                  <div key={label} className="p-4 rounded-xl bg-card border border-border">
+                    <Icon className="w-6 h-6 text-primary mx-auto mb-2" />
+                    <p className="font-medium text-foreground">{label}</p>
+                  </div>
+                ))}
               </div>
 
-              {/* Event Details */}
               <div className="inline-flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  {eventDate}
+                  <Calendar className="w-4 h-4" /> January 27, 2026
                 </span>
                 <span className="flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  11am - 3pm EST daily
+                  <Clock className="w-4 h-4" /> 11am - 3pm EST daily
                 </span>
                 <span className="flex items-center gap-2">
-                  <Video className="w-4 h-4" />
-                  Live, Virtual, Interactive
+                  <Video className="w-4 h-4" /> Live & Interactive
                 </span>
               </div>
 
@@ -458,48 +376,37 @@ const Graduation = () => {
           </CardContent>
         </Card>
 
-        {/* VIP Pitch (for non-VIP users) */}
+        {/* VIP Pitch (non-VIP only) */}
         {!isVIP && (
-          <Card className="border-yellow-500/30 bg-gradient-to-br from-yellow-500/5 via-card to-orange-500/5">
+          <Card className="border-secondary/30 bg-gradient-to-br from-secondary/5 via-card to-primary/5">
             <CardContent className="p-8 md:p-10">
               <div className="flex flex-col lg:flex-row items-center gap-8">
                 <div className="flex-1 space-y-4">
-                  <Badge className="bg-yellow-500 text-black">
+                  <Badge className="bg-secondary text-secondary-foreground">
                     <Crown className="w-3 h-3 mr-1" />
                     Pro Membership
                   </Badge>
-                  <h2 className="text-2xl font-display font-bold text-foreground">
-                    Want to Go Deeper?
-                  </h2>
+                  <h2 className="text-2xl font-display font-bold text-foreground">Want to Go Deeper?</h2>
                   <p className="text-muted-foreground">
-                    Join Pro and get continued access to advanced training, monthly templates, 
-                    and live coaching calls.
+                    Join Pro for continued access to advanced training, monthly templates, and live coaching.
                   </p>
-
                   <ul className="space-y-2">
-                    {[
-                      "Monthly app templates",
-                      "Advanced training library",
-                      "Private community access",
-                      "Monthly live coaching calls",
-                    ].map((feature, index) => (
-                      <li key={index} className="flex items-center gap-2 text-foreground">
-                        <Check className="w-4 h-4 text-yellow-500" />
-                        {feature}
-                      </li>
-                    ))}
+                    {["Monthly app templates", "Advanced training library", "Private community access", "Monthly live coaching calls"].map(
+                      (f) => (
+                        <li key={f} className="flex items-center gap-2 text-foreground">
+                          <Check className="w-4 h-4 text-secondary" />
+                          {f}
+                        </li>
+                      )
+                    )}
                   </ul>
                 </div>
-
                 <div className="text-center lg:text-right">
                   <p className="text-3xl font-display font-bold text-foreground mb-1">
                     $97<span className="text-lg text-muted-foreground">/month</span>
                   </p>
                   <p className="text-sm text-muted-foreground mb-4">Cancel anytime</p>
-                  <Button
-                    size="lg"
-                    className="bg-yellow-500 hover:bg-yellow-600 text-black"
-                  >
+                  <Button size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground">
                     <Crown className="w-4 h-4 mr-2" />
                     Join Pro
                   </Button>
