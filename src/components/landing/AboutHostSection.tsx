@@ -157,22 +157,7 @@ const AboutHostSection = () => {
               ))}
             </div>
 
-            {/* Publication Logos Placeholder */}
-            <div className="mt-8 pt-6 border-t border-border/30">
-              <p className="text-xs text-muted-foreground text-center mb-4 uppercase tracking-wider">
-                As Featured In
-              </p>
-              <div className="flex flex-wrap justify-center items-center gap-8 opacity-50">
-                {["Forbes", "Inc.", "Entrepreneur", "Business Insider", "TechCrunch"].map((pub) => (
-                  <span
-                    key={pub}
-                    className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {pub}
-                  </span>
-                ))}
-              </div>
-            </div>
+            {/* Removed fake "As Featured In" — only add back with real logos/links */}
           </div>
         </div>
       </Container>

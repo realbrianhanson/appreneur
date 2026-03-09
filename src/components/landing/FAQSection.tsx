@@ -18,7 +18,7 @@ const faqs = [
   {
     question: "What if I don't have an app idea?",
     answer:
-      "That's what the 750 Profitable App Ideas PDF is for. You'll have more ideas than you know what to do with.",
+      "That's what the 50 Profitable App Ideas PDF is for. You'll have more ideas than you know what to do with.",
   },
   {
     question: "Is this just theory or do I actually build something?",

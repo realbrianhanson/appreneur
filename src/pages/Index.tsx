@@ -7,6 +7,7 @@ import JourneyTimeline from "@/components/landing/JourneyTimeline";
 import ValueStackSection from "@/components/landing/ValueStackSection";
 import OpeningCopySection from "@/components/landing/OpeningCopySection";
 import UrgencySection from "@/components/landing/UrgencySection";
+import StickyCtaBar from "@/components/landing/StickyCtaBar";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { AboutHostSection } from "@/components/landing/AboutHostSection";
 import { FAQSection } from "@/components/landing/FAQSection";
@@ -54,7 +55,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEOHead 
+      <StickyCtaBar onCtaClick={scrollToQuiz} />
+      <SEOHead
         title="Appreneur Challenge — Build Your First App in 5 Days"
         description="Join 500+ entrepreneurs building real apps without code. Free 5-day challenge teaches you to go from idea to live app."
         canonicalUrl="https://appreneur.ai/"
