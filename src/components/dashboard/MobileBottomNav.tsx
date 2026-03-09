@@ -143,7 +143,7 @@ const MobileBottomNav = ({ currentDay = 1, isVIP = false }: MobileBottomNavProps
           </Sheet>
         )}
 
-        {/* More Menu (always visible) */}
+        {/* More Menu (for non-VIP users) */}
         {!isVIP && (
           <Sheet>
             <SheetTrigger asChild>
