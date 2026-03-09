@@ -153,7 +153,7 @@ export const SocialProofSection = () => {
           data-section="stats"
           className="flex flex-wrap justify-center gap-4 md:gap-0 md:divide-x divide-border/50 bg-card/30 backdrop-blur-sm rounded-2xl border border-border/50 mb-20"
         >
-          <StatItem value="99+" label="Apps Built" isVisible={isStatsVisible} />
+          <StatItem value="500+" label="Apps Built" isVisible={isStatsVisible} />
           <StatItem value="9" label="Countries" isVisible={isStatsVisible} />
           <StatItem value="4.9★" label="Rating" isVisible={isStatsVisible} />
         </div>

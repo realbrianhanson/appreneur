@@ -125,7 +125,7 @@ const Index = () => {
                 className="text-lg md:text-xl py-7 px-10"
                 onClick={scrollToQuiz}
               >
-                Join the Free 5-Day Challenge
+                See If You Qualify — 3 Quick Questions
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
