@@ -135,10 +135,10 @@ const dayData: Record<number, {
       "Database connected (if needed)",
     ],
     resources: [
-      { title: "Lovable Prompt Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Component Library Reference", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
-      { title: "Done-For-You App Template", type: "download", icon: <Code className="w-4 h-4" />, url: "#", vipOnly: true },
-      { title: "Advanced Prompts Vault", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "Lovable Prompt Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-3/lovable-prompt-templates.pdf", storageKey: "day-3/lovable-prompt-templates.pdf" },
+      { title: "Component Library Reference", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "https://ui.shadcn.com" },
+      { title: "Done-For-You App Template", type: "download", icon: <Code className="w-4 h-4" />, url: "/resources/day-3/app-template.zip", storageKey: "day-3/app-template.zip", vipOnly: true },
+      { title: "Advanced Prompts Vault", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "/resources/day-3/advanced-prompts-vault.pdf", storageKey: "day-3/advanced-prompts-vault.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
