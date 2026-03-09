@@ -261,12 +261,7 @@ const QuizContainer = () => {
       }
 
       setIsComplete(true);
-      toast.success("You're registered! Check your email for next steps.");
-      
-      // Redirect to VIP offer page after a short delay
-      setTimeout(() => {
-        navigate("/vip-offer");
-      }, 2000);
+      toast.success("Check your email to verify your account!");
       
     } catch (error) {
       console.error("Error submitting registration:", error);
