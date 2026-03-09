@@ -10,7 +10,7 @@ import EmailCaptureForm from "./EmailCaptureForm";
 import WaitlistForm from "./WaitlistForm";
 import ProgressIndicator from "./ProgressIndicator";
 import CountdownTimer from "./CountdownTimer";
-import { Users, Calendar } from "lucide-react";
+import { Users, Calendar, Mail } from "lucide-react";
 
 interface Cohort {
   id: string;
