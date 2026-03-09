@@ -22,8 +22,6 @@ import {
   PenTool,
   Code,
   Sparkles,
-  Palette,
-  Bug,
   Rocket,
   Users,
   FolderOpen,
@@ -45,9 +43,7 @@ const dayConfigs: DayConfig[] = [
   { day: 2, title: "Design Blueprint", icon: <PenTool className="w-4 h-4" />, url: "/dashboard/day/2" },
   { day: 3, title: "Build Core App", icon: <Code className="w-4 h-4" />, url: "/dashboard/day/3" },
   { day: 4, title: "Add AI Magic", icon: <Sparkles className="w-4 h-4" />, url: "/dashboard/day/4" },
-  { day: 5, title: "Polish & Brand", icon: <Palette className="w-4 h-4" />, url: "/dashboard/day/5" },
-  { day: 6, title: "Test & Fix", icon: <Bug className="w-4 h-4" />, url: "/dashboard/day/6" },
-  { day: 7, title: "Ship It!", icon: <Rocket className="w-4 h-4" />, url: "/dashboard/day/7" },
+  { day: 5, title: "Ship It! 🚀", icon: <Rocket className="w-4 h-4" />, url: "/dashboard/day/5" },
 ];
 
 const bottomNavItems = [
@@ -76,7 +72,7 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false,
   const location = useLocation();
   
   const completedDays = userProgress.filter(p => p.is_completed).length;
-  const progress = (completedDays / 7) * 100;
+  const progress = (completedDays / 5) * 100;
 
   // Compute day status from actual progress
   const getDayStatus = (day: number): "completed" | "current" | "locked" => {

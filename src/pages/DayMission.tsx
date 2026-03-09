@@ -270,7 +270,7 @@ const DayMission = () => {
   const isVIP = profile?.is_vip || false;
   const firstName = profile?.first_name || "Builder";
 
-  const [resourcesOpen, setResourcesOpen] = useState(true);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [completingTask, setCompletingTask] = useState<string | null>(null);
   const [completingDay, setCompletingDay] = useState(false);
@@ -743,7 +743,7 @@ const DayMission = () => {
               </h2>
               <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
                 {isDayComplete
-                  ? day < 7
+                  ? day < 5
                     ? `Amazing work! Day ${day + 1} is now available.`
                     : "Congratulations! You've completed the entire challenge!"
                   : "Click below to complete this day and unlock the next one."}
@@ -767,7 +767,7 @@ const DayMission = () => {
               )}
 
               {/* Next Day Preview */}
-              {day < 7 && (
+              {day < 5 && (
                 <div className="mt-4 md:mt-6 p-3 md:p-4 rounded-xl bg-card border border-border text-left">
                   <p className="text-xs md:text-sm text-muted-foreground mb-1">Coming Next:</p>
                   <p className="font-medium text-foreground text-sm md:text-base">{data.nextDayPreview}</p>
@@ -818,11 +818,11 @@ const DayMission = () => {
 
           <Button
             variant="ghost"
-            disabled={day >= 7 || !isDayComplete}
-            asChild={day < 7 && isDayComplete}
+            disabled={day >= 5 || !isDayComplete}
+            asChild={day < 5 && isDayComplete}
             className="order-3"
           >
-            {day < 7 ? (
+            {day < 5 ? (
               isDayComplete ? (
                 <Link to={`/dashboard/day/${day + 1}`}>
                   Day {day + 1}
@@ -836,7 +836,7 @@ const DayMission = () => {
               )
             ) : isDayComplete ? (
               <Link to="/dashboard/graduation">
-                Graduate
+                Graduate 🎓
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Link>
             ) : (
