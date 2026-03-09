@@ -1,0 +1,1 @@
+CREATE POLICY "Only admins can view SMS logs" ON public.sms_logs FOR SELECT USING (is_admin(auth.uid()));
