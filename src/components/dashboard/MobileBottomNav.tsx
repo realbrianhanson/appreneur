@@ -42,6 +42,8 @@ const MobileBottomNav = ({ currentDay = 1, isVIP = false }: MobileBottomNavProps
     return false;
   };
 
+  // Note: This is a simple fallback. The actual status should come from userProgress
+  // but this component doesn't receive it. For now, use currentDay as heuristic.
   const getDayStatus = (day: number): "completed" | "current" | "locked" => {
     if (day < currentDay) return "completed";
     if (day === currentDay) return "current";

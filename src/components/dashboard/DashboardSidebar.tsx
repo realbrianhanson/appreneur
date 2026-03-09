@@ -74,7 +74,7 @@ const DashboardSidebar = ({ userName = "Builder", currentDay = 1, isVIP = false,
   const location = useLocation();
   
   const completedDays = userProgress.filter(p => p.is_completed).length;
-  const progress = (completedDays / 7) * 100;
+  const progress = (completedDays / 5) * 100;
 
   // Compute day status from actual progress
   const getDayStatus = (day: number): "completed" | "current" | "locked" => {

@@ -270,7 +270,7 @@ const DayMission = () => {
   const isVIP = profile?.is_vip || false;
   const firstName = profile?.first_name || "Builder";
 
-  const [resourcesOpen, setResourcesOpen] = useState(true);
+  const [resourcesOpen, setResourcesOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [completingTask, setCompletingTask] = useState<string | null>(null);
   const [completingDay, setCompletingDay] = useState(false);
