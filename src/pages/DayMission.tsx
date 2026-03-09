@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useProgress } from "@/hooks/useProgress";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
+import DayCompleteCelebration from "@/components/dashboard/DayCompleteCelebration";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -272,6 +273,7 @@ const DayMission = () => {
 
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const [completingTask, setCompletingTask] = useState<string | null>(null);
   const [completingDay, setCompletingDay] = useState(false);
   const [startTime] = useState(Date.now());
@@ -389,14 +391,12 @@ const DayMission = () => {
     const result = await completeDay(day, timeSpent);
     
     if (result) {
-      showSuccess("Day complete! 🎉");
+      setShowCelebration(true);
       
       if (result.is_graduation) {
-        setTimeout(() => {
-          navigate("/dashboard/graduation");
-        }, 2000);
+        // Celebration screen will handle navigation to graduation
       } else if (result.next_day_unlocked) {
-        showInfo(`Day ${day + 1} is now unlocked!`);
+        // Celebration screen will show next day preview
       }
     }
     
@@ -419,6 +419,22 @@ const DayMission = () => {
   return (
     <DashboardLayout userName={firstName} currentDay={day} isVIP={isVIP}>
       {showConfetti && <Confetti />}
+      
+      {/* Celebration Screen */}
+      {showCelebration && (
+        <DayCompleteCelebration
+          day={day}
+          timeSpentSeconds={elapsedSeconds}
+          tasksCompleted={completedRequired + (data.checklist.length - requiredItems.length)}
+          totalTasks={data.checklist.length}
+          nextDayPreview={data.nextDayPreview}
+          isLastDay={day >= 5}
+          onDismiss={() => {
+            setShowCelebration(false);
+            navigate("/dashboard");
+          }}
+        />
+      )}
 
       <div className="max-w-4xl mx-auto space-y-4 md:space-y-8">
         {/* Top Section */}
