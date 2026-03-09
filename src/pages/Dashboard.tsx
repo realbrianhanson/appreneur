@@ -55,50 +55,14 @@ interface UserProgress {
   tasks_completed: Record<string, unknown>;
 }
 
-const upcomingDaysData = [
-  {
-    day: 4,
-    title: "Add AI Magic",
-    description: "Integrate AI features that make your app feel magical",
-    icon: <Sparkles className="w-5 h-5" />,
-  },
-  {
-    day: 5,
-    title: "Polish & Brand",
-    description: "Add professional styling and branding to your app",
-    icon: <Palette className="w-5 h-5" />,
-  },
-];
-
-const communityPosts = [
-  {
-    id: 1,
-    author: "Sarah M.",
-    avatar: "S",
-    appName: "ContentFlow AI",
-    description: "Just shipped my content scheduling app!",
-    likes: 24,
-    timeAgo: "2h ago",
-  },
-  {
-    id: 2,
-    author: "Marcus T.",
-    avatar: "M",
-    appName: "LeadTracker Pro",
-    description: "Day 5 done - UI is looking clean 🔥",
-    likes: 18,
-    timeAgo: "4h ago",
-  },
-  {
-    id: 3,
-    author: "Jennifer K.",
-    avatar: "J",
-    appName: "CoachBot",
-    description: "AI integration working perfectly!",
-    likes: 31,
-    timeAgo: "6h ago",
-  },
-];
+// Day titles/descriptions for the current mission card
+const dayMeta: Record<number, { title: string; description: string }> = {
+  1: { title: "Find Your Idea", description: "Use AI to discover and validate the perfect app idea that matches your skills and market opportunity." },
+  2: { title: "Design Blueprint", description: "Create a visual map of your app — screens, features, and user flows — before building anything." },
+  3: { title: "Build Core App", description: "Start building your app using AI-powered tools. By the end, you'll have a working prototype." },
+  4: { title: "Add AI Magic", description: "Integrate AI capabilities — chatbots, content generation, and more — to make your app feel magical." },
+  5: { title: "Ship It! 🚀", description: "Polish your app with professional styling, fix bugs, and deploy it live to the world." },
+};
 
 const Dashboard = () => {
   const { user, profile } = useAuth();
