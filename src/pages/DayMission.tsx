@@ -506,7 +506,7 @@ const DayMission = () => {
           )}
           {isTaskCompleted("video") && (
             <div className="px-3 pt-3 md:px-4 md:pt-4">
-              <span className="inline-flex items-center text-sm text-green-500 font-medium">
+              <span className="inline-flex items-center text-sm text-accent font-medium">
                 <Check className="w-4 h-4 mr-1" />
                 Watched
               </span>
