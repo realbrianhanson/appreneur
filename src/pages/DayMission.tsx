@@ -109,9 +109,9 @@ const dayData: Record<number, {
       "Design inspiration collected",
     ],
     resources: [
-      { title: "Blueprint Template (Figma)", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
-      { title: "User Flow Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Design System Starter Kit", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "Blueprint Template (Figma)", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "https://figma.com" },
+      { title: "User Flow Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-2/user-flow-cheat-sheet.pdf", storageKey: "day-2/user-flow-cheat-sheet.pdf" },
+      { title: "Design System Starter Kit", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-2/design-system-starter-kit.pdf", storageKey: "day-2/design-system-starter-kit.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
