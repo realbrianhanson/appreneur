@@ -113,7 +113,7 @@ export const SocialProofSection = () => {
             const target = entry.target as HTMLElement;
             if (target.dataset.section === "stats") setIsStatsVisible(true);
             if (target.dataset.section === "testimonials") setIsTestimonialsVisible(true);
-            if (target.dataset.section === "apps") setIsAppsVisible(true);
+            if (target.dataset.section === "apps") _setIsAppsVisible(true);
           }
         });
       },
