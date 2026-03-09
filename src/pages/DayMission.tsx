@@ -189,9 +189,9 @@ const dayData: Record<number, {
       "Launch announcement posted",
     ],
     resources: [
-      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-5/ui-polish-checklist.pdf", storageKey: "day-5/ui-polish-checklist.pdf" },
+      { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-5/launch-checklist.pdf", storageKey: "day-5/launch-checklist.pdf" },
+      { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-5/first-100-users-playbook.pdf", storageKey: "day-5/first-100-users-playbook.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
