@@ -210,36 +210,7 @@ const Dashboard = () => {
     },
   ];
 
-  const quickLinks = [
-    {
-      title: "Prompt Library",
-      icon: <FileText className="w-5 h-5" />,
-      url: "/dashboard/resources",
-      color: "bg-primary/10 text-primary",
-    },
-    {
-      title: "All Videos",
-      icon: <Video className="w-5 h-5" />,
-      url: "/dashboard/videos",
-      color: "bg-accent/10 text-accent",
-    },
-    {
-      title: "Get Help",
-      icon: <MessageCircle className="w-5 h-5" />,
-      url: "/dashboard/support",
-      color: "bg-secondary/10 text-secondary",
-    },
-    {
-      title: "Upgrade to VIP",
-      icon: <Crown className="w-5 h-5" />,
-      url: "/vip-offer",
-      color: "bg-yellow-500/10 text-yellow-500",
-      highlight: !isVIP,
-    },
-  ];
-
-  // Filter upcoming days based on current progress
-  const upcomingDays = upcomingDaysData.filter(d => d.day > currentDay);
+  const currentDayMeta = dayMeta[currentDay] || dayMeta[1];
 
   // Show skeleton loading state
   if (isLoading) {
