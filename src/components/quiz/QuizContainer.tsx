@@ -351,15 +351,26 @@ const QuizContainer = () => {
     return (
       <div className="animate-fade-in text-center space-y-6 p-8 rounded-2xl bg-gradient-to-b from-primary/20 to-primary/5 border border-primary/30">
         <div className="w-20 h-20 mx-auto rounded-full bg-primary/20 flex items-center justify-center">
-          <span className="text-4xl">🚀</span>
+          <Mail className="w-10 h-10 text-primary" />
         </div>
         <h3 className="text-2xl md:text-3xl font-display font-bold">
-          You're In! Welcome to the Challenge
+          Almost There — Check Your Email!
         </h3>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Check your inbox for your welcome email and instant access to 
-          "50 Profitable AI App Ideas for 2026".
+          We've sent a confirmation link to your inbox. 
+          <span className="font-semibold text-foreground"> Click the link to verify your account</span> and unlock your dashboard.
         </p>
+        <div className="p-4 rounded-xl bg-muted/50 border border-border max-w-sm mx-auto">
+          <p className="text-sm text-muted-foreground">
+            📧 Don't see it? Check your spam folder or{" "}
+            <button 
+              onClick={() => setIsComplete(false)}
+              className="text-primary hover:underline font-medium"
+            >
+              try a different email
+            </button>
+          </p>
+        </div>
         <div className="pt-4">
           <p className="text-sm text-muted-foreground">The challenge starts:</p>
           <p className="text-lg font-display font-bold text-primary">
