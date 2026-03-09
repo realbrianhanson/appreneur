@@ -163,9 +163,9 @@ const dayData: Record<number, {
       "Error handling in place",
     ],
     resources: [
-      { title: "AI Integration Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Prompt Engineering Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Advanced AI Templates", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "AI Integration Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-4/ai-integration-guide.pdf", storageKey: "day-4/ai-integration-guide.pdf" },
+      { title: "Prompt Engineering Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-4/prompt-engineering-cheat-sheet.pdf", storageKey: "day-4/prompt-engineering-cheat-sheet.pdf" },
+      { title: "Advanced AI Templates", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "/resources/day-4/advanced-ai-templates.pdf", storageKey: "day-4/advanced-ai-templates.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
