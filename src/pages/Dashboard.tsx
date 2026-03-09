@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useProgress } from "@/hooks/useProgress";
 import { supabase } from "@/integrations/supabase/client";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { TestimonialModal } from "@/components/dashboard/TestimonialModal";
@@ -101,12 +102,10 @@ const communityPosts = [
 
 const Dashboard = () => {
   const { user, profile } = useAuth();
+  const { progress: hookProgress, stats: hookStats, isLoading, error: progressError, fetchProgress } = useProgress();
   const [showAnnouncement, setShowAnnouncement] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
-  const [userStats, setUserStats] = useState<UserStats | null>(null);
-  const [userProgress, setUserProgress] = useState<UserProgress[]>([]);
   
   // Testimonial modal state
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
@@ -129,61 +128,39 @@ const Dashboard = () => {
     trackPageView('/dashboard', 'Dashboard — Appreneur Challenge');
   }, []);
 
+  // Fetch progress via edge function (auto-initializes for new users)
   useEffect(() => {
     if (user) {
-      fetchUserData();
+      fetchProgress();
     }
-  }, [user]);
+  }, [user, fetchProgress]);
 
-  const fetchUserData = async () => {
-    if (!user) return;
-    
-    setIsLoading(true);
-    setHasError(false);
-    
-    try {
-      // Fetch user progress
-      const { data: progressData, error: progressError } = await supabase
-        .from("user_progress")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("day_number", { ascending: true });
-
-      if (progressError) throw progressError;
-      setUserProgress((progressData || []).map(p => ({
-        day_number: p.day_number,
-        is_unlocked: p.is_unlocked,
-        is_completed: p.is_completed,
-        tasks_completed: (p.tasks_completed as Record<string, unknown>) || {},
-      })));
-
-      // Fetch user stats
-      const { data: statsData, error: statsError } = await supabase.rpc(
-        "get_user_stats",
-        { p_user_id: user.id }
-      );
-
-      if (statsError) throw statsError;
-      if (statsData) {
-        setUserStats(statsData as unknown as UserStats);
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+  // Map hook error to local state
+  useEffect(() => {
+    if (progressError) {
       setHasError(true);
       showError("Couldn't load your dashboard", {
         description: "We're having trouble loading your data.",
         onRetry: handleRetry,
       });
-    } finally {
-      setIsLoading(false);
-      setIsRetrying(false);
     }
-  };
+  }, [progressError]);
 
   const handleRetry = () => {
     setIsRetrying(true);
-    fetchUserData();
+    setHasError(false);
+    fetchProgress().finally(() => setIsRetrying(false));
   };
+
+  // Map hook data to component format
+  const userProgress = hookProgress.map(p => ({
+    day_number: p.day_number,
+    is_unlocked: p.is_unlocked,
+    is_completed: p.is_completed,
+    tasks_completed: p.tasks_completed,
+  }));
+
+  const userStats = hookStats;
 
   // Calculate current day and progress
   const completedDays = userProgress.filter(p => p.is_completed).length;

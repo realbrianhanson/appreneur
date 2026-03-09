@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
@@ -8,10 +9,11 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { isAdmin, isLoading: roleLoading } = useAdminRole();
   const location = useLocation();
 
-  if (isLoading) {
+  if (authLoading || (requireAdmin && roleLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
@@ -23,15 +25,11 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
   }
 
   if (!isAuthenticated) {
-    // Redirect to login, but save the attempted location
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // For admin routes, we would check user roles here
-  // This is a placeholder - actual implementation would query user_roles table
-  if (requireAdmin) {
-    // TODO: Check if user has admin role
-    // For now, just allow access
+  if (requireAdmin && !isAdmin) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

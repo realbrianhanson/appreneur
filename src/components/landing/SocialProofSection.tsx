@@ -79,76 +79,11 @@ const fallbackTestimonials: TestimonialData[] = [
   },
 ];
 
-const appShowcase = [
-  { name: "Habit Tracker Pro", color: "from-blue-500 to-cyan-500", builder: "Mike S.", days: 5 },
-  { name: "Invoice Generator", color: "from-purple-500 to-pink-500", builder: "Lisa K.", days: 6 },
-  { name: "Meal Planner AI", color: "from-orange-500 to-yellow-500", builder: "James R.", days: 7 },
-  { name: "Client Portal", color: "from-green-500 to-emerald-500", builder: "Amanda L.", days: 5 },
-  { name: "Booking System", color: "from-red-500 to-orange-500", builder: "Marcus T.", days: 4 },
-  { name: "Analytics Dashboard", color: "from-indigo-500 to-purple-500", builder: "Nina P.", days: 6 },
-];
-
-const AppCard = ({ 
-  app, 
-  index, 
-  isVisible 
-}: { 
-  app: typeof appShowcase[0]; 
-  index: number;
-  isVisible: boolean;
-}) => {
-  return (
-    <div
-      className={`
-        group relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer
-        transform transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-primary/20
-        ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
-      `}
-      style={{ transitionDelay: `${index * 75}ms` }}
-    >
-      {/* App Preview Placeholder */}
-      <div className={`absolute inset-0 bg-gradient-to-br ${app.color} opacity-20`} />
-      <div className="absolute inset-0 bg-card/80 backdrop-blur-sm border border-border/50 group-hover:border-primary/50 transition-colors" />
-      
-      {/* Mock UI Elements */}
-      <div className="absolute inset-0 p-4 flex flex-col">
-        {/* Header bar */}
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex gap-1">
-            <div className="w-2 h-2 rounded-full bg-red-500/60" />
-            <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
-            <div className="w-2 h-2 rounded-full bg-green-500/60" />
-          </div>
-          <div className="flex-1 h-2 bg-muted/30 rounded-full" />
-        </div>
-        
-        {/* Content placeholders */}
-        <div className="flex-1 flex flex-col gap-2">
-          <div className="h-3 w-3/4 bg-muted/20 rounded" />
-          <div className="h-3 w-1/2 bg-muted/20 rounded" />
-          <div className="flex-1 grid grid-cols-2 gap-2 mt-2">
-            <div className={`rounded bg-gradient-to-br ${app.color} opacity-30`} />
-            <div className="rounded bg-muted/20" />
-            <div className="rounded bg-muted/20" />
-            <div className={`rounded bg-gradient-to-br ${app.color} opacity-30`} />
-          </div>
-        </div>
-      </div>
-      
-      {/* Hover overlay with name */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
-        <span className="font-semibold text-foreground">{app.name}</span>
-        <span className="text-xs text-muted-foreground">Built by {app.builder} in {app.days} days</span>
-      </div>
-    </div>
-  );
-};
-
 export const SocialProofSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isStatsVisible, setIsStatsVisible] = useState(false);
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
-  const [isAppsVisible, setIsAppsVisible] = useState(false);
+  
   const [testimonials, setTestimonials] = useState<TestimonialData[]>(fallbackTestimonials);
 
   useEffect(() => {
@@ -178,7 +113,7 @@ export const SocialProofSection = () => {
             const target = entry.target as HTMLElement;
             if (target.dataset.section === "stats") setIsStatsVisible(true);
             if (target.dataset.section === "testimonials") setIsTestimonialsVisible(true);
-            if (target.dataset.section === "apps") setIsAppsVisible(true);
+            
           }
         });
       },
@@ -232,25 +167,6 @@ export const SocialProofSection = () => {
           <TestimonialCarousel testimonials={testimonials} autoplayDelay={5000} />
         </div>
 
-        {/* App Showcase */}
-        <div data-section="apps">
-          <h3 className="text-2xl font-bold text-center mb-4">
-            Apps Built by Challenge Graduates
-          </h3>
-          <p className="text-muted-foreground text-center mb-10 max-w-xl mx-auto">
-            Real MVPs shipped in just 5 days — from idea to deployed product
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {appShowcase.map((app, index) => (
-              <AppCard
-                key={app.name}
-                app={app}
-                index={index}
-                isVisible={isAppsVisible}
-              />
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
