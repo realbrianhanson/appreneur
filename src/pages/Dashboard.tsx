@@ -446,129 +446,49 @@ const Dashboard = () => {
 
         {/* Two Column Layout */}
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Left Column - Main Content */}
+          {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Upcoming Section */}
-            {upcomingDays.length > 0 && (
-              <div className="space-y-4">
-                <h2 className="text-xl font-display font-bold text-foreground">
-                  Coming Up Next
-                </h2>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {upcomingDays.slice(0, 2).map((day) => (
-                    <Card
-                      key={day.day}
-                      className="opacity-75 hover:opacity-90 transition-opacity"
-                    >
-                      <CardContent className="p-5">
-                        <div className="flex items-start gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                            {day.icon}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="text-sm text-muted-foreground">Day {day.day}</p>
-                              <Lock className="w-3 h-3 text-muted-foreground" />
-                            </div>
-                            <p className="font-semibold text-foreground truncate">{day.title}</p>
-                            <p className="text-sm text-muted-foreground line-clamp-1">
-                              {day.description}
-                            </p>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Community Highlights */}
+            {/* Challenge Progress Overview */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-display font-bold text-foreground">
-                  What Others Are Building
-                </h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-primary"
-                  onClick={() => window.open(COMMUNITY_URL, '_blank')}
-                >
-                  See All
-                  <ExternalLink className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-              <div className="space-y-3">
-                {communityPosts.map((post) => (
-                  <Card key={post.id} className="hover:border-primary/30 transition-colors">
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                          <span className="text-primary font-semibold">{post.avatar}</span>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="font-semibold text-foreground">{post.author}</p>
-                            <span className="text-xs text-muted-foreground">{post.timeAgo}</span>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {post.description}
-                          </p>
-                          <div className="flex items-center gap-4">
-                            <Badge variant="secondary" className="text-xs">
-                              {post.appName}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Heart className="w-3 h-3" />
-                              {post.likes}
-                            </span>
-                          </div>
-                        </div>
+              <h2 className="text-xl font-display font-bold text-foreground">
+                Your Journey
+              </h2>
+              <div className="grid grid-cols-5 gap-2">
+                {[1, 2, 3, 4, 5].map((day) => {
+                  const dayProgress = userProgress.find(p => p.day_number === day);
+                  const isCompleted = dayProgress?.is_completed;
+                  const isUnlocked = dayProgress?.is_unlocked;
+                  const isCurrent = day === currentDay;
+                  
+                  return (
+                    <Link
+                      key={day}
+                      to={isUnlocked ? `/dashboard/day/${day}` : "#"}
+                      onClick={(e) => !isUnlocked && e.preventDefault()}
+                      className={`p-3 rounded-xl border text-center transition-all ${
+                        isCompleted
+                          ? "bg-primary/10 border-primary/30 hover:border-primary"
+                          : isCurrent
+                          ? "bg-secondary/10 border-secondary/30 hover:border-secondary"
+                          : "bg-muted/30 border-border opacity-50"
+                      }`}
+                    >
+                      <div className="text-xs font-semibold text-muted-foreground mb-1">Day {day}</div>
+                      <div className="text-lg">
+                        {isCompleted ? "✅" : isCurrent ? "🔥" : "🔒"}
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      <div className="text-[10px] text-muted-foreground mt-1 truncate">
+                        {dayMeta[day]?.title}
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>
 
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
-            {/* Resources Quick Access */}
-            <div className="space-y-4">
-              <h2 className="text-lg font-display font-bold text-foreground">
-                Quick Access
-              </h2>
-              <div className="space-y-2">
-                {quickLinks.map((link, index) => (
-                  <Link key={index} to={link.url} className="block group">
-                    <Card
-                      className={`hover:border-primary/50 transition-colors ${
-                        link.highlight ? "border-yellow-500/30" : ""
-                      }`}
-                    >
-                      <CardContent className="p-4 flex items-center gap-3">
-                        <div
-                          className={`w-10 h-10 rounded-lg flex items-center justify-center ${link.color}`}
-                        >
-                          {link.icon}
-                        </div>
-                        <span className="font-medium text-foreground group-hover:text-primary transition-colors">
-                          {link.title}
-                        </span>
-                        {link.highlight && (
-                          <Badge variant="secondary" className="ml-auto text-xs">
-                            Recommended
-                          </Badge>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
             {/* Motivation Card */}
             <Card className="bg-gradient-to-br from-accent/10 to-secondary/10 border-accent/30">
               <CardContent className="p-5 text-center">
@@ -611,6 +531,31 @@ const Dashboard = () => {
                 </Button>
               </CardContent>
             </Card>
+
+            {/* VIP Upgrade */}
+            {!isVIP && (
+              <Card className="border-secondary/30 bg-gradient-to-br from-secondary/5 to-secondary/10">
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center">
+                      <Crown className="w-5 h-5 text-secondary" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-foreground">Upgrade to VIP</p>
+                      <p className="text-xs text-muted-foreground">
+                        Get advanced prompts, templates, and 1-on-1 support
+                      </p>
+                    </div>
+                  </div>
+                  <Button variant="cta" className="w-full" size="sm" asChild>
+                    <Link to="/vip-offer">
+                      <Crown className="w-4 h-4 mr-2" />
+                      Learn More
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
