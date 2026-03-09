@@ -162,6 +162,11 @@ const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormPr
         </Button>
       </form>
 
+      {/* Risk Reversal */}
+      <p className="text-center text-xs text-muted-foreground">
+        🔒 No spam. No credit card. Unsubscribe anytime. Your info stays private.
+      </p>
+
       {/* Lead Magnet Callout */}
       <div className="flex items-start gap-3 p-4 rounded-xl bg-accent/10 border border-accent/30">
         <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">

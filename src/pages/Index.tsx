@@ -114,7 +114,7 @@ const Index = () => {
 
             {/* Subheadline */}
             <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              No coding. No developers. No $15K budget. Just you, AI, and my step-by-step system that's helped 99+ entrepreneurs ship real, working apps.
+              No coding. No developers. No $15K budget. Just you, AI, and my step-by-step system that's helped 500+ entrepreneurs ship real, working apps.
             </p>
 
             {/* CTA */}
@@ -125,7 +125,7 @@ const Index = () => {
                 className="text-lg md:text-xl py-7 px-10"
                 onClick={scrollToQuiz}
               >
-                Join the Free 5-Day Challenge
+                See If You Qualify — 3 Quick Questions
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>

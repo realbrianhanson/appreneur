@@ -119,11 +119,8 @@ const JourneyTimeline = () => {
                   {day.title} {day.emoji}
                 </h4>
 
-                {/* Description - shows on hover/active */}
-                <div className={cn(
-                  "mt-2 text-xs text-center text-muted-foreground transition-all duration-300 max-w-[140px]",
-                  isActive || isHovered ? "opacity-100" : "opacity-0"
-                )}>
+                {/* Description - always visible */}
+                <div className="mt-2 text-xs text-center text-muted-foreground max-w-[140px]">
                   {day.description}
                 </div>
               </div>

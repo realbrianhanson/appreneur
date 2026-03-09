@@ -78,8 +78,11 @@ const ValueStackSection = () => {
     return () => observer.disconnect();
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const scrollToQuiz = () => {
+    const quizElement = document.querySelector('#quiz-section');
+    if (quizElement) {
+      quizElement.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
@@ -179,7 +182,7 @@ const ValueStackSection = () => {
               variant="cta"
               size="xl"
               className="w-full md:w-auto md:px-16 text-lg py-6"
-              onClick={scrollToTop}
+              onClick={scrollToQuiz}
             >
               Claim Your Free Spot
             </Button>
