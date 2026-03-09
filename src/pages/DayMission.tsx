@@ -59,6 +59,7 @@ const dayData: Record<number, {
     type: "download" | "link" | "video";
     icon: React.ReactNode;
     url: string;
+    storageKey?: string;
     vipOnly?: boolean;
   }>;
   checklist: Array<{
@@ -82,9 +83,9 @@ const dayData: Record<number, {
       "Unique value proposition defined",
     ],
     resources: [
-      { title: "50 Profitable AI App Ideas PDF", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Idea Validation Worksheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Market Research Template", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "50 Profitable AI App Ideas PDF", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-1/50-profitable-ai-app-ideas.pdf", storageKey: "day-1/50-profitable-ai-app-ideas.pdf" },
+      { title: "Idea Validation Worksheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-1/idea-validation-worksheet.pdf", storageKey: "day-1/idea-validation-worksheet.pdf" },
+      { title: "Market Research Template", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-1/market-research-template.pdf", storageKey: "day-1/market-research-template.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -108,9 +109,9 @@ const dayData: Record<number, {
       "Design inspiration collected",
     ],
     resources: [
-      { title: "Blueprint Template (Figma)", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
-      { title: "User Flow Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Design System Starter Kit", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "Blueprint Template (Figma)", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "https://figma.com" },
+      { title: "User Flow Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-2/user-flow-cheat-sheet.pdf", storageKey: "day-2/user-flow-cheat-sheet.pdf" },
+      { title: "Design System Starter Kit", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-2/design-system-starter-kit.pdf", storageKey: "day-2/design-system-starter-kit.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -134,10 +135,10 @@ const dayData: Record<number, {
       "Database connected (if needed)",
     ],
     resources: [
-      { title: "Lovable Prompt Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Component Library Reference", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "#" },
-      { title: "Done-For-You App Template", type: "download", icon: <Code className="w-4 h-4" />, url: "#", vipOnly: true },
-      { title: "Advanced Prompts Vault", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "Lovable Prompt Templates", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-3/lovable-prompt-templates.pdf", storageKey: "day-3/lovable-prompt-templates.pdf" },
+      { title: "Component Library Reference", type: "link", icon: <ExternalLink className="w-4 h-4" />, url: "https://ui.shadcn.com" },
+      { title: "Done-For-You App Template", type: "download", icon: <Code className="w-4 h-4" />, url: "/resources/day-3/app-template.zip", storageKey: "day-3/app-template.zip", vipOnly: true },
+      { title: "Advanced Prompts Vault", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "/resources/day-3/advanced-prompts-vault.pdf", storageKey: "day-3/advanced-prompts-vault.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -162,9 +163,9 @@ const dayData: Record<number, {
       "Error handling in place",
     ],
     resources: [
-      { title: "AI Integration Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Prompt Engineering Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Advanced AI Templates", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "AI Integration Guide", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-4/ai-integration-guide.pdf", storageKey: "day-4/ai-integration-guide.pdf" },
+      { title: "Prompt Engineering Cheat Sheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-4/prompt-engineering-cheat-sheet.pdf", storageKey: "day-4/prompt-engineering-cheat-sheet.pdf" },
+      { title: "Advanced AI Templates", type: "download", icon: <Sparkles className="w-4 h-4" />, url: "/resources/day-4/advanced-ai-templates.pdf", storageKey: "day-4/advanced-ai-templates.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -188,9 +189,9 @@ const dayData: Record<number, {
       "Launch announcement posted",
     ],
     resources: [
-      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "UI Polish Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-5/ui-polish-checklist.pdf", storageKey: "day-5/ui-polish-checklist.pdf" },
+      { title: "Launch Checklist", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-5/launch-checklist.pdf", storageKey: "day-5/launch-checklist.pdf" },
+      { title: "First 100 Users Playbook", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-5/first-100-users-playbook.pdf", storageKey: "day-5/first-100-users-playbook.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
@@ -434,7 +435,7 @@ const DayMission = () => {
               ⏱ {formatElapsed(elapsedSeconds)}
             </Badge>
             {isDayComplete && (
-              <Badge className="bg-green-500/20 text-green-500 border-green-500/30 text-xs">
+              <Badge className="bg-accent/20 text-accent border-accent/30 text-xs">
                 <Check className="w-3 h-3 mr-1" />
                 Completed
               </Badge>
@@ -505,7 +506,7 @@ const DayMission = () => {
           )}
           {isTaskCompleted("video") && (
             <div className="px-3 pt-3 md:px-4 md:pt-4">
-              <span className="inline-flex items-center text-sm text-green-500 font-medium">
+              <span className="inline-flex items-center text-sm text-accent font-medium">
                 <Check className="w-4 h-4 mr-1" />
                 Watched
               </span>
@@ -612,22 +613,33 @@ const DayMission = () => {
                           variant="ghost"
                           size="sm"
                           className="shrink-0"
-                          asChild
-                          onClick={() => {
-                            showSuccess(`Downloading ${resource.title}...`);
-                            // Fire-and-forget download log
+                          onClick={async () => {
+                            const storageKey = resource.storageKey;
+                            if (storageKey) {
+                              const { data: fileData } = supabase.storage
+                                .from("challenge-resources")
+                                .getPublicUrl(storageKey);
+                              
+                              if (fileData?.publicUrl) {
+                                window.open(fileData.publicUrl, '_blank');
+                                showSuccess(`Downloading ${resource.title}...`);
+                              } else {
+                                showError("Resource not available yet. Check back soon!");
+                              }
+                            } else {
+                              showError("Resource not available yet. Check back soon!");
+                            }
+                            // Log download
                             if (profile?.id) {
                               supabase.from("downloads").insert({
                                 user_id: profile.id,
-                                resource_key: resource.title,
+                                resource_key: storageKey || resource.title,
                                 user_agent: navigator.userAgent,
                               });
                             }
                           }}
                         >
-                          <a href={resource.url} download target="_blank" rel="noopener noreferrer">
-                            <Download className="w-4 h-4" />
-                          </a>
+                          <Download className="w-4 h-4" />
                         </Button>
                       ) : resource.type === "link" ? (
                         <Button
