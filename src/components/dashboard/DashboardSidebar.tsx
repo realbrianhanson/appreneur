@@ -22,8 +22,6 @@ import {
   PenTool,
   Code,
   Sparkles,
-  Palette,
-  Bug,
   Rocket,
   Users,
   FolderOpen,
