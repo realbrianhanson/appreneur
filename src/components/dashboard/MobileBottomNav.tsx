@@ -28,9 +28,7 @@ const dayNavItems = [
   { day: 2, title: "Design Blueprint", icon: PenTool },
   { day: 3, title: "Build Core App", icon: Code },
   { day: 4, title: "Add AI Magic", icon: Sparkles },
-  { day: 5, title: "Polish & Brand", icon: Palette },
-  { day: 6, title: "Test & Fix", icon: Bug },
-  { day: 7, title: "Ship It!", icon: Rocket },
+  { day: 5, title: "Ship It!", icon: Rocket },
 ];
 
 const MobileBottomNav = ({ currentDay = 1, isVIP = false }: MobileBottomNavProps) => {
