@@ -613,22 +613,33 @@ const DayMission = () => {
                           variant="ghost"
                           size="sm"
                           className="shrink-0"
-                          asChild
-                          onClick={() => {
-                            showSuccess(`Downloading ${resource.title}...`);
-                            // Fire-and-forget download log
+                          onClick={async () => {
+                            const storageKey = resource.storageKey;
+                            if (storageKey) {
+                              const { data: fileData } = supabase.storage
+                                .from("challenge-resources")
+                                .getPublicUrl(storageKey);
+                              
+                              if (fileData?.publicUrl) {
+                                window.open(fileData.publicUrl, '_blank');
+                                showSuccess(`Downloading ${resource.title}...`);
+                              } else {
+                                showError("Resource not available yet. Check back soon!");
+                              }
+                            } else {
+                              showError("Resource not available yet. Check back soon!");
+                            }
+                            // Log download
                             if (profile?.id) {
                               supabase.from("downloads").insert({
                                 user_id: profile.id,
-                                resource_key: resource.title,
+                                resource_key: storageKey || resource.title,
                                 user_agent: navigator.userAgent,
                               });
                             }
                           }}
                         >
-                          <a href={resource.url} download target="_blank" rel="noopener noreferrer">
-                            <Download className="w-4 h-4" />
-                          </a>
+                          <Download className="w-4 h-4" />
                         </Button>
                       ) : resource.type === "link" ? (
                         <Button
