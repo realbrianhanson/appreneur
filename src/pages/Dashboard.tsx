@@ -23,20 +23,12 @@ import {
   Trophy,
   Zap,
   TrendingUp,
-  FileText,
-  Video,
-  MessageCircle,
   Crown,
-  Lock,
-  Sparkles,
-  Palette,
   ExternalLink,
   Bell,
   Calendar,
   Users,
-  Heart,
   X,
-  RefreshCw,
 } from "lucide-react";
 
 interface UserStats {
