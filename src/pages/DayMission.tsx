@@ -273,6 +273,7 @@ const DayMission = () => {
 
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
   const [completingTask, setCompletingTask] = useState<string | null>(null);
   const [completingDay, setCompletingDay] = useState(false);
   const [startTime] = useState(Date.now());
