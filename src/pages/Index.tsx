@@ -87,8 +87,8 @@ const Index = () => {
         })}
       />
 
-      {/* Hero Section — clean, focused, single column */}
-      <section className="relative overflow-hidden min-h-[85vh] flex items-center bg-background">
+      {/* Hero Section — tighter, more focused */}
+      <section className="relative overflow-hidden min-h-[70vh] flex items-center bg-background">
         {/* Background image with heavy overlay */}
         <div className="absolute inset-0 z-0">
           <img
@@ -103,7 +103,7 @@ const Index = () => {
         {/* Single subtle radial gradient */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-radial from-primary/8 to-transparent blur-3xl z-[1]" />
 
-        <Container size="wide" className="relative z-10 py-16 md:py-24">
+        <Container size="wide" className="relative z-10 py-16 md:py-20">
           <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-in">
             {/* Headline */}
             <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-foreground">
@@ -141,30 +141,13 @@ const Index = () => {
         </Container>
       </section>
 
-      {/* Quiz Section — dedicated */}
-      <Section variant="default" spacing="lg" id="quiz-section">
-        <Container size="wide">
-          <div className="max-w-2xl mx-auto space-y-8">
-            <div className="text-center space-y-3">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-                Take the 60-Second Quiz
-              </h2>
-              <p className="text-muted-foreground">
-                See if you qualify for the next cohort
-              </p>
-            </div>
-            <QuizContainer />
-          </div>
-        </Container>
-      </Section>
-
-      {/* Opening Copy Section */}
+      {/* Opening Copy — agitate the problem */}
       <OpeningCopySection />
 
-      {/* Urgency Section with Countdown */}
-      <UrgencySection />
+      {/* Social Proof — prove it works (moved up) */}
+      <SocialProofSection />
 
-      {/* What You'll Build Section */}
+      {/* What You'll Build — show the journey */}
       <Section variant="muted" spacing="xl" className="relative overflow-hidden">
         <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-radial from-primary/5 to-transparent blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-gradient-radial from-accent/5 to-transparent blur-3xl" />
@@ -196,7 +179,7 @@ const Index = () => {
         </Container>
       </Section>
 
-      {/* What You Get FREE Section */}
+      {/* Value Stack — anchor the value */}
       <Section variant="default" spacing="xl" className="relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-secondary/5 via-primary/5 to-transparent blur-3xl" />
         
@@ -214,9 +197,32 @@ const Index = () => {
         </Container>
       </Section>
 
-      <SocialProofSection />
+      {/* About Host — credibility */}
       <AboutHostSection />
+
+      {/* FAQ — overcome objections */}
       <FAQSection />
+
+      {/* Urgency + Quiz — the close (moved to bottom) */}
+      <UrgencySection />
+
+      <Section variant="default" spacing="lg" id="quiz-section">
+        <Container size="wide">
+          <div className="max-w-2xl mx-auto space-y-8">
+            <div className="text-center space-y-3">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+                Ready? Let's Get You Started
+              </h2>
+              <p className="text-muted-foreground">
+                Answer 3 quick questions and claim your free spot
+              </p>
+            </div>
+            <QuizContainer />
+          </div>
+        </Container>
+      </Section>
+
+      {/* Final CTA — last chance */}
       <FinalCTASection />
 
       {/* Footer */}
