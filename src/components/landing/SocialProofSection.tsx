@@ -83,7 +83,7 @@ export const SocialProofSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isStatsVisible, setIsStatsVisible] = useState(false);
   const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
-  const [_isAppsVisible, _setIsAppsVisible] = useState(false);
+  
   const [testimonials, setTestimonials] = useState<TestimonialData[]>(fallbackTestimonials);
 
   useEffect(() => {
