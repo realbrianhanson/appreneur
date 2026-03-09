@@ -167,25 +167,6 @@ export const SocialProofSection = () => {
           <TestimonialCarousel testimonials={testimonials} autoplayDelay={5000} />
         </div>
 
-        {/* App Showcase */}
-        <div data-section="apps">
-          <h3 className="text-2xl font-bold text-center mb-4">
-            Apps Built by Challenge Graduates
-          </h3>
-          <p className="text-muted-foreground text-center mb-10 max-w-xl mx-auto">
-            Real MVPs shipped in just 5 days — from idea to deployed product
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {appShowcase.map((app, index) => (
-              <AppCard
-                key={app.name}
-                app={app}
-                index={index}
-                isVisible={isAppsVisible}
-              />
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
