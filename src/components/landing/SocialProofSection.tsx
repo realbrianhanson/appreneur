@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { TestimonialCarousel, TestimonialData, TestimonialStats } from "@/components/testimonials";
-import { Badge } from "@/components/ui/badge";
 
 interface StatItemProps {
   value: string;
