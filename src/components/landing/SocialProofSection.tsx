@@ -127,31 +127,32 @@ export const SocialProofSection = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-24 overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background" />
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-
+    <section ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden bg-background-secondary">
       <div className="relative max-w-6xl mx-auto px-4">
+        {/* Section label */}
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <div className="h-px w-10 bg-secondary/40" />
+          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">Social Proof</span>
+          <div className="h-px w-10 bg-secondary/40" />
+        </div>
+
         {/* Headline */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-14">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
             Real People. Real Apps.{" "}
-            <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+            <span className="text-gradient-primary">
               Real Results.
             </span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             500+ entrepreneurs from 9 countries have built working apps using this exact system.
           </p>
-          <TestimonialStats className="mx-auto" />
         </div>
 
-        {/* Stats Bar - Clear & Labeled */}
+        {/* Stats Bar */}
         <div
           data-section="stats"
-          className="flex flex-wrap justify-center gap-4 md:gap-0 md:divide-x divide-border/50 bg-card/30 backdrop-blur-sm rounded-2xl border border-border/50 mb-20"
+          className="grid grid-cols-3 gap-0 bg-card rounded-2xl border border-border shadow-card mb-16 overflow-hidden"
         >
           <StatItem value="500+" label="Apps Built" isVisible={isStatsVisible} />
           <StatItem value="9" label="Countries" isVisible={isStatsVisible} />
@@ -161,12 +162,11 @@ export const SocialProofSection = () => {
         {/* Testimonials Carousel */}
         <div 
           data-section="testimonials" 
-          className={`mb-24 transition-opacity duration-700 ${isTestimonialsVisible ? "opacity-100" : "opacity-0"}`}
+          className={`transition-opacity duration-700 ${isTestimonialsVisible ? "opacity-100" : "opacity-0"}`}
         >
           <h3 className="text-2xl font-bold text-center mb-10">What Challengers Say</h3>
           <TestimonialCarousel testimonials={testimonials} autoplayDelay={5000} />
         </div>
-
       </div>
     </section>
   );
