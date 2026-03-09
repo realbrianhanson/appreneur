@@ -56,6 +56,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <StickyCtaBar onCtaClick={scrollToQuiz} />
+      <SEOHead
         title="Appreneur Challenge — Build Your First App in 5 Days"
         description="Join 500+ entrepreneurs building real apps without code. Free 5-day challenge teaches you to go from idea to live app."
         canonicalUrl="https://appreneur.ai/"
