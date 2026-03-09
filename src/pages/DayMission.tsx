@@ -435,7 +435,7 @@ const DayMission = () => {
               ⏱ {formatElapsed(elapsedSeconds)}
             </Badge>
             {isDayComplete && (
-              <Badge className="bg-green-500/20 text-green-500 border-green-500/30 text-xs">
+              <Badge className="bg-accent/20 text-accent border-accent/30 text-xs">
                 <Check className="w-3 h-3 mr-1" />
                 Completed
               </Badge>
