@@ -393,11 +393,10 @@ const Dashboard = () => {
                   </span>
                 </div>
                 <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground">
-                  Day {currentDay}: Build Your Core App
+                  Day {currentDay}: {currentDayMeta.title}
                 </h2>
                 <p className="text-muted-foreground max-w-xl">
-                  Today you'll start building the foundation of your app using AI-powered
-                  tools. By the end, you'll have a working prototype.
+                  {currentDayMeta.description}
                 </p>
 
                 {/* Task Progress */}
