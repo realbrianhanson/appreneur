@@ -143,7 +143,7 @@ export const SocialProofSection = () => {
             </span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
-            In just 6 months, entrepreneurs from 9 countries have built 99+ working apps using this system.
+            500+ entrepreneurs from 9 countries have built working apps using this exact system.
           </p>
           <TestimonialStats className="mx-auto" />
         </div>

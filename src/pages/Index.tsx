@@ -114,7 +114,7 @@ const Index = () => {
 
             {/* Subheadline */}
             <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              No coding. No developers. No $15K budget. Just you, AI, and my step-by-step system that's helped 99+ entrepreneurs ship real, working apps.
+              No coding. No developers. No $15K budget. Just you, AI, and my step-by-step system that's helped 500+ entrepreneurs ship real, working apps.
             </p>
 
             {/* CTA */}
