@@ -743,7 +743,7 @@ const DayMission = () => {
               </h2>
               <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
                 {isDayComplete
-                  ? day < 7
+                  ? day < 5
                     ? `Amazing work! Day ${day + 1} is now available.`
                     : "Congratulations! You've completed the entire challenge!"
                   : "Click below to complete this day and unlock the next one."}
