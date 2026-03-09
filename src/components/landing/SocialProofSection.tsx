@@ -202,9 +202,6 @@ export const SocialProofSection = () => {
       <div className="relative max-w-6xl mx-auto px-4">
         {/* Headline */}
         <div className="text-center mb-16">
-          <Badge variant="outline" className="mx-auto mb-4">
-            Social Proof
-          </Badge>
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
             Real People. Real Apps.{" "}
             <span className="bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
