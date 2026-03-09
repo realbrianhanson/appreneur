@@ -59,6 +59,7 @@ const dayData: Record<number, {
     type: "download" | "link" | "video";
     icon: React.ReactNode;
     url: string;
+    storageKey?: string;
     vipOnly?: boolean;
   }>;
   checklist: Array<{
