@@ -818,11 +818,11 @@ const DayMission = () => {
 
           <Button
             variant="ghost"
-            disabled={day >= 7 || !isDayComplete}
-            asChild={day < 7 && isDayComplete}
+            disabled={day >= 5 || !isDayComplete}
+            asChild={day < 5 && isDayComplete}
             className="order-3"
           >
-            {day < 7 ? (
+            {day < 5 ? (
               isDayComplete ? (
                 <Link to={`/dashboard/day/${day + 1}`}>
                   Day {day + 1}
@@ -836,7 +836,7 @@ const DayMission = () => {
               )
             ) : isDayComplete ? (
               <Link to="/dashboard/graduation">
-                Graduate
+                Graduate 🎓
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Link>
             ) : (
