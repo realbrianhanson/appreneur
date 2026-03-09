@@ -82,9 +82,9 @@ const dayData: Record<number, {
       "Unique value proposition defined",
     ],
     resources: [
-      { title: "50 Profitable AI App Ideas PDF", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Idea Validation Worksheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "#" },
-      { title: "Market Research Template", type: "download", icon: <FileText className="w-4 h-4" />, url: "#", vipOnly: true },
+      { title: "50 Profitable AI App Ideas PDF", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-1/50-profitable-ai-app-ideas.pdf", storageKey: "day-1/50-profitable-ai-app-ideas.pdf" },
+      { title: "Idea Validation Worksheet", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-1/idea-validation-worksheet.pdf", storageKey: "day-1/idea-validation-worksheet.pdf" },
+      { title: "Market Research Template", type: "download", icon: <FileText className="w-4 h-4" />, url: "/resources/day-1/market-research-template.pdf", storageKey: "day-1/market-research-template.pdf", vipOnly: true },
     ],
     checklist: [
       { id: "video", label: "Watch the training video", required: true },
