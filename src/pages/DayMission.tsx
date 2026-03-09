@@ -767,7 +767,7 @@ const DayMission = () => {
               )}
 
               {/* Next Day Preview */}
-              {day < 7 && (
+              {day < 5 && (
                 <div className="mt-4 md:mt-6 p-3 md:p-4 rounded-xl bg-card border border-border text-left">
                   <p className="text-xs md:text-sm text-muted-foreground mb-1">Coming Next:</p>
                   <p className="font-medium text-foreground text-sm md:text-base">{data.nextDayPreview}</p>
