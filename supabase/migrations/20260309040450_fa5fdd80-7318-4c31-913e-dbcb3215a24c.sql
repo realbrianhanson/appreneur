@@ -1,0 +1,1 @@
+CREATE POLICY "Only admins can view quiz leads" ON public.quiz_leads FOR SELECT USING (is_admin(auth.uid()));
