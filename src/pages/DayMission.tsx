@@ -419,6 +419,22 @@ const DayMission = () => {
   return (
     <DashboardLayout userName={firstName} currentDay={day} isVIP={isVIP}>
       {showConfetti && <Confetti />}
+      
+      {/* Celebration Screen */}
+      {showCelebration && (
+        <DayCompleteCelebration
+          day={day}
+          timeSpentSeconds={elapsedSeconds}
+          tasksCompleted={completedRequired + (data.checklist.length - requiredItems.length)}
+          totalTasks={data.checklist.length}
+          nextDayPreview={data.nextDayPreview}
+          isLastDay={day >= 5}
+          onDismiss={() => {
+            setShowCelebration(false);
+            navigate("/dashboard");
+          }}
+        />
+      )}
 
       <div className="max-w-4xl mx-auto space-y-4 md:space-y-8">
         {/* Top Section */}
