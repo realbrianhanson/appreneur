@@ -7,6 +7,7 @@ import JourneyTimeline from "@/components/landing/JourneyTimeline";
 import ValueStackSection from "@/components/landing/ValueStackSection";
 import OpeningCopySection from "@/components/landing/OpeningCopySection";
 import UrgencySection from "@/components/landing/UrgencySection";
+import StickyCtaBar from "@/components/landing/StickyCtaBar";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { AboutHostSection } from "@/components/landing/AboutHostSection";
 import { FAQSection } from "@/components/landing/FAQSection";
