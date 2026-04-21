@@ -13,6 +13,12 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
   const { isAdmin, isLoading: roleLoading } = useAdminRole();
   const location = useLocation();
 
+  // Dev bypass - skip auth checks in development
+  const isDev = import.meta.env.DEV;
+  if (isDev) {
+    return <>{children}</>;
+  }
+
   if (authLoading || (requireAdmin && roleLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
