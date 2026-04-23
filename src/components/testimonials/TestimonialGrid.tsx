@@ -89,8 +89,8 @@ export const TestimonialGrid = ({
         </div>
       )}
 
-      {/* Masonry Grid */}
-      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+      {/* Masonry Grid — pt-4 reserves space for the -top-3 Featured badge */}
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 pt-4">
         {visibleTestimonials.map((testimonial) => (
           <div key={testimonial.id} className="break-inside-avoid">
             <TestimonialCard testimonial={testimonial} showFullContent />

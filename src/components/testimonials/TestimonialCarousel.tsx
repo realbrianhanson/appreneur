@@ -71,8 +71,8 @@ export const TestimonialCarousel = ({
 
   return (
     <div className="relative">
-      {/* Carousel Container */}
-      <div className="overflow-hidden" ref={emblaRef}>
+      {/* Carousel Container — pt-4 reserves space for the -top-3 Featured badge */}
+      <div className="overflow-hidden pt-4" ref={emblaRef}>
         <div className="flex">
           {sortedTestimonials.map((testimonial) => (
             <div
