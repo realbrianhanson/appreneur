@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 export default function SettingsPage() {
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -22,6 +22,44 @@ export default function SettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [smsNotifications, setSmsNotifications] = useState(true);
+  const [isSavingPrefs, setIsSavingPrefs] = useState(false);
+
+  // Load saved preferences from profile
+  useEffect(() => {
+    if (profile?.notification_preferences) {
+      setEmailNotifications(profile.notification_preferences.email ?? true);
+      setSmsNotifications(profile.notification_preferences.sms ?? true);
+    }
+  }, [profile?.notification_preferences]);
+
+  const updateNotificationPref = async (key: "email" | "sms", value: boolean) => {
+    if (!user) return;
+    // Optimistic UI
+    if (key === "email") setEmailNotifications(value);
+    if (key === "sms") setSmsNotifications(value);
+
+    setIsSavingPrefs(true);
+    try {
+      const next = {
+        email: key === "email" ? value : emailNotifications,
+        sms: key === "sms" ? value : smsNotifications,
+      };
+      const { error } = await supabase
+        .from("profiles")
+        .update({ notification_preferences: next })
+        .eq("id", user.id);
+      if (error) throw error;
+      await refreshProfile();
+      toast.success("Preferences saved");
+    } catch (error: any) {
+      // Revert
+      if (key === "email") setEmailNotifications(!value);
+      if (key === "sms") setSmsNotifications(!value);
+      toast.error(error.message || "Failed to save preferences");
+    } finally {
+      setIsSavingPrefs(false);
+    }
+  };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,7 +182,8 @@ export default function SettingsPage() {
               </div>
               <Switch
                 checked={emailNotifications}
-                onCheckedChange={setEmailNotifications}
+                onCheckedChange={(v) => updateNotificationPref("email", v)}
+                disabled={isSavingPrefs}
               />
             </div>
             <Separator />
@@ -157,7 +196,8 @@ export default function SettingsPage() {
               </div>
               <Switch
                 checked={smsNotifications}
-                onCheckedChange={setSmsNotifications}
+                onCheckedChange={(v) => updateNotificationPref("sms", v)}
+                disabled={isSavingPrefs}
               />
             </div>
           </CardContent>

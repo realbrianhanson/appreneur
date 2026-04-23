@@ -1,16 +1,32 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = new Set([
+  "https://appreneur.lovable.app",
+  "https://appreneur.ai",
+  "https://www.appreneur.ai",
+  "http://localhost:5173",
+  "http://localhost:8080",
+]);
+
+function buildCors(req: Request): Record<string, string> {
+  const origin = req.headers.get("Origin") || "";
+  const allow = ALLOWED_ORIGINS.has(origin) || /^https:\/\/id-preview--.*\.lovable\.app$/.test(origin)
+    ? origin
+    : "https://appreneur.ai";
+  return {
+    "Access-Control-Allow-Origin": allow,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Vary": "Origin",
+  };
+}
 
 // Simple in-memory cache
 const cache = new Map<string, { data: unknown; expiry: number }>();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 serve(async (req: Request) => {
+  const corsHeaders = buildCors(req);
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -38,10 +54,10 @@ serve(async (req: Request) => {
       });
     }
 
-    // Create Supabase client
+    // Use anon key — RLS already restricts SELECT to approved testimonials
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
     // Build query
     let query = supabase
