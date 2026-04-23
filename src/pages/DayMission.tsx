@@ -632,27 +632,31 @@ const DayMission = () => {
                           className="shrink-0"
                           onClick={async () => {
                             const storageKey = resource.storageKey;
-                            if (storageKey) {
-                              const { data: fileData } = supabase.storage
-                                .from("challenge-resources")
-                                .getPublicUrl(storageKey);
-                              
-                              if (fileData?.publicUrl) {
-                                window.open(fileData.publicUrl, '_blank');
-                                showSuccess(`Downloading ${resource.title}...`);
-                              } else {
-                                showError("Resource not available yet. Check back soon!");
-                              }
-                            } else {
+                            if (!storageKey) {
                               showError("Resource not available yet. Check back soon!");
+                              return;
                             }
-                            // Log download
-                            if (profile?.id) {
-                              supabase.from("downloads").insert({
-                                user_id: profile.id,
-                                resource_key: storageKey || resource.title,
-                                user_agent: navigator.userAgent,
-                              });
+                            try {
+                              const { data, error } = await supabase.functions.invoke(
+                                "get-resource-url",
+                                { body: { resource_key: storageKey } }
+                              );
+                              if (error || !data?.url) {
+                                const msg = (data as { error?: string } | null)?.error;
+                                if (msg === "VIP membership required") {
+                                  showError("This resource is for VIP members only.");
+                                } else if (msg === "Resource not found") {
+                                  showError("Resource not available yet. Check back soon!");
+                                } else {
+                                  showError("Could not load resource. Try again.");
+                                }
+                                return;
+                              }
+                              window.open(data.url, "_blank");
+                              showSuccess(`Downloading ${resource.title}...`);
+                            } catch (e) {
+                              console.error("Resource fetch failed:", e);
+                              showError("Could not load resource. Try again.");
                             }
                           }}
                         >
