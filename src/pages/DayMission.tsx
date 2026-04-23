@@ -322,10 +322,11 @@ const DayMission = () => {
   const saveTimeSpent = useCallback(async () => {
     const seconds = Math.floor((Date.now() - startTime) / 1000);
     if (seconds < 5) return;
+    if (!profile?.id) return; // Don't write with empty user_id
     try {
       await supabase.from("user_progress")
         .update({ time_spent_seconds: (currentDayProgress?.time_spent_seconds || 0) + seconds })
-        .eq("user_id", profile?.id || "")
+        .eq("user_id", profile.id)
         .eq("day_number", day);
     } catch (e) {
       console.error("Failed to save time:", e);

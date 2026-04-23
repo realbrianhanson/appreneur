@@ -25,7 +25,11 @@ export function useAdminRole(): AdminRoleState {
 
   useEffect(() => {
     async function fetchRole() {
-      if (authLoading) return;
+      if (authLoading) {
+        // Keep isLoading true while auth is still resolving — but make sure
+        // we re-run once auth finishes. Don't leave the flag stuck.
+        return;
+      }
       
       if (!user) {
         setState({

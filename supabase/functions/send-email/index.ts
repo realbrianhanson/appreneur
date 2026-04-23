@@ -27,10 +27,25 @@ async function sendResendEmail(to: string, subject: string, html: string) {
   return response.json();
 }
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = new Set([
+  "https://appreneur.lovable.app",
+  "https://appreneur.ai",
+  "https://www.appreneur.ai",
+  "http://localhost:5173",
+  "http://localhost:8080",
+]);
+
+function buildCors(req: Request): Record<string, string> {
+  const origin = req.headers.get("Origin") || "";
+  const allow = ALLOWED_ORIGINS.has(origin) || /^https:\/\/id-preview--.*\.lovable\.app$/.test(origin)
+    ? origin
+    : "https://appreneur.ai";
+  return {
+    "Access-Control-Allow-Origin": allow,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Vary": "Origin",
+  };
+}
 
 // Email templates
 const templates = {
@@ -303,6 +318,7 @@ interface EmailRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  const corsHeaders = buildCors(req);
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });

@@ -84,7 +84,7 @@ export default function AdminOverview() {
         .from("cohorts")
         .select("*")
         .eq("is_active", true)
-        .single();
+        .maybeSingle();
 
       // Total registrations for active cohort
       let cohortRegs = 0;
