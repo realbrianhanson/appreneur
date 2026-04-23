@@ -97,9 +97,9 @@ const Index = () => {
             src={brianPhoto}
             alt="Brian Hanson"
             loading="eager"
-            className="w-full h-full object-cover object-top opacity-30 mix-blend-luminosity"
+            className="w-full h-full object-cover object-top opacity-55"
           />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(var(--hero-bg)) 40%, hsl(var(--hero-bg) / 0.7) 70%, hsl(var(--hero-bg) / 0.9))' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(var(--hero-bg)) 30%, hsl(var(--hero-bg) / 0.65) 65%, hsl(var(--hero-bg) / 0.85))' }} />
         </div>
 
         {/* Colored glow orbs */}
@@ -118,7 +118,7 @@ const Index = () => {
             {/* Headline with gradient */}
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight" style={{ color: 'hsl(var(--hero-fg))' }}>
               Go From "I Have an Idea" to{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-accent">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">
                 "I Built That"
               </span>
               {' '}in 5 Days

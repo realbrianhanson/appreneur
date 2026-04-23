@@ -27,7 +27,7 @@ const StickyCtaBar = ({ onCtaClick }: StickyCtaBarProps) => {
           : "-translate-y-full opacity-0"
       }`}
     >
-      <div className="bg-background/80 backdrop-blur-lg border-b border-border/50 shadow-sm">
+      <div className="bg-background/90 backdrop-blur-lg border-b border-border shadow-[0_4px_20px_-4px_hsl(var(--foreground)/0.08)]">
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 text-primary" />
