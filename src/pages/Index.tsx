@@ -197,7 +197,7 @@ const Index = () => {
       </Section>
 
       {/* Value Stack — anchor the value */}
-      <Section variant="default" spacing="xl" className="relative overflow-hidden">
+      <Section variant="default" spacing="lg" className="relative overflow-hidden pb-12 md:pb-16">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-secondary/5 via-primary/5 to-transparent blur-3xl" />
         
         <Container size="wide" className="relative z-10">
