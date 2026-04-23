@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.error("Error fetching profile:", error);
         return null;
       }
-      return data as Profile;
+      return data as unknown as Profile;
     } catch (error) {
       console.error("Error fetching profile:", error);
       return null;
