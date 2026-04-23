@@ -203,6 +203,7 @@ export type Database = {
           first_name: string
           id: string
           is_vip: boolean
+          notification_preferences: Json
           phone: string | null
           quiz_answers: Json | null
           stripe_customer_id: string | null
@@ -222,6 +223,7 @@ export type Database = {
           first_name: string
           id: string
           is_vip?: boolean
+          notification_preferences?: Json
           phone?: string | null
           quiz_answers?: Json | null
           stripe_customer_id?: string | null
@@ -241,6 +243,7 @@ export type Database = {
           first_name?: string
           id?: string
           is_vip?: boolean
+          notification_preferences?: Json
           phone?: string | null
           quiz_answers?: Json | null
           stripe_customer_id?: string | null
