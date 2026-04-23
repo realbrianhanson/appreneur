@@ -17,6 +17,7 @@ interface Profile {
   fb_ad_id: string | null;
   fb_adset_id: string | null;
   fb_campaign_id: string | null;
+  notification_preferences: { email: boolean; sms: boolean } | null;
   created_at: string;
   updated_at: string;
 }
@@ -48,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .from("profiles")
         .select("*")
         .eq("id", userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Error fetching profile:", error);
@@ -69,40 +70,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // Single subscription handles both initial session (INITIAL_SESSION event)
+    // and subsequent auth changes — no double fetch.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, newSession) => {
-        console.log("Auth state changed:", event);
+      (event, newSession) => {
         setSession(newSession);
         setUser(newSession?.user ?? null);
 
-        if (newSession?.user) {
-          // Defer profile fetch to avoid blocking
-          setTimeout(async () => {
-            const profileData = await fetchProfile(newSession.user.id);
-            setProfile(profileData);
-          }, 0);
-        } else {
+        if (event === "SIGNED_OUT" || !newSession?.user) {
           setProfile(null);
+          setIsLoading(false);
+          return;
         }
 
-        if (event === "SIGNED_OUT") {
-          setProfile(null);
-        }
+        // Defer profile fetch to avoid blocking the auth callback
+        const userId = newSession.user.id;
+        setTimeout(async () => {
+          const profileData = await fetchProfile(userId);
+          setProfile(profileData);
+          setIsLoading(false);
+        }, 0);
       }
     );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: existingSession } }) => {
-      setSession(existingSession);
-      setUser(existingSession?.user ?? null);
-      
-      if (existingSession?.user) {
-        fetchProfile(existingSession.user.id).then(setProfile);
-      }
-      
-      setIsLoading(false);
-    });
 
     return () => {
       subscription.unsubscribe();

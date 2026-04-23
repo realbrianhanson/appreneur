@@ -31,6 +31,7 @@ interface CompleteDayResult {
   day_completed: number;
   next_day_unlocked: boolean;
   is_graduation: boolean;
+  stats?: UserStats;
 }
 
 export function useProgress() {
@@ -164,14 +165,12 @@ export function useProgress() {
         return p;
       }));
 
-      // Update stats
-      if (stats) {
-        setStats({
-          ...stats,
-          days_completed: stats.days_completed + 1,
-          streak: stats.streak + 1,
-          total_time_seconds: stats.total_time_seconds + (timeSpentSeconds || 0),
-        });
+      // Use server-returned stats when available to keep streak in sync.
+      if (result.stats) {
+        setStats(result.stats);
+      } else {
+        // Fallback: refetch from server rather than guess.
+        fetchProgress();
       }
 
       return result;
@@ -180,7 +179,7 @@ export function useProgress() {
       setError(err instanceof Error ? err.message : "Failed to complete day");
       return null;
     }
-  }, [session?.access_token, stats]);
+  }, [session?.access_token, fetchProgress]);
 
   const getDayProgress = useCallback((dayNumber: number): UserProgress | null => {
     return progress.find(p => p.day_number === dayNumber) || null;
