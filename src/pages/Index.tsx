@@ -97,9 +97,9 @@ const Index = () => {
             src={brianPhoto}
             alt="Brian Hanson"
             loading="eager"
-            className="w-full h-full object-cover object-top opacity-30 mix-blend-luminosity"
+            className="w-full h-full object-cover object-top opacity-55"
           />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(var(--hero-bg)) 40%, hsl(var(--hero-bg) / 0.7) 70%, hsl(var(--hero-bg) / 0.9))' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, hsl(var(--hero-bg)) 30%, hsl(var(--hero-bg) / 0.65) 65%, hsl(var(--hero-bg) / 0.85))' }} />
         </div>
 
         {/* Colored glow orbs */}
@@ -118,7 +118,7 @@ const Index = () => {
             {/* Headline with gradient */}
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] tracking-tight" style={{ color: 'hsl(var(--hero-fg))' }}>
               Go From "I Have an Idea" to{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-primary to-accent">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-accent to-secondary">
                 "I Built That"
               </span>
               {' '}in 5 Days
@@ -197,7 +197,7 @@ const Index = () => {
       </Section>
 
       {/* Value Stack — anchor the value */}
-      <Section variant="default" spacing="xl" className="relative overflow-hidden">
+      <Section variant="default" spacing="lg" className="relative overflow-hidden pb-12 md:pb-16">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-secondary/5 via-primary/5 to-transparent blur-3xl" />
         
         <Container size="wide" className="relative z-10">
