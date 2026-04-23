@@ -96,9 +96,9 @@ serve(async (req) => {
     // Get required tasks for this day
     const requiredTasks = dayTasks[day_number] || [];
 
-    // Call the complete_task function
+    // Call the complete_task function. The DB function derives the user
+    // from auth.uid() via the JWT, so we no longer pass p_user_id.
     const { data: result, error: completeError } = await supabase.rpc("complete_task", {
-      p_user_id: user.id,
       p_day_number: day_number,
       p_task_id: task_id,
       p_required_tasks: requiredTasks,
