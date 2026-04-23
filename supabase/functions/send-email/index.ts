@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
@@ -315,6 +316,40 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Auth: only service-role (server-to-server) or authenticated admin users can send email
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const bearer = authHeader.replace(/^Bearer\s+/i, "");
+    const isServiceRole = bearer && bearer === supabaseServiceKey;
+
+    if (!isServiceRole) {
+      if (!bearer) {
+        return new Response(
+          JSON.stringify({ error: "Unauthorized" }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: `Bearer ${bearer}` } },
+      });
+      const { data: userData, error: userErr } = await userClient.auth.getUser();
+      if (userErr || !userData?.user) {
+        return new Response(
+          JSON.stringify({ error: "Unauthorized" }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      const { data: isAdmin } = await userClient.rpc("is_admin", { _user_id: userData.user.id });
+      if (!isAdmin) {
+        return new Response(
+          JSON.stringify({ error: "Forbidden: admin role required" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
+
     const { template, to, data }: EmailRequest = await req.json();
 
     if (!template || !to || !data) {
