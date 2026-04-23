@@ -26,6 +26,7 @@ interface SchedulerRequest {
 }
 
 serve(async (req: Request) => {
+  const corsHeaders = buildCors(req);
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }

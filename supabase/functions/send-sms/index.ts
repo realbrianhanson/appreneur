@@ -94,6 +94,7 @@ async function sendTwilioSMS(to: string, body: string): Promise<{ success: boole
 }
 
 serve(async (req: Request) => {
+  const corsHeaders = buildCors(req);
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
