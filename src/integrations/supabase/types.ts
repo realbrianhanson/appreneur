@@ -685,7 +685,6 @@ export type Database = {
           p_day_number: number
           p_required_tasks: string[]
           p_task_id: string
-          p_user_id: string
         }
         Returns: Json
       }
