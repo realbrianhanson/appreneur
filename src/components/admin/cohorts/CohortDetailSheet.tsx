@@ -31,6 +31,7 @@ import {
   Loader2,
 } from "lucide-react";
 import type { Cohort } from "@/pages/admin/Cohorts";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 interface CohortStats {
   totalRegistered: number;
@@ -341,11 +342,11 @@ export function CohortDetailSheet({
                               <TableCell>
                                 <div className="flex items-center gap-2">
                                   <Progress
-                                    value={(user.days_completed / 7) * 100}
+                                    value={(user.days_completed / TOTAL_DAYS) * 100}
                                     className="w-16 h-2"
                                   />
                                   <span className="text-xs text-muted-foreground">
-                                    {user.days_completed}/7
+                                    {user.days_completed}/{TOTAL_DAYS}
                                   </span>
                                 </div>
                               </TableCell>
