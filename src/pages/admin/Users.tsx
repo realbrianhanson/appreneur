@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { Download, Search, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 export interface UserWithProgress {
   id: string;
