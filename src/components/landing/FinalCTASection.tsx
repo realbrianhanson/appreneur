@@ -146,23 +146,23 @@ const FinalCTASection = ({ cohortStartDate: propDate }: FinalCTASectionProps) =>
           </Magnetic>
 
           {/* Spots + date — JetBrains Mono uppercase */}
-          <div className="mt-6 font-mono text-[11px] tracking-[0.2em] uppercase text-muted-foreground">
+          <div className="mt-6 font-mono text-[10px] md:text-[11px] tracking-[0.15em] md:tracking-[0.2em] uppercase text-muted-foreground px-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
             {isFetchingCohort ? (
               <span className="opacity-60">Loading cohort…</span>
             ) : (
-              <span>
+              <>
                 {spotsRemaining !== null && (
                   <>
                     <span className="text-primary">{spotsRemaining} spots left</span>
-                    <span className="mx-2 opacity-40">·</span>
+                    <span className="opacity-40">·</span>
                   </>
                 )}
                 {cohortStartDate ? (
-                  <>Starts {formatDate(cohortStartDate)}</>
+                  <span>Starts {formatDate(cohortStartDate)}</span>
                 ) : (
-                  <>Free 5-Day Challenge · Coming Soon</>
+                  <span>Free 5-Day Challenge · Coming Soon</span>
                 )}
-              </span>
+              </>
             )}
           </div>
 
