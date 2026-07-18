@@ -35,11 +35,12 @@ export function SplitReveal({
 
   if (reduced) {
     return (
-      <Tag aria-label={text} className={cn("inline-block", className)}>
+      <Tag className={cn("inline-block", className)}>
+        <span className="sr-only">{text}</span>
         {charClassName ? (
-          <span className={charClassName}>{text}</span>
+          <span aria-hidden className={charClassName}>{text}</span>
         ) : (
-          text
+          <span aria-hidden>{text}</span>
         )}
       </Tag>
     );
@@ -47,7 +48,6 @@ export function SplitReveal({
 
   return (
     <MotionTag
-      aria-label={text}
       className={cn("inline-block", className)}
       initial="hidden"
       animate="visible"
@@ -58,8 +58,9 @@ export function SplitReveal({
         },
       }}
     >
+      <span className="sr-only">{text}</span>
       {words.map((word, wi) => (
-        <span key={`wg-${wi}`}>
+        <span key={`wg-${wi}`} aria-hidden>
           <motion.span
             aria-hidden
             className={cn("inline-flex", charClassName)}
