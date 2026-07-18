@@ -109,6 +109,8 @@ const ThankYou = () => {
   useEffect(() => {
     trackPageView('/thank-you', 'You\'re In! — Appreneur Challenge');
     trackRegistrationComplete();
+    // Clear the persisted VIP countdown so a later visit starts a fresh 15 minutes.
+    try { localStorage.removeItem("vip_offer_expires_at"); } catch {}
   }, []);
 
   // Hide confetti after animation

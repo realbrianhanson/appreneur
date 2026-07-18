@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS purchases_stripe_checkout_session_id_key ON public.purchases (stripe_checkout_session_id) WHERE stripe_checkout_session_id IS NOT NULL;
