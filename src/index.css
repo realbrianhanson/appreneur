@@ -96,6 +96,12 @@
 
   html {
     background-color: #08080C;
+    scroll-padding-top: 80px;
+  }
+
+  section[id],
+  [id="quiz-section"] {
+    scroll-margin-top: 80px;
   }
 
   body {
