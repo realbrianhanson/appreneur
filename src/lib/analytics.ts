@@ -118,10 +118,15 @@ export const trackQuizComplete = (answers?: Record<string, string>) => {
 /**
  * Track VIP purchase/upgrade
  */
-export const trackVIPPurchase = (value: number, currency: string = 'USD') => {
-  // GA4
+export const trackVIPPurchase = (
+  value: number,
+  currency: string = 'USD',
+  transactionId?: string,
+) => {
+  // GA4 — use the real Stripe transaction id so dedup works.
+  const txId = transactionId || `vip_${Date.now()}`;
   trackGA4Event('purchase', {
-    transaction_id: `vip_${Date.now()}`,
+    transaction_id: txId,
     value,
     currency,
     items: [
@@ -142,7 +147,7 @@ export const trackVIPPurchase = (value: number, currency: string = 'USD') => {
     content_type: 'product',
   });
 
-  console.log('[Analytics] VIP purchase tracked:', { value, currency });
+  console.log('[Analytics] VIP purchase tracked:', { value, currency, transactionId: txId });
 };
 
 /**
@@ -206,7 +211,7 @@ export const trackVIPOfferView = () => {
       {
         item_name: 'VIP Bundle',
         item_category: 'upgrade',
-        price: 47,
+        price: 27,
       },
     ],
   });
@@ -228,7 +233,7 @@ export const trackDownsellView = () => {
       {
         item_name: 'Downsell Offer',
         item_category: 'upgrade',
-        price: 27,
+        price: 7,
       },
     ],
   });
