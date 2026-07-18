@@ -67,6 +67,17 @@ const QuizContainer = () => {
   const [answers, setAnswers] = useState<(string | null)[]>([null, null, null]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const stepHeadingRef = useRef<HTMLHeadingElement | null>(null);
+
+  // Move focus to the new step's heading on every step change so
+  // keyboard/screen-reader users aren't dropped back to <body>.
+  useEffect(() => {
+    // Wait for the enter animation before focusing so it doesn't jump.
+    const t = setTimeout(() => {
+      stepHeadingRef.current?.focus();
+    }, 350);
+    return () => clearTimeout(t);
+  }, [currentStep]);
 
   const [direction, setDirection] = useState(1);
 
