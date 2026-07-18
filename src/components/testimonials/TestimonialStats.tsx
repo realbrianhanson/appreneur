@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Users } from "lucide-react";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 interface TestimonialStatsProps {
   className?: string;
@@ -13,11 +14,11 @@ export const TestimonialStats = ({ className = "" }: TestimonialStatsProps) => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Count users who have completed day 7
+        // Count users who have completed the final day of the challenge
         const { count, error } = await supabase
           .from("user_progress")
           .select("*", { count: "exact", head: true })
-          .eq("day_number", 7)
+          .eq("day_number", TOTAL_DAYS)
           .eq("is_completed", true);
 
         if (!error && count !== null) {
