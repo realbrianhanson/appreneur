@@ -13,6 +13,7 @@ import { AboutHostSection } from "@/components/landing/AboutHostSection";
 import { FAQSection } from "@/components/landing/FAQSection";
 import { FinalCTASection } from "@/components/landing/FinalCTASection";
 import { HeroSection } from "@/components/landing/HeroSection";
+import { ShippedMarquee } from "@/components/landing/ShippedMarquee";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
@@ -89,6 +90,9 @@ const Index = () => {
 
       {/* Hero Section — editorial asymmetric layout */}
       <HeroSection onCtaClick={scrollToQuiz} />
+
+      {/* Shipped apps marquee */}
+      <ShippedMarquee />
 
       {/* Opening Copy — agitate the problem */}
       <OpeningCopySection />
