@@ -5,12 +5,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { sendWelcomeEmail } from "@/lib/email";
 import { toast } from "sonner";
+import { AnimatePresence, motion } from "framer-motion";
 import QuizStep from "./QuizStep";
 import EmailCaptureForm from "./EmailCaptureForm";
 import WaitlistForm from "./WaitlistForm";
-import ProgressIndicator from "./ProgressIndicator";
 import CountdownTimer from "./CountdownTimer";
-import { Users, Calendar, Mail } from "lucide-react";
+import { Users, Calendar, Check } from "lucide-react";
 
 interface Cohort {
   id: string;
@@ -107,17 +107,26 @@ const QuizContainer = () => {
     }
   };
 
+  const [direction, setDirection] = useState(1);
+
   const handleAnswerSelect = (value: string) => {
     const newAnswers = [...answers];
     newAnswers[currentStep - 1] = value;
     setAnswers(newAnswers);
 
-    // Brief delay to show selection, then advance
     setTimeout(() => {
       if (currentStep < 4) {
+        setDirection(1);
         setCurrentStep(currentStep + 1);
       }
-    }, 400);
+    }, 300);
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setDirection(-1);
+      setCurrentStep(currentStep - 1);
+    }
   };
 
   const handleEmailSubmit = async (data: { firstName: string; email: string; password: string; phone?: string }) => {
@@ -344,37 +353,55 @@ const QuizContainer = () => {
 
   if (isComplete) {
     return (
-      <div className="animate-fade-in text-center space-y-6 p-8 rounded-2xl bg-gradient-to-b from-primary/20 to-primary/5 border border-primary/30">
-        <div className="w-20 h-20 mx-auto rounded-full bg-primary/20 flex items-center justify-center">
-          <Mail className="w-10 h-10 text-primary" />
-        </div>
-        <h3 className="text-2xl md:text-3xl font-display font-bold">
-          Almost There — Check Your Email!
-        </h3>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          We've sent a confirmation link to your inbox. 
-          <span className="font-semibold text-foreground"> Click the link to verify your account</span> and unlock your dashboard.
-        </p>
-        <div className="p-4 rounded-xl bg-muted/50 border border-border max-w-sm mx-auto">
-          <p className="text-sm text-muted-foreground">
-            📧 Don't see it? Check your spam folder or{" "}
-            <button 
-              onClick={() => setIsComplete(false)}
-              className="text-primary hover:underline font-medium"
-            >
-              try a different email
-            </button>
+      <div className="text-center space-y-6 p-8 md:p-10 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10">
+        <motion.div
+          initial={{ scale: 0, rotate: -90 }}
+          animate={{ scale: 1, rotate: 0 }}
+          transition={{ type: "spring", stiffness: 260, damping: 18 }}
+          className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-[0_0_40px_-8px_hsl(var(--primary)/0.7)]"
+        >
+          <Check className="w-12 h-12 text-background" strokeWidth={3} />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-3"
+        >
+          <h3 className="text-3xl md:text-4xl font-display font-bold leading-tight tracking-tight">
+            You're in.{" "}
+            <span className="font-serifit italic bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Welcome to the challenge.
+            </span>
+          </h3>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            Check your inbox — we've sent a confirmation link. Click it to verify your account and unlock your dashboard.
           </p>
-        </div>
-        <div className="pt-4">
-          <p className="text-sm text-muted-foreground">The challenge starts:</p>
-          <p className="text-lg font-display font-bold text-primary">
-            {formatCohortDate(cohortStartDate)}
-          </p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4 }}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 border border-primary/30"
+        >
+          <Calendar className="w-4 h-4 text-primary" />
+          <span className="text-sm font-medium text-foreground">
+            Starts {formatCohortDate(cohortStartDate)}
+          </span>
+        </motion.div>
+        <div>
+          <button
+            onClick={() => setIsComplete(false)}
+            className="text-xs text-muted-foreground hover:text-primary transition-colors"
+          >
+            Wrong email? Try again
+          </button>
         </div>
       </div>
     );
   }
+
+  const progressPct = (Math.min(currentStep, 4) / 4) * 100;
 
   return (
     <div className="space-y-6">
@@ -404,72 +431,84 @@ const QuizContainer = () => {
       )}
 
       {/* Quiz Card */}
-      <div className="rounded-2xl bg-card/80 backdrop-blur-sm border border-border p-6 md:p-8 shadow-card">
-        {/* Progress Indicator */}
+      <div className="relative rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] overflow-hidden">
+        {/* Thin amber progress bar */}
         {!isFull && (
-          <div className="mb-6">
-            <ProgressIndicator currentStep={currentStep} totalSteps={4} />
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-white/5 z-10">
+            <motion.div
+              className="h-full bg-gradient-to-r from-primary to-accent shadow-[0_0_10px_hsl(var(--primary)/0.6)]"
+              initial={false}
+              animate={{ width: `${progressPct}%` }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            />
           </div>
         )}
 
-        {/* Waitlist Form (when full) */}
-        {isFull && (
-          <WaitlistForm
-            nextCohortDate={nextCohort ? formatCohortDate(new Date(nextCohort.start_date)) : "Coming Soon"}
-            onSubmit={(email) => handleWaitlistSubmit(email)}
-            isLoading={isSubmitting}
-          />
-        )}
-
-        {/* Quiz Steps */}
-        {!isFull && (
-          <>
-            <QuizStep
-              question={quizQuestions[0].question}
-              options={quizQuestions[0].options}
-              selectedValue={answers[0]}
-              onSelect={handleAnswerSelect}
-              isVisible={currentStep === 1}
-            />
-            <QuizStep
-              question={quizQuestions[1].question}
-              options={quizQuestions[1].options}
-              selectedValue={answers[1]}
-              onSelect={handleAnswerSelect}
-              isVisible={currentStep === 2}
-            />
-            <QuizStep
-              question={quizQuestions[2].question}
-              options={quizQuestions[2].options}
-              selectedValue={answers[2]}
-              onSelect={handleAnswerSelect}
-              isVisible={currentStep === 3}
-            />
-            <EmailCaptureForm
-              onSubmit={handleEmailSubmit}
+        <div className="p-6 md:p-8 pt-8 md:pt-10">
+          {/* Waitlist Form (when full) */}
+          {isFull && (
+            <WaitlistForm
+              nextCohortDate={nextCohort ? formatCohortDate(new Date(nextCohort.start_date)) : "Coming Soon"}
+              onSubmit={(email) => handleWaitlistSubmit(email)}
               isLoading={isSubmitting}
-              isVisible={currentStep === 4}
             />
-          </>
-        )}
+          )}
+
+          {/* Quiz Steps with slide transitions */}
+          {!isFull && (
+            <div className="relative overflow-hidden">
+              <AnimatePresence mode="wait" initial={false} custom={direction}>
+                <motion.div
+                  key={currentStep}
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction * 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction * -40 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {currentStep <= 3 ? (
+                    <QuizStep
+                      question={quizQuestions[currentStep - 1].question}
+                      options={quizQuestions[currentStep - 1].options}
+                      selectedValue={answers[currentStep - 1]}
+                      onSelect={handleAnswerSelect}
+                      stepNumber={currentStep}
+                      totalSteps={3}
+                      onBack={currentStep > 1 ? handleBack : undefined}
+                    />
+                  ) : (
+                    <EmailCaptureForm
+                      onSubmit={handleEmailSubmit}
+                      isLoading={isSubmitting}
+                      onBack={handleBack}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Social Proof */}
-      <div className="text-center space-y-2">
-        <div className="flex items-center justify-center gap-2">
-          <div className="flex -space-x-2">
-            {[1,2,3,4,5].map(i => (
-              <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/40 to-accent/40 border-2 border-background flex items-center justify-center text-[10px] font-bold text-primary-foreground">
-                {['JM','SK','AR','LP','TC'][i-1]}
+      <div className="text-center space-y-3">
+        <div className="flex items-center justify-center gap-3">
+          <div className="flex -space-x-3">
+            {['JM','SK','AR','LP','TC'].map((initials, i) => (
+              <div
+                key={i}
+                className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent border-2 border-background flex items-center justify-center text-[10px] font-bold text-background shadow-[0_2px_10px_-2px_hsl(var(--primary)/0.4)]"
+              >
+                {initials}
               </div>
             ))}
           </div>
-          <span className="text-sm text-muted-foreground ml-2">
-            500+ entrepreneurs enrolled
+          <span className="text-sm text-foreground/80">
+            <span className="font-semibold text-foreground">500+</span> entrepreneurs enrolled
           </span>
         </div>
         <p className="text-xs text-muted-foreground">
-          No coding experience required. 60 minutes a day for 5 days.
+          No coding experience required · 60 minutes a day for 5 days
         </p>
       </div>
     </div>
