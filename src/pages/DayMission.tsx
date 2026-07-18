@@ -447,6 +447,7 @@ const DayMission = () => {
 
   return (
     <DashboardLayout userName={firstName} currentDay={day} isVIP={isVIP}>
+      <SEOHead title={`Day ${day} · Appreneur Challenge`} noindex />
       {showConfetti && <Confetti />}
       
       {/* Celebration Screen */}
