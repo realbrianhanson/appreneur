@@ -17,6 +17,16 @@ import { toast } from "sonner";
 import { Loader2, AlertCircle } from "lucide-react";
 import { addDays, format } from "date-fns";
 import type { Cohort } from "@/pages/admin/Cohorts";
+import { TOTAL_DAYS } from "@/lib/constants";
+
+/**
+ * Parse a "yyyy-MM-dd" date input string as a LOCAL date so it doesn't shift
+ * a day earlier in US timezones (new Date("yyyy-MM-dd") treats it as UTC).
+ */
+function parseLocalDate(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, (m || 1) - 1, d || 1);
+}
 
 interface CohortFormDialogProps {
   open: boolean;
@@ -53,9 +63,9 @@ export function CohortFormDialog({
         is_accepting_registrations: cohort.is_accepting_registrations,
       });
     } else {
-      // Default: start tomorrow, end 7 days later
+      // Default: start tomorrow, end after the challenge length (5 days).
       const tomorrow = addDays(new Date(), 1);
-      const endDate = addDays(tomorrow, 7);
+      const endDate = addDays(tomorrow, TOTAL_DAYS);
       setFormData({
         name: "",
         start_date: format(tomorrow, "yyyy-MM-dd"),
@@ -68,8 +78,8 @@ export function CohortFormDialog({
   }, [cohort, open]);
 
   const handleStartDateChange = (date: string) => {
-    const startDate = new Date(date);
-    const endDate = addDays(startDate, 7);
+    const startDate = parseLocalDate(date);
+    const endDate = addDays(startDate, TOTAL_DAYS);
     setFormData({
       ...formData,
       start_date: date,
@@ -103,9 +113,9 @@ export function CohortFormDialog({
     try {
       const payload = {
         name: formData.name.trim(),
-        start_date: new Date(formData.start_date).toISOString(),
+        start_date: parseLocalDate(formData.start_date).toISOString(),
         end_date: formData.end_date
-          ? new Date(formData.end_date).toISOString()
+          ? parseLocalDate(formData.end_date).toISOString()
           : null,
         max_participants: formData.max_participants,
         is_accepting_registrations: formData.is_accepting_registrations,
@@ -188,7 +198,7 @@ export function CohortFormDialog({
                 }
               />
               <p className="text-xs text-muted-foreground">
-                Auto-calculates 7 days from start
+                Auto-calculates {TOTAL_DAYS} days from start
               </p>
             </div>
           </div>
