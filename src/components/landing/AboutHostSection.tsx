@@ -10,7 +10,7 @@ import { CountUp } from "@/components/motion/CountUp";
 const bioBullets = [
   "4X Inc. 5000 entrepreneur (highest ranking: #80)",
   "Built multiple 7-figure businesses from the ground up",
-  "Taught 150,000+ people to leverage AI through AI for Business Live",
+  "Trained 40,000+ business owners through AI For Business Live",
   "Currently building Revven, an AI content platform",
   "I still build apps every week using the exact system I'm teaching you",
 ];
@@ -19,7 +19,7 @@ const AboutHostSection = () => {
   const stats = [
     { icon: Award, label: "Inc 5000 Honoree", to: 4, suffix: "X" },
     { icon: TrendingUp, label: "Highest Ranking", to: 80, prefix: "#" },
-    { icon: Users, label: "Students Taught", to: 150, suffix: "K+" },
+    { icon: Users, label: "Owners Trained", to: 40, suffix: "K+" },
     { icon: Heart, label: "Social Followers", to: 1, suffix: "M+" },
   ] as const;
 
@@ -90,6 +90,9 @@ const AboutHostSection = () => {
               <p className="text-lg text-muted-foreground max-w-xl">
                 I've spent 20+ years in the trenches building businesses. Now I help entrepreneurs skip the hard lessons I learned.
               </p>
+              <p className="text-lg text-muted-foreground max-w-xl">
+                In my 20s I built one of the largest engine and transmission companies in the country, and I couldn't rebuild an engine to save my life. I figured out the system and executed. That's exactly what you're about to do here: AI writes the code, you bring the idea.
+              </p>
 
               <ul className="space-y-3">
                 {bioBullets.map((bullet, index) => (
@@ -104,7 +107,7 @@ const AboutHostSection = () => {
               <div className="relative rounded-2xl border border-border/60 bg-card/60 backdrop-blur-sm p-6 overflow-hidden">
                 <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary via-accent to-primary" />
                 <p className="text-foreground/90 font-medium italic pl-3 leading-relaxed">
-                  "I'm not a developer. I'm an entrepreneur who figured out how to make AI do the heavy lifting.
+                  "I'm an entrepreneur, not a developer. I figured out how to make AI do the heavy lifting.
                   If I can do this, you definitely can."
                 </p>
               </div>
