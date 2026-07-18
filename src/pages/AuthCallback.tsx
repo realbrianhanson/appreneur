@@ -27,7 +27,15 @@ export default function AuthCallback() {
           if (type === "recovery") {
             navigate("/dashboard/settings", { replace: true });
           } else {
-            navigate("/dashboard", { replace: true });
+            // First-time confirmed registrants get routed into the OTO funnel.
+            // The "pending_registration" flag is set at signup and cleared here
+            // so the VIP offer only shows once per registration.
+            let pending = false;
+            try {
+              pending = localStorage.getItem("pending_registration") === "1";
+              if (pending) localStorage.removeItem("pending_registration");
+            } catch {}
+            navigate(pending ? "/vip-offer" : "/dashboard", { replace: true });
           }
         } else {
           navigate("/login", { replace: true });
