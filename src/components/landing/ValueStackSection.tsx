@@ -20,7 +20,7 @@ const stackItems: StackItem[] = [
   },
   {
     title: "Private Community Access",
-    caption: "Connect with 99+ entrepreneurs building alongside you.",
+    caption: "Build alongside 500+ entrepreneurs who've been exactly where you are.",
     value: 197,
   },
   {
@@ -29,7 +29,7 @@ const stackItems: StackItem[] = [
     value: 297,
   },
   {
-    title: "Auto-Registration: 2-Day AI for Business Live Event",
+    title: "Free Seat: 3-Day AI For Business Live Event",
     caption: "My flagship event where I go deep on AI for entrepreneurs.",
     value: 997,
   },
@@ -79,7 +79,7 @@ const ValueStackSection = () => {
         >
           {/* Header */}
           <div className="text-center text-[11px] md:text-xs tracking-[0.15em] font-bold">
-            APPRENEUR CHALLENGE — ORDER SUMMARY
+            APPRENEUR CHALLENGE · ORDER SUMMARY
           </div>
           <div className="text-center text-[11px] md:text-xs tracking-[0.2em] mt-2 opacity-80">
             *** INSTANT ACCESS ***
@@ -180,7 +180,7 @@ const ValueStackSection = () => {
             ))}
           </div>
           <div className="text-center text-[10px] tracking-[0.3em] mt-1 opacity-70">
-            0 0 0 0 0 — APPRENEUR — 2 0 8 5
+            0 0 0 0 0 · APPRENEUR · 2 0 8 5
           </div>
         </div>
 
@@ -207,6 +207,35 @@ const ValueStackSection = () => {
             <span className="text-sm font-medium text-foreground/80">{label}</span>
           </div>
         ))}
+      </div>
+
+      {/* Brian's promise */}
+      <div
+        className="mt-8 rounded-2xl p-6 md:p-8 relative overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(255,160,77,0.10) 0%, rgba(255,106,0,0.06) 100%)",
+          border: "1px solid rgba(255,160,77,0.35)",
+        }}
+      >
+        <div
+          className="text-[11px] tracking-[0.22em] uppercase mb-3"
+          style={{
+            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+            color: "#FFA04D",
+          }}
+        >
+          My Promise To You
+        </div>
+        <p className="text-base md:text-lg leading-relaxed text-foreground/90">
+          Show up 60 minutes a day for 5 days. If you don't have a live, working app by Day 5, I'll get in there with you and work on it until it ships.
+        </p>
+        <p
+          className="mt-4 text-lg italic"
+          style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: "#FFA04D" }}
+        >
+          Brian
+        </p>
       </div>
     </div>
   );
