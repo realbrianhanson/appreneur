@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
 import { trackPageView, trackVIPOfferView } from "@/lib/analytics";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   Play,
   Check,
   Shield,
   Lock,
-  CreditCard,
   ArrowRight,
   Clock,
   BookOpen,
@@ -22,18 +24,51 @@ import {
   Archive,
   GraduationCap,
   Users,
+  Loader2,
 } from "lucide-react";
 
-// Countdown Timer Component
-const UrgentCountdown = () => {
-  const [timeLeft, setTimeLeft] = useState(15 * 60); // 15 minutes in seconds
+const VIP_EXPIRES_KEY = "vip_offer_expires_at";
+
+// Countdown Timer that persists across refreshes and, when it expires,
+// redirects the visitor to the downsell.
+const UrgentCountdown = ({ onExpire }: { onExpire: () => void }) => {
+  const [timeLeft, setTimeLeft] = useState<number>(() => {
+    try {
+      const stored = localStorage.getItem(VIP_EXPIRES_KEY);
+      const now = Date.now();
+      if (stored) {
+        const expiresAt = parseInt(stored, 10);
+        if (!Number.isNaN(expiresAt)) {
+          const remaining = Math.max(0, Math.floor((expiresAt - now) / 1000));
+          if (remaining > 0) return remaining;
+        }
+      }
+      const expiresAt = now + 15 * 60 * 1000;
+      localStorage.setItem(VIP_EXPIRES_KEY, String(expiresAt));
+      return 15 * 60;
+    } catch {
+      return 15 * 60;
+    }
+  });
 
   useEffect(() => {
+    if (timeLeft <= 0) {
+      onExpire();
+      return;
+    }
     const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      setTimeLeft((prev) => {
+        const next = prev - 1;
+        if (next <= 0) {
+          clearInterval(timer);
+          onExpire();
+          return 0;
+        }
+        return next;
+      });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [timeLeft, onExpire]);
 
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
@@ -72,16 +107,61 @@ const StackItem = ({ icon, title, description, value }: StackItemProps) => (
 );
 
 const VIPOffer = () => {
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [bumpOffer, setBumpOffer] = useState(false);
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry] = useState("");
-  const [cvc, setCvc] = useState("");
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   // Track page view and VIP offer view on mount
   useEffect(() => {
     trackPageView('/vip-offer', 'VIP Offer — Appreneur Challenge');
     trackVIPOfferView();
   }, []);
+
+  const handleExpire = () => {
+    try { localStorage.removeItem(VIP_EXPIRES_KEY); } catch {}
+    navigate("/downsell", { replace: true });
+  };
+
+  const handleCheckout = async () => {
+    if (!isAuthenticated || !user) {
+      navigate("/login");
+      return;
+    }
+    setIsCheckingOut(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout-session", {
+        body: {
+          product_type: "vip_bundle",
+          include_bump: bumpOffer,
+        },
+      });
+      if (error) {
+        // 503 → Stripe not configured. Graceful degradation.
+        const msg = (error as any)?.context?.status === 503
+          ? "Checkout isn't available right now"
+          : (error.message || "Could not start checkout");
+        toast.error(msg);
+        setIsCheckingOut(false);
+        return;
+      }
+      if (!data?.url) {
+        toast.error("Checkout isn't available right now");
+        setIsCheckingOut(false);
+        return;
+      }
+      window.location.href = data.url as string;
+    } catch (err) {
+      console.error("Checkout error", err);
+      toast.error("Checkout isn't available right now");
+      setIsCheckingOut(false);
+    }
+  };
+
+  const totalCents = 2700 + (bumpOffer ? 700 : 0);
+  const ctaLabel = isCheckingOut
+    ? "Redirecting…"
+    : `Upgrade for $${(totalCents / 100).toFixed(0)}`;
 
   const stackItems: StackItemProps[] = [
     {
@@ -148,7 +228,7 @@ const VIPOffer = () => {
             <p className="font-semibold text-sm sm:text-base">
               WAIT! Don't close this page...
             </p>
-            <UrgentCountdown />
+            <UrgentCountdown onExpire={handleExpire} />
           </div>
         </Container>
       </div>
@@ -255,57 +335,25 @@ const VIPOffer = () => {
               </div>
             </div>
 
-            {/* Card Form */}
-            <div className="space-y-3 md:space-y-4">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Card Number</label>
-                <div className="relative">
-                  <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="1234 5678 9012 3456"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                    className="pl-11 h-12 text-base"
-                    inputMode="numeric"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 md:gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">Expiry Date</label>
-                  <Input
-                    type="text"
-                    placeholder="MM/YY"
-                    value={expiry}
-                    onChange={(e) => setExpiry(e.target.value)}
-                    className="h-12 text-base"
-                    inputMode="numeric"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-foreground">CVC</label>
-                  <Input
-                    type="text"
-                    placeholder="123"
-                    value={cvc}
-                    onChange={(e) => setCvc(e.target.value)}
-                    className="h-12 text-base"
-                    inputMode="numeric"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* CTA Button - Hidden on mobile, shown in sticky bar */}
+            {/* CTA Button - Desktop */}
             <Button
               variant="default"
               size="xl"
-              disabled
-              className="w-full bg-green-600 text-white text-base md:text-lg h-12 md:h-14 hidden md:flex opacity-50 cursor-not-allowed"
+              onClick={handleCheckout}
+              disabled={isCheckingOut}
+              className="w-full bg-gradient-to-r from-primary to-accent hover:brightness-110 text-background text-base md:text-lg h-12 md:h-14 hidden md:flex font-semibold shadow-[0_10px_30px_-10px_hsl(var(--primary)/0.6)]"
             >
-              Coming Soon
+              {isCheckingOut ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                  Redirecting…
+                </>
+              ) : (
+                <>
+                  {ctaLabel}
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </>
+              )}
             </Button>
 
             {/* Security Badges */}
@@ -342,10 +390,18 @@ const VIPOffer = () => {
         <Button
           variant="default"
           size="xl"
-          disabled
-          className="w-full bg-green-600 text-white text-base h-12 opacity-50 cursor-not-allowed"
+          onClick={handleCheckout}
+          disabled={isCheckingOut}
+          className="w-full bg-gradient-to-r from-primary to-accent hover:brightness-110 text-background text-base h-12 font-semibold"
         >
-          Coming Soon
+          {isCheckingOut ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin mr-2" />
+              Redirecting…
+            </>
+          ) : (
+            <>{ctaLabel}</>
+          )}
         </Button>
       </div>
     </div>
