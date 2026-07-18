@@ -50,7 +50,7 @@ export function SplitReveal({
         <span key={`wg-${wi}`}>
           <span
             aria-hidden
-            className="inline-block whitespace-nowrap"
+            className="inline-flex"
           >
             {Array.from(word).map((char, ci) => {
               const key = `${wi}-${ci}-${charIndex++}`;

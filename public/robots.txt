@@ -8,6 +8,8 @@ Disallow: /downsell
 Disallow: /thank-you
 Disallow: /login
 Disallow: /auth/callback
+Disallow: /admin
+Disallow: /admin/*
 
 # Sitemaps
 Sitemap: https://appreneur.ai/sitemap.xml
