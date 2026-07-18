@@ -22,7 +22,7 @@ function buildCors(req: Request): Record<string, string> {
 }
 
 interface SchedulerRequest {
-  trigger_type: 'cohort_reminder' | 'daily_unlock' | 'missed_day' | 'completion_check';
+  trigger_type: 'cohort_reminder' | 'day_unlock' | 'missed_day' | 'completion_check';
 }
 
 serve(async (req: Request) => {
@@ -126,7 +126,7 @@ serve(async (req: Request) => {
       }
     }
 
-    if (trigger_type === 'daily_unlock') {
+    if (trigger_type === 'day_unlock') {
       // Find users in active cohorts who haven't completed today's mission
       const today = new Date();
       
@@ -169,7 +169,7 @@ serve(async (req: Request) => {
               },
               body: JSON.stringify({
                 user_id: user.id,
-                message_type: 'daily_unlock',
+                message_type: 'day_unlock',
                 day_number: dayNumber,
               }),
             });
