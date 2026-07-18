@@ -11,7 +11,7 @@ import { getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { showError } from "@/lib/toast-utils";
 
 const Downsell = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -44,11 +44,6 @@ const Downsell = () => {
   }, []);
 
   const handleCheckout = async () => {
-    if (!isAuthenticated || !user) {
-      navigate("/login");
-      return;
-    }
-
     setIsLoading(true);
     try {
       trackGA4Event('begin_checkout', { value: 7, item: 'prompt_vault' });
@@ -56,9 +51,8 @@ const Downsell = () => {
 
       const { data, error } = await supabase.functions.invoke('create-checkout-session', {
         body: {
-          product_type: 'prompt_vault',
-          user_id: user.id,
-          email: user.email,
+          product: 'downsell',
+          email: user?.email,
         },
       });
 
@@ -165,7 +159,7 @@ const Downsell = () => {
           {/* Skip Link */}
           <div className="pt-4">
             <Link
-              to="/thank-you"
+              to="/dashboard"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               No thanks, take me to my free challenge →
