@@ -268,11 +268,10 @@ const DayMission = () => {
     isLoading: progressLoading 
   } = useProgress();
   
-  const day = parseInt(dayNumber || "1", 10);
-  const isValidDay = Number.isInteger(day) && day >= 1 && day <= TOTAL_DAYS;
-  if (!isValidDay) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  const rawDay = parseInt(dayNumber || "1", 10);
+  const isValidDay =
+    Number.isInteger(rawDay) && rawDay >= 1 && rawDay <= TOTAL_DAYS;
+  const day = isValidDay ? rawDay : 1;
   const data = dayData[day] || dayData[1];
   const isVIP = profile?.is_vip || false;
   const firstName = profile?.first_name || "Builder";
