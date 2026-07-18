@@ -176,12 +176,16 @@ const Index = () => {
       {/* Urgency + Quiz — the close (moved to bottom) */}
       <UrgencySection />
 
-      <Section variant="default" spacing="lg" id="quiz-section">
-        <Container size="wide">
+      <Section variant="default" spacing="lg" id="quiz-section" className="relative overflow-hidden">
+        <GhostWord word="DAY 01" align="top" className="opacity-70" />
+        <Container size="wide" className="relative z-10">
           <div className="max-w-2xl mx-auto space-y-8">
             <div className="text-center space-y-3">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-                Ready? Let's Get You Started
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground leading-[1.05] tracking-tight">
+                Ready? Let's{" "}
+                <span className="font-serifit italic bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                  get you started
+                </span>
               </h2>
               <p className="text-muted-foreground">
                 Answer 3 quick questions and claim your free spot
