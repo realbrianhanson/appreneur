@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface QuizOption {
@@ -15,15 +16,10 @@ interface QuizStepProps {
   onBack?: () => void;
 }
 
-const QuizStep = ({
-  question,
-  options,
-  selectedValue,
-  onSelect,
-  stepNumber,
-  totalSteps,
-  onBack,
-}: QuizStepProps) => {
+const QuizStep = forwardRef<HTMLHeadingElement, QuizStepProps>(function QuizStep(
+  { question, options, selectedValue, onSelect, stepNumber, totalSteps, onBack },
+  headingRef
+) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -46,7 +42,11 @@ const QuizStep = ({
         )}
       </div>
 
-      <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground leading-tight tracking-tight">
+      <h3
+        ref={headingRef}
+        tabIndex={-1}
+        className="text-2xl md:text-3xl font-display font-bold text-foreground leading-tight tracking-tight outline-none"
+      >
         {question}
       </h3>
 
@@ -57,6 +57,7 @@ const QuizStep = ({
             <button
               key={option.value}
               onClick={() => onSelect(option.value)}
+              aria-pressed={isSelected}
               className={cn(
                 "group w-full p-5 text-left rounded-xl border transition-all duration-300",
                 "focus:outline-none focus:ring-2 focus:ring-primary/40",
@@ -93,6 +94,6 @@ const QuizStep = ({
       </div>
     </div>
   );
-};
+});
 
 export default QuizStep;
