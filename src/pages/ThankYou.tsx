@@ -251,7 +251,7 @@ const ThankYou = () => {
     <div className="min-h-screen bg-background">
       {/* SEO Head - noindex for funnel page */}
       <SEOHead 
-        title="You're In! — Appreneur Challenge"
+        title="You're In: Appreneur Challenge"
         description="Welcome to the Appreneur Challenge. Your journey to building your first app starts here."
         noindex={true}
       />
