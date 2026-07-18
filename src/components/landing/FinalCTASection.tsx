@@ -2,20 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { ArrowRight, Shield, Check, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { scrollTo } from "@/lib/lenis";
+import { useNextCohort } from "@/hooks/useNextCohort";
 
-interface FinalCTASectionProps {
-  cohortStartDate?: Date;
-}
-
-const FinalCTASection = ({ cohortStartDate: propDate }: FinalCTASectionProps) => {
-  const [spotsRemaining, setSpotsRemaining] = useState<number | null>(null);
-  const [cohortStartDate, setCohortStartDate] = useState<Date | null>(propDate || null);
-  const [isFetchingCohort, setIsFetchingCohort] = useState(!propDate);
+const FinalCTASection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const { targetDate, isFallback, spotsLeft, loading } = useNextCohort();
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -38,34 +32,6 @@ const FinalCTASection = ({ cohortStartDate: propDate }: FinalCTASectionProps) =>
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    const fetchCohort = async () => {
-      setIsFetchingCohort(true);
-      try {
-        const { data } = await supabase
-          .from("cohorts")
-          .select("start_date, max_participants, spots_taken")
-          .eq("is_active", true)
-          .eq("is_accepting_registrations", true)
-          .order("start_date", { ascending: true })
-          .limit(1)
-          .maybeSingle();
-
-        if (data) {
-          if (!propDate) {
-            setCohortStartDate(new Date(data.start_date));
-          }
-          setSpotsRemaining(data.max_participants - data.spots_taken);
-        }
-      } catch (error) {
-        console.error("Error fetching cohort:", error);
-      } finally {
-        setIsFetchingCohort(false);
-      }
-    };
-    fetchCohort();
-  }, [propDate]);
 
   const scrollToQuiz = () => scrollTo("#quiz-section");
 
@@ -147,21 +113,17 @@ const FinalCTASection = ({ cohortStartDate: propDate }: FinalCTASectionProps) =>
 
           {/* Spots + date — JetBrains Mono uppercase */}
           <div className="mt-6 font-mono text-[10px] md:text-[11px] tracking-[0.15em] md:tracking-[0.2em] uppercase text-muted-foreground px-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-            {isFetchingCohort ? (
+            {loading ? (
               <span className="opacity-60">Loading cohort…</span>
             ) : (
               <>
-                {spotsRemaining !== null && (
+                {!isFallback && spotsLeft !== null && (
                   <>
-                    <span className="text-primary">{spotsRemaining} spots left</span>
+                    <span className="text-primary">{spotsLeft} spots left</span>
                     <span className="opacity-40">·</span>
                   </>
                 )}
-                {cohortStartDate ? (
-                  <span>Starts {formatDate(cohortStartDate)}</span>
-                ) : (
-                  <span>Free 5-Day Challenge · Coming Soon</span>
-                )}
+                <span>Starts {formatDate(targetDate)}</span>
               </>
             )}
           </div>
