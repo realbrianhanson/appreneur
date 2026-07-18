@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Button } from "@/components/ui/button";
@@ -18,33 +18,17 @@ import { GhostWord } from "@/components/motion/GhostWord";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
-import { supabase } from "@/integrations/supabase/client";
+import { useNextCohort } from "@/hooks/useNextCohort";
 import { Zap, Twitter, Linkedin, Youtube } from "lucide-react";
 import { scrollTo } from "@/lib/lenis";
 
 const Index = () => {
-  const [nextCohortDate, setNextCohortDate] = useState<string | null>(null);
+  const { targetDate, isFallback } = useNextCohort();
+  // Only expose real DB cohorts in structured data — never the client-side fallback.
+  const nextCohortDate = !isFallback ? targetDate.toISOString() : null;
 
   useEffect(() => {
     trackPageView('/', 'Appreneur Challenge · Build Your First App in 5 Days');
-  }, []);
-
-  useEffect(() => {
-    const fetchCohortDate = async () => {
-      const { data } = await supabase
-        .from("cohorts")
-        .select("start_date")
-        .eq("is_active", true)
-        .eq("is_accepting_registrations", true)
-        .order("start_date", { ascending: true })
-        .limit(1)
-        .maybeSingle();
-
-      if (data) {
-        setNextCohortDate(new Date(data.start_date).toISOString());
-      }
-    };
-    fetchCohortDate();
   }, []);
 
   const scrollToQuiz = () => {

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
+import { useNextCohort } from "@/hooks/useNextCohort";
 import { sendWelcomeEmail } from "@/lib/email";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
@@ -11,15 +12,6 @@ import EmailCaptureForm from "./EmailCaptureForm";
 import WaitlistForm from "./WaitlistForm";
 import CountdownTimer from "./CountdownTimer";
 import { Users, Calendar, Check } from "lucide-react";
-
-interface Cohort {
-  id: string;
-  name: string;
-  start_date: string;
-  max_participants: number;
-  spots_taken: number;
-  is_accepting_registrations: boolean;
-}
 
 const quizQuestions = [
   {
@@ -55,57 +47,21 @@ const QuizContainer = () => {
   
   // Capture tracking params from URL
   useTrackingParams();
-  
+
+  // Single source of truth for the cohort/countdown date across the funnel.
+  const {
+    cohort,
+    targetDate: cohortStartDate,
+    isFallback,
+    spotsLeft: hookSpotsLeft,
+    maxSpots: hookMaxSpots,
+    onExpire,
+  } = useNextCohort();
+
   const [currentStep, setCurrentStep] = useState(1);
   const [answers, setAnswers] = useState<(string | null)[]>([null, null, null]);
-  const [cohort, setCohort] = useState<Cohort | null>(null);
-  const [nextCohort, setNextCohort] = useState<Cohort | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
-
-  useEffect(() => {
-    fetchCohorts();
-  }, []);
-
-  const fetchCohorts = async () => {
-    setIsLoading(true);
-    try {
-      // Fetch active cohort accepting registrations
-      const { data: activeCohort, error: activeError } = await supabase
-        .from("cohorts")
-        .select("*")
-        .eq("is_active", true)
-        .eq("is_accepting_registrations", true)
-        .order("start_date", { ascending: true })
-        .limit(1)
-        .maybeSingle();
-
-      if (activeError) throw activeError;
-      
-      if (activeCohort) {
-        setCohort(activeCohort as Cohort);
-      } else {
-        // No active cohort accepting registrations, fetch next upcoming one
-        const { data: upcoming, error: upcomingError } = await supabase
-          .from("cohorts")
-          .select("*")
-          .eq("is_active", true)
-          .order("start_date", { ascending: true })
-          .limit(1)
-          .maybeSingle();
-          
-        if (upcomingError) throw upcomingError;
-        if (upcoming) {
-          setNextCohort(upcoming as Cohort);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching cohort:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const [direction, setDirection] = useState(1);
 
@@ -312,7 +268,7 @@ const QuizContainer = () => {
   };
 
   const handleWaitlistSubmit = async (email: string, firstName?: string, phone?: string) => {
-    const targetCohortId = nextCohort?.id || cohort?.id;
+    const targetCohortId = cohort?.id;
     
     setIsSubmitting(true);
     try {
@@ -347,9 +303,8 @@ const QuizContainer = () => {
     }
   };
 
-  const spotsRemaining = cohort ? cohort.max_participants - cohort.spots_taken : 0;
-  const isFull = !cohort || spotsRemaining <= 0 || !cohort.is_accepting_registrations;
-  const cohortStartDate = cohort ? new Date(cohort.start_date) : (nextCohort ? new Date(nextCohort.start_date) : new Date());
+  const spotsRemaining = hookSpotsLeft ?? 0;
+  const isFull = isFallback || !cohort || spotsRemaining <= 0 || !cohort.is_accepting_registrations;
 
   const formatCohortDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -437,19 +392,18 @@ const QuizContainer = () => {
   return (
     <div className="space-y-6">
       {/* Urgency Elements */}
-      {(cohort || nextCohort) && (
-        <div className="space-y-4">
+      <div className="space-y-4">
           {/* Countdown */}
           <div className="flex flex-col items-center gap-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="w-4 h-4" />
               <span>Challenge Starts {formatCohortDate(cohortStartDate)}</span>
             </div>
-            <CountdownTimer targetDate={cohortStartDate} />
+            <CountdownTimer targetDate={cohortStartDate} onExpire={onExpire} />
           </div>
 
-          {/* Spots Remaining */}
-          {!isFull && cohort && (
+          {/* Spots Remaining — only for real future cohorts */}
+          {!isFallback && !isFull && cohort && (
             <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/30 w-fit mx-auto">
               <Users className="w-4 h-4 text-secondary" />
               <span className="text-sm font-semibold">
@@ -458,8 +412,7 @@ const QuizContainer = () => {
               </span>
             </div>
           )}
-        </div>
-      )}
+      </div>
 
       {/* Quiz Card */}
       <div className="relative rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] overflow-hidden">
@@ -479,7 +432,7 @@ const QuizContainer = () => {
           {/* Waitlist Form (when full) */}
           {isFull && (
             <WaitlistForm
-              nextCohortDate={nextCohort ? formatCohortDate(new Date(nextCohort.start_date)) : "Coming Soon"}
+              nextCohortDate={formatCohortDate(cohortStartDate)}
               onSubmit={(email) => handleWaitlistSubmit(email)}
               isLoading={isSubmitting}
             />
