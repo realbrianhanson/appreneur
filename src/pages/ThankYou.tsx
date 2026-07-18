@@ -5,6 +5,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import CountdownTimer from "@/components/quiz/CountdownTimer";
 import SEOHead from "@/components/seo/SEOHead";
 import { trackPageView, trackRegistrationComplete } from "@/lib/analytics";
+import { useNextCohort } from "@/hooks/useNextCohort";
 import {
   Mail,
   Calendar,
@@ -102,8 +103,8 @@ const ThankYou = () => {
   const firstName = searchParams.get("name") || "there";
   const [showConfetti, setShowConfetti] = useState(true);
 
-  // Cohort start date
-  const cohortStartDate = new Date("2026-01-20T10:00:00-05:00"); // 10am EST
+  // Single source of truth for the cohort date across the funnel.
+  const { targetDate: cohortStartDate, onExpire } = useNextCohort();
 
   // Track page view and registration complete on mount
   useEffect(() => {
@@ -129,10 +130,30 @@ const ThankYou = () => {
     toast.success("Link copied to clipboard!");
   };
 
-  // Google Calendar URL
+  // Format helpers derived from the shared cohort date
+  const ordinalSuffix = (n: number) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+  };
+  const weekdayMonthDay = cohortStartDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  });
+  const hour12 = ((cohortStartDate.getHours() + 11) % 12) + 1;
+  const ampm = cohortStartDate.getHours() >= 12 ? "pm" : "am";
+  const cohortCopy = `The challenge starts ${weekdayMonthDay}${ordinalSuffix(
+    cohortStartDate.getDate()
+  )} at ${hour12}${ampm}`;
+
+  // Compact UTC date string YYYYMMDDTHHMMSSZ for Google Calendar
+  const toCalendarUtc = (d: Date) =>
+    d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const cohortEnd = new Date(cohortStartDate.getTime() + 60 * 60 * 1000);
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
     "Appreneur Challenge Starts!"
-  )}&dates=20260120T150000Z/20260120T160000Z&details=${encodeURIComponent(
+  )}&dates=${toCalendarUtc(cohortStartDate)}/${toCalendarUtc(cohortEnd)}&details=${encodeURIComponent(
     "Your 5-day app building challenge begins! Head to appreneur.ai to get started."
   )}`;
 
@@ -187,7 +208,7 @@ const ThankYou = () => {
                 number={2}
                 icon={<Calendar className="w-4 h-4 text-accent" />}
                 title="Mark your calendar"
-                description="The challenge starts Monday, January 20th at 10am EST"
+                description={cohortCopy}
                 action={
                   <div className="flex flex-wrap gap-2">
                     <Button
@@ -229,7 +250,7 @@ const ThankYou = () => {
           <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 md:p-8 text-center">
             <p className="text-muted-foreground mb-4">Challenge starts in:</p>
             <div className="flex justify-center">
-              <CountdownTimer targetDate={cohortStartDate} />
+              <CountdownTimer targetDate={cohortStartDate} onExpire={onExpire} />
             </div>
           </div>
 
