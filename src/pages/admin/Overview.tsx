@@ -18,6 +18,8 @@ import {
   Download,
   Send,
 } from "lucide-react";
+import { csvRow } from "@/lib/utils";
+import SEOHead from "@/components/seo/SEOHead";
 import { startOfDay, endOfDay } from "date-fns";
 
 interface OverviewStats {
@@ -161,9 +163,9 @@ export default function AdminOverview() {
       if (!users) return;
 
       const csv = [
-        ["First Name", "Email", "Phone", "Created At", "Is VIP"].join(","),
+        csvRow(["First Name", "Email", "Phone", "Created At", "Is VIP"]),
         ...users.map((u) =>
-          [u.first_name, u.email, u.phone || "", u.created_at, u.is_vip].join(",")
+          csvRow([u.first_name, u.email, u.phone || "", u.created_at, u.is_vip])
         ),
       ].join("\n");
 
