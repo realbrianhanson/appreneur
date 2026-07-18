@@ -1,16 +1,17 @@
 import { Smartphone } from "lucide-react";
 
 const APPS = [
-  "TaskFlow Pro",
-  "BookEasy",
-  "LeadGen AI",
-  "LeadFlow",
-  "ClientHub",
-  "CoachBot",
-  "MenuPilot",
-  "FitTrack",
-  "QuoteSnap",
-  "HireDesk",
+  "Revven.com",
+  "SpyBench.com",
+  "BigDeck.io",
+  "Validifier.com",
+  "PushTen.com",
+  "EarlyStart.ai",
+  "BloodDecoder.com",
+  "RankLab.ai",
+  "BrianHanson.com",
+  "904News.com",
+  "GarlicBread.ai",
 ];
 
 function MarqueeItem({ name }: { name: string }) {
