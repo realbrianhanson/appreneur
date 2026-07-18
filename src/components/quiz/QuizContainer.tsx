@@ -5,6 +5,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { useNextCohort } from "@/hooks/useNextCohort";
 import { sendWelcomeEmail } from "@/lib/email";
+import { fireWebhook } from "@/lib/webhooks";
+import {
+  trackQuizComplete,
+  trackRegistrationComplete as trackRegistrationCompleteAnalytics,
+} from "@/lib/analytics";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import QuizStep from "./QuizStep";
@@ -112,8 +117,39 @@ const QuizContainer = () => {
       if (currentStep < 4) {
         setDirection(1);
         setCurrentStep(currentStep + 1);
+        // On leaving question 3 (moving to the registration form), fire the
+        // quiz_completed funnel event and analytics.
+        if (currentStep === 3) {
+          void trackQuizCompletedEvent(newAnswers);
+        }
       }
     }, 300);
+  };
+
+  const trackQuizCompletedEvent = async (finalAnswers: (string | null)[]) => {
+    try {
+      const trackingParams = getStoredTrackingParams();
+      const sessionId =
+        sessionStorage.getItem("session_id") || crypto.randomUUID();
+      sessionStorage.setItem("session_id", sessionId);
+      trackQuizComplete({
+        answer1: finalAnswers[0] || "",
+        answer2: finalAnswers[1] || "",
+        answer3: finalAnswers[2] || "",
+      });
+      await supabase.from("funnel_events").insert({
+        session_id: sessionId,
+        event_type: "quiz_completed",
+        event_data: { answers: finalAnswers },
+        utm_source: trackingParams.utm_source,
+        utm_medium: trackingParams.utm_medium,
+        utm_campaign: trackingParams.utm_campaign,
+        utm_content: trackingParams.utm_content,
+        fb_ad_id: trackingParams.fb_ad_id,
+      });
+    } catch (err) {
+      console.error("quiz_completed track error", err);
+    }
   };
 
   const handleBack = () => {
