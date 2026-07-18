@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Link, useSearchParams } from "react-router-dom";
 import CountdownTimer from "@/components/quiz/CountdownTimer";
 import SEOHead from "@/components/seo/SEOHead";
 import { trackPageView, trackRegistrationComplete } from "@/lib/analytics";
 import { useNextCohort } from "@/hooks/useNextCohort";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Mail,
   Calendar,
@@ -18,6 +21,9 @@ import {
   Sparkles,
   ArrowRight,
   ExternalLink,
+  Download,
+  Phone,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -102,9 +108,53 @@ const ThankYou = () => {
   const [searchParams] = useSearchParams();
   const firstName = searchParams.get("name") || "there";
   const [showConfetti, setShowConfetti] = useState(true);
+  const { user } = useAuth();
 
   // Single source of truth for the cohort date across the funnel.
   const { targetDate: cohortStartDate, onExpire } = useNextCohort();
+
+  // Phone-on-file check: only prompt when the account has no phone yet.
+  const [profilePhone, setProfilePhone] = useState<string | null>(null);
+  const [phoneLoaded, setPhoneLoaded] = useState(false);
+  const [phoneInput, setPhoneInput] = useState("");
+  const [savingPhone, setSavingPhone] = useState(false);
+
+  useEffect(() => {
+    if (!user) {
+      setPhoneLoaded(true);
+      return;
+    }
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("phone")
+        .eq("id", user.id)
+        .maybeSingle();
+      setProfilePhone(data?.phone ?? null);
+      setPhoneLoaded(true);
+    })();
+  }, [user]);
+
+  const handleSavePhone = async () => {
+    if (!user) return;
+    const cleaned = phoneInput.trim();
+    if (cleaned.length < 7) {
+      toast.error("Please enter a valid phone number.");
+      return;
+    }
+    setSavingPhone(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ phone: cleaned })
+      .eq("id", user.id);
+    setSavingPhone(false);
+    if (error) {
+      toast.error("Couldn't save your number. Please try again.");
+      return;
+    }
+    setProfilePhone(cleaned);
+    toast.success("You're set. We'll text you when we go live.");
+  };
 
   // Track page view and registration complete on mount
   useEffect(() => {
@@ -121,13 +171,20 @@ const ThankYou = () => {
   }, []);
 
   const shareText = encodeURIComponent(
-    "I just signed up for the Appreneur Challenge — building my first app in 5 days! 🚀 Join me:"
+    "I just signed up for the Appreneur Challenge, building my first app in 5 days! 🚀 Join me:"
   );
   const shareUrl = encodeURIComponent("https://appreneur.ai");
+  const prewrittenShareMessage =
+    "I just signed up for the Appreneur Challenge, building my first app in 5 days. Join me: https://appreneur.ai";
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText("https://appreneur.ai");
     toast.success("Link copied to clipboard!");
+  };
+
+  const handleCopyInvite = () => {
+    navigator.clipboard.writeText(prewrittenShareMessage);
+    toast.success("Invite copied. Send it to a friend.");
   };
 
   // Format helpers derived from the shared cohort date
@@ -156,6 +213,39 @@ const ThankYou = () => {
   )}&dates=${toCalendarUtc(cohortStartDate)}/${toCalendarUtc(cohortEnd)}&details=${encodeURIComponent(
     "Your 5-day app building challenge begins! Head to appreneur.ai to get started."
   )}`;
+
+  // Downloadable .ics file for Apple / Outlook / any calendar app.
+  const handleDownloadIcs = () => {
+    const dtStamp = toCalendarUtc(new Date());
+    const dtStart = toCalendarUtc(cohortStartDate);
+    const dtEnd = toCalendarUtc(cohortEnd);
+    const ics = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//Appreneur//Challenge//EN",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+      "BEGIN:VEVENT",
+      `UID:appreneur-cohort-${dtStart}@appreneur.ai`,
+      `DTSTAMP:${dtStamp}`,
+      `DTSTART:${dtStart}`,
+      `DTEND:${dtEnd}`,
+      "SUMMARY:Appreneur Challenge Starts!",
+      "DESCRIPTION:Your 5-day app building challenge begins. Head to https://appreneur.ai to get started.",
+      "URL:https://appreneur.ai",
+      "END:VEVENT",
+      "END:VCALENDAR",
+    ].join("\r\n");
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "appreneur-challenge.ics";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -217,15 +307,13 @@ const ThankYou = () => {
                       asChild
                     >
                       <a href={googleCalendarUrl} target="_blank" rel="noopener noreferrer">
-                        Google
+                        Google Calendar
                         <ExternalLink className="w-3 h-3 ml-1" />
                       </a>
                     </Button>
-                    <Button variant="outline" size="sm">
-                      Apple
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      Outlook
+                    <Button variant="outline" size="sm" onClick={handleDownloadIcs}>
+                      <Download className="w-3 h-3 mr-1" />
+                      Download .ics (Apple / Outlook)
                     </Button>
                   </div>
                 }
@@ -246,6 +334,49 @@ const ThankYou = () => {
             </div>
           </div>
 
+          {/* SMS reminder opt-in (only when there's no phone on file) */}
+          {phoneLoaded && user && !profilePhone && (
+            <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                  <Phone className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    Get SMS reminders when we go live
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Reminders about your challenge only. Reply STOP anytime.
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <Input
+                  type="tel"
+                  inputMode="tel"
+                  placeholder="+1 555 123 4567"
+                  value={phoneInput}
+                  onChange={(e) => setPhoneInput(e.target.value)}
+                  className="flex-1"
+                />
+                <Button
+                  variant="cta"
+                  onClick={handleSavePhone}
+                  disabled={savingPhone}
+                >
+                  {savingPhone ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      Saving
+                    </>
+                  ) : (
+                    "Text me reminders"
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Countdown */}
           <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 md:p-8 text-center">
             <p className="text-muted-foreground mb-4">Challenge starts in:</p>
@@ -254,13 +385,13 @@ const ThankYou = () => {
             </div>
           </div>
 
-          {/* Share Section */}
+          {/* Refer-a-friend / Share Section */}
           <div className="rounded-2xl border border-border bg-card p-6 md:p-8">
             <h2 className="text-lg font-semibold text-foreground mb-2 text-center">
               Know someone who should build an app?
             </h2>
             <p className="text-muted-foreground text-center mb-6">
-              Share this challenge with them:
+              Doing this with a friend doubles your odds of shipping. Send them your invite:
             </p>
 
             <div className="flex flex-wrap justify-center gap-3">
@@ -321,6 +452,16 @@ const ThankYou = () => {
                 <Link2 className="w-4 h-4" />
                 Copy Link
               </Button>
+
+              <Button
+                variant="cta"
+                size="lg"
+                className="gap-2"
+                onClick={handleCopyInvite}
+              >
+                <Link2 className="w-4 h-4" />
+                Copy invite message
+              </Button>
             </div>
           </div>
 
@@ -334,7 +475,7 @@ const ThankYou = () => {
             </p>
             <Button variant="cta" size="lg" asChild>
               <Link to="/vip-offer">
-                Upgrade to VIP — $27
+                Upgrade to VIP for $27
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>
             </Button>
