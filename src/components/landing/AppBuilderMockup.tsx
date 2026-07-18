@@ -86,7 +86,7 @@ export const AppBuilderMockup = () => {
         aria-hidden
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-4 -left-4 md:-top-6 md:-left-8 z-20"
+        className="absolute -top-10 left-2 md:-top-12 md:-left-4 z-20"
       >
         <span
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium"
