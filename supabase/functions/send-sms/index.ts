@@ -24,7 +24,7 @@ function buildCors(req: Request): Record<string, string> {
 interface SMSRequest {
   user_id?: string;
   phone?: string;
-  message_type: 'cohort_reminder' | 'daily_unlock' | 'missed_day' | 'completion' | 'event_reminder' | 'custom';
+  message_type: 'cohort_reminder' | 'day_unlock' | 'missed_day' | 'completion' | 'event_reminder' | 'custom';
   custom_message?: string;
   day_number?: number;
 }
@@ -33,7 +33,7 @@ const messageTemplates: Record<string, (data: { name: string; day?: number; link
   cohort_reminder: ({ name }) => 
     `Hey ${name}! The Appreneur Challenge starts TOMORROW at 10am EST. Get ready to build your first app! 🚀`,
   
-  daily_unlock: ({ name, day, link }) => {
+  day_unlock: ({ name, day, link }) => {
     const messages: Record<number, string> = {
       1: `${name}, Day 1 is LIVE! Today you'll find your winning app idea. Let's go → ${link}`,
       2: `${name}, Day 2 unlocked! Time to design your app blueprint. → ${link}`,

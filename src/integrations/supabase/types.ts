@@ -708,6 +708,7 @@ export type Database = {
         Returns: undefined
       }
       is_admin: { Args: { _user_id: string }; Returns: boolean }
+      release_cohort_spot: { Args: { p_cohort_id: string }; Returns: undefined }
       reserve_cohort_spot: { Args: { p_cohort_id: string }; Returns: boolean }
     }
     Enums: {
