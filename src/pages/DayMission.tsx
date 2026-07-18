@@ -297,6 +297,11 @@ const DayMission = () => {
     timeFlushedRef.current = false;
   }, [day]);
 
+  // Invalid /dashboard/day/:n → send back to dashboard.
+  useEffect(() => {
+    if (!isValidDay) navigate("/dashboard", { replace: true });
+  }, [isValidDay, navigate]);
+
   // Live timer
   useEffect(() => {
     timerRef.current = setInterval(() => {
