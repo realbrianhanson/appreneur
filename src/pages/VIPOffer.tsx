@@ -180,7 +180,7 @@ const VIPOffer = () => {
   const totalCents = 2700 + (bumpOffer ? 700 : 0);
   const ctaLabel = isCheckingOut
     ? "Redirecting…"
-    : `Upgrade for $${(totalCents / 100).toFixed(0)}`;
+    : `Get instant access — $${(totalCents / 100).toFixed(0)}`;
 
   const stackItems: StackItemProps[] = [
     {
