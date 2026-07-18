@@ -200,36 +200,36 @@ const Index = () => {
       <FinalCTASection />
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 md:py-12 bg-background">
+      <footer className="border-t border-white/10 py-10 md:py-14 bg-background">
         <Container size="wide">
-          <div className="flex flex-col items-center gap-6 md:gap-8">
+          <div className="flex flex-col items-center gap-7 md:gap-8">
             <div className="flex items-center gap-2">
               <Zap className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-              <span className="font-display font-bold text-lg md:text-xl">Appreneur</span>
+              <span className="font-display font-bold text-lg md:text-xl tracking-tight">Appreneur</span>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
               <a href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</a>
-              <span className="text-border hidden md:inline">|</span>
+              <span className="text-white/10 hidden md:inline">·</span>
               <a href="/terms" className="hover:text-primary transition-colors">Terms of Service</a>
-              <span className="text-border hidden md:inline">|</span>
+              <span className="text-white/10 hidden md:inline">·</span>
               <a href="mailto:support@appreneur.ai" className="hover:text-primary transition-colors">Contact</a>
             </div>
 
-            <div className="flex items-center gap-4">
-              <a href="https://twitter.com/AIForBeginners" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors" aria-label="Twitter">
+            <div className="flex items-center gap-3">
+              <a href="https://twitter.com/AIForBeginners" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all" aria-label="Twitter">
                 <Twitter className="w-4 h-4" />
               </a>
-              <a href="https://linkedin.com/company/aiforbeginners" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors" aria-label="LinkedIn">
+              <a href="https://linkedin.com/company/aiforbeginners" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all" aria-label="LinkedIn">
                 <Linkedin className="w-4 h-4" />
               </a>
-              <a href="https://youtube.com/@AIForBeginners" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-colors" aria-label="YouTube">
+              <a href="https://youtube.com/@AIForBeginners" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all" aria-label="YouTube">
                 <Youtube className="w-4 h-4" />
               </a>
             </div>
 
-            <p className="text-xs md:text-sm text-muted-foreground text-center px-4">
-              © 2026 AI For Beginners. All rights reserved.
+            <p className="text-xs text-muted-foreground/70 text-center px-4 font-mono tracking-wider">
+              © 2026 AI FOR BEGINNERS · ALL RIGHTS RESERVED
             </p>
           </div>
         </Container>
