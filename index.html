@@ -59,33 +59,34 @@
       })();
     </script>
     
-    <!-- Facebook Pixel -->
+    <!-- Facebook Pixel — only loaded when a real Pixel ID is configured. -->
     <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
       (function() {
         var fbId = document.querySelector('meta[name="fb-pixel-id"]')?.getAttribute('content');
-        if (fbId && fbId !== 'XXXXXXXXXXXXXXXX') {
-          fbq('init', fbId);
-          fbq('track', 'PageView');
-        }
+        if (!fbId || fbId === 'XXXXXXXXXXXXXXXX') return;
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', fbId);
+        fbq('track', 'PageView');
+        // Insert the <noscript> tracking pixel dynamically so it also stays gated.
+        var ns = document.createElement('noscript');
+        var img = document.createElement('img');
+        img.height = 1; img.width = 1; img.style.display = 'none';
+        img.src = 'https://www.facebook.com/tr?id=' + encodeURIComponent(fbId) + '&ev=PageView&noscript=1';
+        img.alt = '';
+        ns.appendChild(img);
+        document.body && document.body.appendChild(ns);
       })();
     </script>
   </head>
 
   <body>
-    <!-- Facebook Pixel noscript fallback -->
-    <noscript>
-      <img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id=XXXXXXXXXXXXXXXX&ev=PageView&noscript=1" alt="" />
-    </noscript>
-    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
