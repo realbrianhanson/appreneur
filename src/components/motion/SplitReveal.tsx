@@ -29,8 +29,9 @@ export function SplitReveal({
   stagger = 0.025,
   duration = 0.6,
 }: SplitRevealProps) {
-  const chars = Array.from(text);
   const MotionTag = motion(Tag as any);
+  const words = text.split(" ");
+  let charIndex = 0;
 
   return (
     <MotionTag
@@ -45,23 +46,35 @@ export function SplitReveal({
         },
       }}
     >
-      {chars.map((char, i) => (
-        <motion.span
-          key={`${char}-${i}`}
+      {words.map((word, wi) => (
+        <span
+          key={`w-${wi}`}
           aria-hidden
-          className={cn("inline-block whitespace-pre", charClassName)}
-          variants={{
-            hidden: { opacity: 0, y: "0.6em", rotate: -8 },
-            visible: {
-              opacity: 1,
-              y: 0,
-              rotate: 0,
-              transition: { duration, ease: [0.22, 1, 0.36, 1] },
-            },
-          }}
+          className="inline-block whitespace-nowrap"
         >
-          {char === " " ? "\u00A0" : char}
-        </motion.span>
+          {Array.from(word).map((char, ci) => {
+            const key = `${wi}-${ci}-${charIndex++}`;
+            return (
+              <motion.span
+                key={key}
+                aria-hidden
+                className={cn("inline-block", charClassName)}
+                variants={{
+                  hidden: { opacity: 0, y: "0.6em", rotate: -8 },
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    rotate: 0,
+                    transition: { duration, ease: [0.22, 1, 0.36, 1] },
+                  },
+                }}
+              >
+                {char}
+              </motion.span>
+            );
+          })}
+          {wi < words.length - 1 && "\u00A0"}
+        </span>
       ))}
     </MotionTag>
   );
