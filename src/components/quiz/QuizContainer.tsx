@@ -601,6 +601,7 @@ const QuizContainer = () => {
                 >
                   {currentStep <= 3 ? (
                     <QuizStep
+                      ref={stepHeadingRef}
                       question={quizQuestions[currentStep - 1].question}
                       options={quizQuestions[currentStep - 1].options}
                       selectedValue={answers[currentStep - 1]}
