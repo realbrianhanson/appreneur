@@ -14,10 +14,10 @@ const formSchema = z.object({
 interface EmailCaptureFormProps {
   onSubmit: (data: { firstName: string; email: string; password: string; phone?: string }) => Promise<void>;
   isLoading: boolean;
-  isVisible: boolean;
+  onBack?: () => void;
 }
 
-const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormProps) => {
+const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps) => {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,8 +25,6 @@ const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormPr
   const [phone, setPhone] = useState("");
   const [showPhone, setShowPhone] = useState(false);
   const [errors, setErrors] = useState<{ firstName?: string; email?: string; password?: string }>({});
-
-  if (!isVisible) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,17 +51,31 @@ const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormPr
   };
 
   return (
-    <div className="animate-fade-in space-y-6">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <span className="eyebrow font-mono text-xs tracking-[0.2em] text-primary">
+          FINAL STEP — CLAIM YOUR SPOT
+        </span>
+        {onBack && (
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-xs text-muted-foreground hover:text-primary transition-colors font-mono tracking-wider"
+          >
+            ← BACK
+          </button>
+        )}
+      </div>
       <div className="space-y-2">
-        <h3 className="text-xl md:text-2xl font-display font-bold text-foreground">
-          You're in! Let's get you registered.
+        <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground leading-tight tracking-tight">
+          You're in. Let's get you registered.
         </h3>
         <p className="text-muted-foreground">
           Enter your details below to reserve your free spot.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 [&_input]:bg-white/[0.03] [&_input]:border-white/10 [&_input]:text-foreground [&_input]:h-12 [&_input:focus-visible]:ring-primary/60 [&_input:focus-visible]:border-primary/60">
         <div className="space-y-2">
           <Input
             type="text"
@@ -143,9 +155,8 @@ const EmailCaptureForm = ({ onSubmit, isLoading, isVisible }: EmailCaptureFormPr
 
         <Button
           type="submit"
-          variant="cta"
           size="xl"
-          className="w-full"
+          className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary hover:to-accent hover:brightness-110 text-background font-semibold shadow-[0_10px_30px_-10px_hsl(var(--primary)/0.6)] rounded-full"
           disabled={isLoading}
         >
           {isLoading ? (
