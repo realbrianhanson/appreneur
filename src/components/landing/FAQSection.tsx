@@ -24,7 +24,7 @@ const faqs = [
   {
     question: "Is this just theory or do I actually build something?",
     answer:
-      "You will have a live, working app by Day 5. Not a mockup. Not a wireframe. A real app.",
+      "You'll have a live, working app by Day 5: something real users can open in a browser, not a mockup or a wireframe.",
   },
   {
     question: "Why is this free?",
@@ -42,6 +42,16 @@ const faqs = [
       "Plan for 60-90 minutes per day. Each mission is designed to be completed in one focused session.",
   },
   {
+    question: "Do I need to buy any software?",
+    answer:
+      "You can start on the AI builder's free plan, and on Day 1 I'll walk through exactly what you need (and what you don't). There's nothing you're required to buy to finish the challenge.",
+  },
+  {
+    question: "Are the sessions live? What about my time zone?",
+    answer:
+      "Daily missions unlock in your dashboard each morning, so you build on your schedule wherever you are. Support runs in the community all day, and everything is recorded.",
+  },
+  {
     question: "What if I fall behind?",
     answer:
       "You'll have access to all recordings and can catch up at your own pace. Plus, the community is there to help.",
@@ -49,7 +59,7 @@ const faqs = [
   {
     question: "What happens after the 5 days?",
     answer:
-      "You'll have a live, working app. We'll also invite you to our 2-Day AI For Business event where you'll learn how to turn your app into a real business.",
+      "You'll have a live, working app. We'll also invite you to our 3-Day AI For Business Live event where you'll learn how to turn your app into a real business.",
   },
 ];
 

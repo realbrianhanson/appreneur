@@ -406,7 +406,7 @@ const QuizContainer = () => {
             </span>
           </h3>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Check your inbox — we've sent a confirmation link. Click it to verify your account and unlock your dashboard.
+            Check your inbox: we've sent a confirmation link. Click it to verify your account and unlock your dashboard.
           </p>
         </motion.div>
         <motion.div

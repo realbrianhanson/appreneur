@@ -101,7 +101,7 @@ const FinalCTASection = ({ cohortStartDate: propDate }: FinalCTASectionProps) =>
                     OPTION 01
                   </div>
                   <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                    Keep sitting on that app idea. Watch AI pass you by. Wonder "what if" for another year.
+                    Keep sitting on the idea, watch AI keep passing you by, and wonder "what if" for another year.
                   </p>
                 </div>
               </div>
@@ -119,7 +119,7 @@ const FinalCTASection = ({ cohortStartDate: propDate }: FinalCTASectionProps) =>
                     OPTION 02
                   </div>
                   <p className="text-base md:text-lg text-foreground/90 leading-relaxed">
-                    Spend 5 days with me — for free — and walk away with an actual app you built yourself.
+                    Spend 5 days with me, free, and walk away with an app you built yourself.
                   </p>
                 </div>
               </div>
@@ -127,7 +127,7 @@ const FinalCTASection = ({ cohortStartDate: propDate }: FinalCTASectionProps) =>
           </div>
 
           <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-6">
-            I've made this as easy as I possibly can. No cost. No catch. Just show up and build.
+            I've made this as easy as I possibly can: free, no catch, and I'm in there with you every day. Just show up and build.
           </p>
 
           <p className="font-serifit italic text-3xl md:text-5xl leading-tight bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-10 md:mb-12">

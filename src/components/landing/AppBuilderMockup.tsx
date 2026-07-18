@@ -13,7 +13,7 @@ import {
 
 const LOOP_MS = 12000;
 const PROMPT_TEXT =
-  "Build me a booking app for my salon — calendar, payments, and SMS reminders.";
+  "Build me a booking app for my salon, calendar, payments, and SMS reminders.";
 
 const CHECKLIST = [
   "Parsing your idea",
@@ -470,7 +470,7 @@ export const AppBuilderMockup = () => {
                         className="text-[10px] font-semibold"
                         style={{ color: "#B8F5C6" }}
                       >
-                        Deployed — your app is live
+                        Deployed · your app is live
                       </span>
                     </div>
                     <span

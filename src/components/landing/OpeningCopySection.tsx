@@ -55,7 +55,7 @@ const OpeningCopySection = () => {
           <div className="max-w-3xl space-y-5 text-lg leading-relaxed text-muted-foreground mb-14">
             <p>
               You've had this idea rattling around for months. Maybe years.
-              You <span style={{ color: "#F4F2EE" }} className="font-medium">KNOW</span> it could work — you've seen worse apps making money.
+              You <span style={{ color: "#F4F2EE" }} className="font-medium">KNOW</span> it could work. You've seen worse apps making money.
             </p>
             <p>But every time you look into building it, you hit the same wall:</p>
           </div>
@@ -126,8 +126,8 @@ const OpeningCopySection = () => {
               className="relative text-xl md:text-2xl font-semibold leading-snug mb-4"
               style={{ color: "#F4F2EE", fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
             >
-              Here's the thing — I've built multiple 7-figure businesses and taught
-              150,000+ people to use AI. And I'm telling you:{" "}
+              Here's the thing: I've built multiple 7-figure businesses and trained
+              40,000+ business owners to use AI. And I'm telling you,{" "}
               <span
                 className="bg-clip-text text-transparent"
                 style={{
@@ -139,8 +139,7 @@ const OpeningCopySection = () => {
             </p>
 
             <p className="relative text-muted-foreground text-base md:text-lg leading-relaxed mb-6">
-              You can now build a real, working app in 5 days. Not a toy. Not a "prototype."
-              An actual app people can use.
+              You can now build a real, working app in 5 days: an app people actually sign in and use, not a prototype that dies in a folder.
             </p>
 
             <a
@@ -155,7 +154,7 @@ const OpeningCopySection = () => {
                   backgroundImage: "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
                 }}
               >
-                And I'll show you exactly how — for free.
+                And I'll show you exactly how, free.
               </span>
               <ArrowDown
                 className="w-5 h-5 shrink-0"

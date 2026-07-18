@@ -49,7 +49,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <span className="eyebrow font-mono text-xs tracking-[0.2em] text-primary">
-          FINAL STEP — CLAIM YOUR SPOT
+         FINAL STEP · CLAIM YOUR SPOT
         </span>
         {onBack && (
           <button
@@ -63,10 +63,10 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
       </div>
       <div className="space-y-2">
         <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground leading-tight tracking-tight">
-          You're in. Let's get you registered.
+         Good news: you qualify.
         </h3>
         <p className="text-muted-foreground">
-          Enter your details below to reserve your free spot.
+         Lock in your free spot below. It takes about 30 seconds.
         </p>
       </div>
 

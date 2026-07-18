@@ -35,7 +35,7 @@ const StickyCtaBar = ({ onCtaClick }: StickyCtaBarProps) => {
               Appreneur Challenge
             </span>
             <span className="hidden md:inline text-sm text-muted-foreground">
-              — Free 5-Day App Building Challenge
+              · Free 5-Day App Building Challenge
             </span>
           </div>
 
