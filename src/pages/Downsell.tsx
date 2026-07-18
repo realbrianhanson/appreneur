@@ -89,11 +89,11 @@ const Downsell = () => {
           {/* Body Copy */}
           <div className="text-muted-foreground space-y-4 text-left md:text-center">
             <p>
-              I get it — maybe you just want to see what this is about first.
+              I get it, maybe you just want to see what this is about first.
             </p>
             <p>
               Here's the deal: My <span className="text-foreground font-semibold">47 Lovable Prompts</span> are 
-              the same ones I use to build apps 10x faster. They're copy-paste ready and work immediately.
+              the same ones I use to build apps in a fraction of the time. They're copy-paste ready and work immediately.
             </p>
             <p>
               Just $7. And you can always upgrade to the full VIP bundle later.
@@ -135,7 +135,7 @@ const Downsell = () => {
             isLoading={isLoading}
             loadingText="Redirecting to checkout..."
           >
-            Get the Prompt Vault — $7
+            Get the Prompt Vault for $7
             <ArrowRight className="w-5 h-5 ml-2" />
           </LoadingButton>
 
