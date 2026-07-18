@@ -20,7 +20,7 @@ import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
 import { useNextCohort } from "@/hooks/useNextCohort";
 import { Zap, Twitter, Linkedin, Youtube } from "lucide-react";
-import { scrollTo } from "@/lib/lenis";
+import { scrollTo } from "@/lib/scroll";
 
 const Index = () => {
   const { targetDate, isFallback } = useNextCohort();
