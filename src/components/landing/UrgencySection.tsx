@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
-import { Zap, Calendar } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Calendar } from "lucide-react";
 import CountdownTimer from "@/components/quiz/CountdownTimer";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -10,10 +9,27 @@ interface UrgencySectionProps {
   cohortStartDate?: Date;
 }
 
+/** Next Tuesday at 12:00 noon local time, strictly in the future. */
+const nextTuesdayNoon = (from: Date = new Date()): Date => {
+  const d = new Date(from);
+  const day = d.getDay(); // 0 Sun ... 2 Tue
+  let daysUntil = (2 - day + 7) % 7;
+  const candidate = new Date(d);
+  candidate.setHours(12, 0, 0, 0);
+  if (daysUntil === 0 && candidate.getTime() <= from.getTime()) {
+    daysUntil = 7;
+  }
+  candidate.setDate(d.getDate() + daysUntil);
+  candidate.setHours(12, 0, 0, 0);
+  return candidate;
+};
+
 const UrgencySection = ({ cohortStartDate: propDate }: UrgencySectionProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const [cohortStartDate, setCohortStartDate] = useState<Date | null>(propDate || null);
-  const [isLoading, setIsLoading] = useState(!propDate);
+  const [maxSpots, setMaxSpots] = useState<number>(500);
+  const [spotsTaken, setSpotsTaken] = useState<number>(0);
+  const [fallbackTarget, setFallbackTarget] = useState<Date>(() => nextTuesdayNoon());
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,11 +50,10 @@ const UrgencySection = ({ cohortStartDate: propDate }: UrgencySectionProps) => {
     if (propDate) return;
 
     const fetchCohort = async () => {
-      setIsLoading(true);
       try {
         const { data } = await supabase
           .from("cohorts")
-          .select("start_date")
+          .select("start_date, max_participants, spots_taken")
           .eq("is_active", true)
           .eq("is_accepting_registrations", true)
           .order("start_date", { ascending: true })
@@ -47,16 +62,32 @@ const UrgencySection = ({ cohortStartDate: propDate }: UrgencySectionProps) => {
 
         if (data) {
           setCohortStartDate(new Date(data.start_date));
+          if (typeof data.max_participants === "number") setMaxSpots(data.max_participants);
+          if (typeof data.spots_taken === "number") setSpotsTaken(data.spots_taken);
         }
       } catch (error) {
         console.error("Error fetching cohort:", error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
     fetchCohort();
   }, [propDate]);
+
+  // Effective target: cohort date if in future, otherwise the next-Tuesday fallback
+  const effectiveTarget = useMemo(() => {
+    if (cohortStartDate && cohortStartDate.getTime() > Date.now()) {
+      return cohortStartDate;
+    }
+    return fallbackTarget;
+  }, [cohortStartDate, fallbackTarget]);
+
+  const handleExpire = useCallback(() => {
+    // Roll forward to the next Tuesday after the current fallback
+    setFallbackTarget((prev) => nextTuesdayNoon(new Date(prev.getTime() + 1000)));
+  }, []);
+
+  const spotsLeft = Math.max(0, maxSpots - spotsTaken);
+  const spotsPct = Math.min(100, Math.max(0, (spotsTaken / Math.max(1, maxSpots)) * 100));
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -68,62 +99,69 @@ const UrgencySection = ({ cohortStartDate: propDate }: UrgencySectionProps) => {
 
   return (
     <Section variant="muted" spacing="lg" className="relative overflow-hidden">
-      {/* Background glow */}
       <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-primary/5" />
-      
+
       <Container size="wide" className="relative z-10">
-        <div 
+        <div
           ref={sectionRef}
-          className={`max-w-3xl mx-auto text-center transition-all duration-700 ${
+          className={`max-w-3xl mx-auto transition-all duration-700 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          {isLoading ? (
-            <div className="inline-flex flex-col md:flex-row items-center gap-4 md:gap-6 p-6 md:p-8 rounded-2xl border border-primary/30 bg-card/50 backdrop-blur-sm">
-              <Skeleton className="h-12 w-48" />
-              <Skeleton className="h-12 w-48" />
+          <div className="rounded-3xl border border-primary/25 bg-card/40 backdrop-blur-sm p-8 md:p-10 shadow-[0_30px_80px_-40px_hsl(var(--primary)/0.4)]">
+            {/* Eyebrow */}
+            <div
+              className="flex items-center justify-center gap-2 mb-4"
+              style={{ fontFamily: "'JetBrains Mono', ui-monospace, monospace" }}
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-70 animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+              </span>
+              <span className="text-[11px] md:text-xs uppercase tracking-[0.28em] text-primary font-semibold">
+                Next Cohort Starts
+              </span>
             </div>
-          ) : cohortStartDate ? (
-            <>
-              {/* Urgency Banner */}
-              <div className="inline-flex flex-col md:flex-row items-center gap-4 md:gap-6 p-6 md:p-8 rounded-2xl border border-primary/30 bg-card/50 backdrop-blur-sm">
-                {/* Icon & Date */}
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Zap className="w-6 h-6 text-primary" />
-                  </div>
-                  <div className="text-left">
-                    <p className="text-sm text-muted-foreground uppercase tracking-wider">
-                      Next Challenge Starts
-                    </p>
-                    <p className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-primary" />
-                      {formatDate(cohortStartDate)}
-                    </p>
-                  </div>
-                </div>
 
-                {/* Divider */}
-                <div className="hidden md:block w-px h-12 bg-border" />
-
-                {/* Countdown */}
-                <div className="flex flex-col items-center">
-                  <p className="text-sm text-muted-foreground mb-2">Time Until Start:</p>
-                  <CountdownTimer targetDate={cohortStartDate} />
-                </div>
-              </div>
-
-              {/* Context Text */}
-              <p className="mt-6 text-muted-foreground">
-                We run live cohorts to keep everyone accountable. Grab your spot before we start.
+            {/* Date */}
+            <div className="flex items-center justify-center gap-3 mb-8">
+              <Calendar className="w-6 h-6 text-primary" />
+              <p
+                className="text-2xl md:text-3xl font-bold text-foreground tracking-tight"
+                style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+              >
+                {formatDate(effectiveTarget)}
               </p>
-            </>
-          ) : (
-            <div className="inline-flex items-center gap-3 p-6 md:p-8 rounded-2xl border border-primary/30 bg-card/50 backdrop-blur-sm">
-              <Zap className="w-6 h-6 text-primary" />
-              <p className="text-xl font-bold text-foreground">Coming Soon</p>
             </div>
-          )}
+
+            {/* Countdown */}
+            <div className="flex justify-center">
+              <CountdownTimer targetDate={effectiveTarget} onExpire={handleExpire} />
+            </div>
+
+            {/* Spots left */}
+            <div className="mt-10 max-w-md mx-auto">
+              <div
+                className="flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2"
+                style={{ fontFamily: "'JetBrains Mono', ui-monospace, monospace" }}
+              >
+                <span>
+                  <span className="text-primary font-semibold">{spotsLeft}</span> of {maxSpots} spots left
+                </span>
+                <span className="tabular-nums">{Math.round(spotsPct)}%</span>
+              </div>
+              <div className="relative h-[3px] w-full rounded-full bg-primary/10 overflow-hidden">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-accent shadow-[0_0_12px_hsl(var(--primary)/0.7)] transition-[width] duration-700"
+                  style={{ width: `${spotsPct}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-6 text-center text-muted-foreground">
+            We run live cohorts to keep everyone accountable. Grab your spot before we start.
+          </p>
         </div>
       </Container>
     </Section>
