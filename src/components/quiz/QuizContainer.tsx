@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -65,7 +65,45 @@ const QuizContainer = () => {
 
   const [direction, setDirection] = useState(1);
 
+  // Warm-traffic fast lane: ?direct=1 skips the 3 questions and jumps to registration.
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("direct") === "1") {
+        setCurrentStep(4);
+      }
+    } catch {}
+  }, []);
+
+  // Fire funnel_events "quiz_started" once when the first answer is picked.
+  const quizStartedRef = useRef(false);
+  const trackQuizStarted = async () => {
+    if (quizStartedRef.current) return;
+    quizStartedRef.current = true;
+    try {
+      const trackingParams = getStoredTrackingParams();
+      const sessionId =
+        sessionStorage.getItem("session_id") || crypto.randomUUID();
+      sessionStorage.setItem("session_id", sessionId);
+      await supabase.from("funnel_events").insert({
+        session_id: sessionId,
+        event_type: "quiz_started",
+        event_data: {},
+        utm_source: trackingParams.utm_source,
+        utm_medium: trackingParams.utm_medium,
+        utm_campaign: trackingParams.utm_campaign,
+        utm_content: trackingParams.utm_content,
+        fb_ad_id: trackingParams.fb_ad_id,
+      });
+    } catch (err) {
+      console.error("quiz_started track error", err);
+    }
+  };
+
   const handleAnswerSelect = (value: string) => {
+    if (currentStep === 1) {
+      void trackQuizStarted();
+    }
     const newAnswers = [...answers];
     newAnswers[currentStep - 1] = value;
     setAnswers(newAnswers);

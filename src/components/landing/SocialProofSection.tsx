@@ -10,7 +10,7 @@ const fallbackTestimonials: TestimonialData[] = [
   {
     id: "1",
     name: "Sarah M.",
-    content: "I went from never building anything to having a live app in 6 days. Brian breaks it down so anyone can do this.",
+    content: "I went from never building anything to having a live app in 5 days. Brian breaks it down so anyone can do this.",
     rating: 5,
     app_name: "TaskFlow Pro",
     app_screenshot_url: null,
@@ -28,7 +28,7 @@ const fallbackTestimonials: TestimonialData[] = [
   {
     id: "3",
     name: "Jennifer K.",
-    content: "Zero coding experience. Now I have a live SaaS that's getting paying customers. The prompts alone saved me 100+ hours.",
+    content: "Zero coding experience. Now I have a live SaaS with real users. The prompts alone saved me 100+ hours.",
     rating: 5,
     app_name: "LeadGen AI",
     app_screenshot_url: null,
@@ -37,7 +37,7 @@ const fallbackTestimonials: TestimonialData[] = [
   {
     id: "4",
     name: "David R.",
-    content: "Shipped my MVP and got my first paying customer by Day 6. This system just works.",
+    content: "Shipped my MVP by Day 5. This system just works.",
     rating: 5,
     app_name: "LeadFlow",
     app_screenshot_url: null,
@@ -135,6 +135,9 @@ export const SocialProofSection = () => {
       <div className="relative mt-16 space-y-6">
         <TestimonialRow items={safeRowA} direction="left" duration={60} />
         <TestimonialRow items={safeRowB} direction="right" duration={75} />
+        <p className="mt-4 text-center text-[11px] text-muted-foreground/60 max-w-2xl mx-auto px-4">
+          Individual results vary. An app by Day 5 requires showing up and doing the daily missions.
+        </p>
       </div>
 
       <style>{`

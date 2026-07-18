@@ -63,7 +63,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
       </div>
       <div className="space-y-2">
         <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground leading-tight tracking-tight">
-         Good news: you qualify.
+        That's exactly who this challenge is built for.
         </h3>
         <p className="text-muted-foreground">
          Lock in your free spot below. It takes about 30 seconds.

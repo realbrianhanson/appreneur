@@ -74,7 +74,10 @@ const Index = () => {
       />
 
       {/* Hero Section — editorial asymmetric layout */}
-      <HeroSection onCtaClick={scrollToQuiz} />
+      <HeroSection
+        onCtaClick={scrollToQuiz}
+        cohortStartDate={!isFallback ? targetDate : null}
+      />
 
       {/* Shipped apps marquee */}
       <ShippedMarquee />
@@ -210,6 +213,15 @@ const Index = () => {
               <a href="https://youtube.com/@AIForBeginners" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all" aria-label="YouTube">
                 <Youtube className="w-4 h-4" />
               </a>
+            </div>
+
+            <div className="max-w-3xl mx-auto text-center px-4 space-y-3 text-[11px] leading-relaxed text-muted-foreground/60">
+              <p>
+                This site is not a part of the Facebook website or Facebook Inc. Additionally, this site is NOT endorsed by Facebook in any way. FACEBOOK is a trademark of FACEBOOK, Inc.
+              </p>
+              <p>
+                Results mentioned on this page are not typical and are not a promise of results. Building anything real takes work.
+              </p>
             </div>
 
             <p className="text-xs text-muted-foreground/70 text-center px-4 font-mono tracking-wider">

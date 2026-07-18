@@ -13,7 +13,7 @@ import {
 
 const LOOP_MS = 12000;
 const PROMPT_TEXT =
-  "Build me a booking app for my salon, calendar, payments, and SMS reminders.";
+  "Build me a booking app for my salon with calendar, payments, and SMS reminders.";
 
 const CHECKLIST = [
   "Parsing your idea",
