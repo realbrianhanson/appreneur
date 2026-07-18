@@ -108,7 +108,7 @@ const StackItem = ({ icon, title, description, value }: StackItemProps) => (
 );
 
 const VIPOffer = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [bumpOffer, setBumpOffer] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -150,24 +150,17 @@ const VIPOffer = () => {
   };
 
   const handleCheckout = async () => {
-    if (!isAuthenticated || !user) {
-      navigate("/login");
-      return;
-    }
     setIsCheckingOut(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-checkout-session", {
         body: {
-          product_type: "vip_bundle",
+          product: "vip",
           include_bump: bumpOffer,
+          email: user?.email,
         },
       });
       if (error) {
-        // 503 → Stripe not configured. Graceful degradation.
-        const msg = (error as any)?.context?.status === 503
-          ? "Checkout isn't available right now"
-          : (error.message || "Could not start checkout");
-        toast.error(msg);
+        toast.error(error.message || "Could not start checkout");
         setIsCheckingOut(false);
         return;
       }
@@ -187,7 +180,7 @@ const VIPOffer = () => {
   const totalCents = 2700 + (bumpOffer ? 700 : 0);
   const ctaLabel = isCheckingOut
     ? "Redirecting…"
-    : `Upgrade for $${(totalCents / 100).toFixed(0)}`;
+    : `Get instant access — $${(totalCents / 100).toFixed(0)}`;
 
   const stackItems: StackItemProps[] = [
     {
@@ -215,7 +208,7 @@ const VIPOffer = () => {
     },
     {
       icon: <Video className="w-5 h-5 text-accent" />,
-      title: "VIP Upgrade: AI For Business Live (priority access + front-row Q&A)",
+      title: "VIP Upgrade: 3-Day AI For Business Live (priority access + front-row Q&A)",
       value: 297,
     },
     {

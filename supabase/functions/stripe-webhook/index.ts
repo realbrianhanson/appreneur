@@ -45,45 +45,64 @@ Deno.serve(async (req) => {
         return new Response("ignored: not paid", { status: 200 });
       }
 
-      const userId = session.metadata?.user_id;
+      let userId: string | null = session.metadata?.user_id || null;
       const productType = (session.metadata?.product_type ?? "vip_bundle") as
         | "vip_bundle"
         | "prompt_vault"
         | "ship_it_kit";
       const includeBump = session.metadata?.include_bump === "true";
+      const customerEmail =
+        session.customer_details?.email ??
+        session.metadata?.customer_email ??
+        null;
 
-      if (!userId) {
-        console.error("checkout.session.completed missing user_id metadata");
-        return new Response("missing metadata", { status: 200 });
+      // Resolve the buyer if metadata didn't carry a user_id (anonymous
+        // checkout path): look them up by email.
+      if (!userId && customerEmail) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("email", customerEmail)
+          .maybeSingle();
+        if (profile?.id) userId = profile.id;
       }
 
-      // Idempotent insert — the unique index on stripe_checkout_session_id
-      // guarantees at-most-once even if Stripe retries this delivery.
-      const { error: insertError } = await supabase.from("purchases").insert({
-        user_id: userId,
-        product_type: productType,
-        amount_cents: session.amount_total ?? 0,
-        currency: session.currency ?? "usd",
-        stripe_payment_intent_id:
-          typeof session.payment_intent === "string"
-            ? session.payment_intent
-            : session.payment_intent?.id ?? null,
-        stripe_checkout_session_id: session.id,
-        status: "completed",
-        metadata: {
-          include_bump: includeBump,
-          customer_email: session.customer_details?.email,
-        },
-      });
+      const paymentIntentId =
+        typeof session.payment_intent === "string"
+          ? session.payment_intent
+          : session.payment_intent?.id ?? null;
 
-      // 23505 = unique_violation — already recorded from a prior delivery.
-      if (insertError && insertError.code !== "23505") {
-        console.error("Insert purchases failed", insertError);
+      // Upsert on the unique stripe_checkout_session_id: the pending row
+      // inserted by create-checkout-session is flipped to completed; if it
+      // wasn't inserted (e.g. failure) we still create the record here.
+      const { error: upsertError } = await supabase
+        .from("purchases")
+        .upsert(
+          {
+            user_id: userId,
+            product_type: productType,
+            amount_cents: session.amount_total ?? 0,
+            currency: session.currency ?? "usd",
+            stripe_payment_intent_id: paymentIntentId,
+            stripe_checkout_session_id: session.id,
+            status: "completed",
+            metadata: {
+              include_bump: includeBump,
+              customer_email: customerEmail,
+            },
+          },
+          { onConflict: "stripe_checkout_session_id" },
+        );
+
+      if (upsertError) {
+        console.error("Upsert purchases failed", upsertError);
         return new Response("db error", { status: 500 });
       }
 
-      // Flip the VIP flag on the profile for vip_bundle / prompt_vault upsells.
-      if (productType === "vip_bundle") {
+      // Flip the VIP flag on the profile for vip_bundle purchases. This is
+      // the ONLY legitimate way is_vip is granted — the client-side path is
+      // blocked by enforce_profile_privileged_columns.
+      if (productType === "vip_bundle" && userId) {
         await supabase.from("profiles").update({ is_vip: true }).eq("id", userId);
       }
     }
