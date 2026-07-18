@@ -8,6 +8,7 @@ import SEOHead from "@/components/seo/SEOHead";
 import { trackPageView, trackVIPOfferView } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { toast } from "sonner";
 import {
   Play,
@@ -116,6 +117,31 @@ const VIPOffer = () => {
   useEffect(() => {
     trackPageView('/vip-offer', 'VIP Offer — Appreneur Challenge');
     trackVIPOfferView();
+    // Log the OTO view into funnel_events so the admin funnel dashboard can
+    // report OTO view → purchase conversion.
+    (async () => {
+      try {
+        const trackingParams = getStoredTrackingParams();
+        const sessionId =
+          sessionStorage.getItem("session_id") || crypto.randomUUID();
+        sessionStorage.setItem("session_id", sessionId);
+        await supabase.from("funnel_events").insert({
+          session_id: sessionId,
+          user_id: user?.id ?? null,
+          event_type: "vip_offer_viewed",
+          event_data: {},
+          utm_source: trackingParams.utm_source,
+          utm_medium: trackingParams.utm_medium,
+          utm_campaign: trackingParams.utm_campaign,
+          utm_content: trackingParams.utm_content,
+          fb_ad_id: trackingParams.fb_ad_id,
+        });
+      } catch (err) {
+        console.error("vip_offer_viewed track error", err);
+      }
+    })();
+    // We intentionally only run this once per mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleExpire = () => {
