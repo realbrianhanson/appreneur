@@ -112,14 +112,14 @@ export const SocialProofSection = () => {
               color: "#F4F2EE",
             }}
           >
-            Real People. Real Apps.{" "}
+            They had an idea.{" "}
             <span
               className="font-serifit bg-clip-text text-transparent"
               style={{
                 backgroundImage: "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
               }}
             >
-              Real Results.
+              Now they have an app.
             </span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
