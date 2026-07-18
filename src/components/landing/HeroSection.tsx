@@ -128,7 +128,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
               }}
             >
               <span className="block">
-                <SplitReveal text={'Go from "I have an idea" to'} />
+                <SplitReveal text={'Go from \u201CI have an idea\u201D to'} />
               </span>
               <span
                 className="block font-serifit"
@@ -140,7 +140,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                 }}
               >
                 <SplitReveal
-                  text={'"I built that"'}
+                  text={'\u201CI built that\u201D'}
                   delay={0.35}
                   charClassName="text-gradient-primary"
                 />
