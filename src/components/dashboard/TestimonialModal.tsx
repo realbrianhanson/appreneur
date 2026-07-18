@@ -123,8 +123,13 @@ export const TestimonialModal = ({
   const displayRating = hoveredRating !== null ? hoveredRating : rating;
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="sm:max-w-lg" onPointerDownOutside={(e) => e.preventDefault()}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onMaybeLater();
+      }}
+    >
+      <DialogContent className="sm:max-w-lg">
         {step === "prompt" ? (
           <>
             <DialogHeader className="text-center">
@@ -180,6 +185,8 @@ export const TestimonialModal = ({
                       onClick={() => setRating(star)}
                       onMouseEnter={() => setHoveredRating(star)}
                       onMouseLeave={() => setHoveredRating(null)}
+                      aria-label={`${star} star${star === 1 ? "" : "s"}`}
+                      aria-pressed={rating === star}
                       className="p-1 transition-transform hover:scale-110"
                     >
                       <Star
@@ -188,6 +195,7 @@ export const TestimonialModal = ({
                             ? "fill-yellow-400 text-yellow-400"
                             : "text-muted-foreground/30"
                         }`}
+                        aria-hidden="true"
                       />
                     </button>
                   ))}
@@ -234,9 +242,10 @@ export const TestimonialModal = ({
                     <button
                       type="button"
                       onClick={removeScreenshot}
+                      aria-label="Remove screenshot"
                       className="absolute top-2 right-2 p-1 rounded-full bg-background/80 hover:bg-background"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-4 h-4" aria-hidden="true" />
                     </button>
                   </div>
                 ) : (
