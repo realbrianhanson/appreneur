@@ -4,7 +4,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { SplitReveal } from "@/components/motion/SplitReveal";
 import { Magnetic } from "@/components/motion/Magnetic";
-import HeroVisual from "./HeroVisual";
+import AppBuilderMockup from "./AppBuilderMockup";
 import brianPhoto from "@/assets/brian-hanson.jpeg";
 
 interface HeroSectionProps {
@@ -255,7 +255,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                   transformStyle: "preserve-3d",
                 }}
               >
-                <HeroVisual />
+                <AppBuilderMockup />
               </motion.div>
             </motion.div>
           </motion.div>
