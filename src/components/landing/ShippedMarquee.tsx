@@ -1,4 +1,6 @@
 import { Smartphone } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
+import { usePauseWhenHidden } from "@/hooks/usePauseWhenHidden";
 
 const APPS = [
   "Revven.com",
@@ -53,8 +55,11 @@ function MarqueeItem({ name }: { name: string }) {
 }
 
 export const ShippedMarquee = () => {
+  const reduced = useReducedMotion();
+  const { ref, paused } = usePauseWhenHidden<HTMLDivElement>();
   return (
     <div
+      ref={ref}
       className="relative w-full overflow-hidden py-5 md:py-6"
       style={{
         borderTop: "1px solid rgba(255,255,255,0.08)",
@@ -70,13 +75,14 @@ export const ShippedMarquee = () => {
       <ul
         className="flex items-center w-max"
         style={{
-          animation: "shipped-marquee 38s linear infinite",
+          animation: reduced ? "none" : "shipped-marquee 38s linear infinite",
+          animationPlayState: paused ? "paused" : "running",
         }}
       >
         {APPS.map((n, i) => (
           <MarqueeItem key={`a-${i}`} name={n} />
         ))}
-        {APPS.map((n, i) => (
+        {!reduced && APPS.map((n, i) => (
           <MarqueeItem key={`b-${i}`} name={n} />
         ))}
       </ul>
