@@ -2,7 +2,7 @@ import { X, ArrowDown } from "lucide-react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { GhostWord } from "@/components/motion/GhostWord";
-import { scrollTo } from "@/lib/lenis";
+import { scrollTo } from "@/lib/scroll";
 
 const painPoints: { title: string; description: React.ReactNode }[] = [
   {

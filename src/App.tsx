@@ -1,5 +1,5 @@
-import { lazy, Suspense, useEffect } from "react";
-import { initLenis, destroyLenis } from "@/lib/lenis";
+import { lazy, Suspense } from "react";
+import { MotionConfig } from "framer-motion";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -47,13 +47,9 @@ function RouteLoader() {
 const queryClient = new QueryClient();
 
 const App = () => {
-  useEffect(() => {
-    initLenis();
-    return () => destroyLenis();
-  }, []);
-
   return (
   <QueryClientProvider client={queryClient}>
+    <MotionConfig reducedMotion="user">
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -128,6 +124,7 @@ const App = () => {
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
+    </MotionConfig>
   </QueryClientProvider>
   );
 };

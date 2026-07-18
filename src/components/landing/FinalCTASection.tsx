@@ -3,7 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { ArrowRight, Shield, Check, X } from "lucide-react";
 import { Magnetic } from "@/components/motion/Magnetic";
-import { scrollTo } from "@/lib/lenis";
+import { scrollTo } from "@/lib/scroll";
 import { useNextCohort } from "@/hooks/useNextCohort";
 
 const FinalCTASection = () => {

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
+import { useReducedMotion } from "framer-motion";
+import { usePauseWhenHidden } from "@/hooks/usePauseWhenHidden";
 import { supabase } from "@/integrations/supabase/client";
 import { TestimonialData } from "@/components/testimonials";
 import { CountUp } from "@/components/motion/CountUp";
@@ -254,9 +256,12 @@ const TestimonialRow = ({
   direction: "left" | "right";
   duration: number;
 }) => {
-  const doubled = [...items, ...items];
+  const reduced = useReducedMotion();
+  const { ref, paused } = usePauseWhenHidden<HTMLDivElement>();
+  const doubled = reduced ? items : [...items, ...items];
   return (
     <div
+      ref={ref}
       className="relative overflow-hidden"
       style={{
         WebkitMaskImage:
@@ -268,9 +273,12 @@ const TestimonialRow = ({
       <div
         className="testi-track flex gap-5 w-max py-2"
         style={{
-          animation: `${
-            direction === "left" ? "testi-marquee-left" : "testi-marquee-right"
-          } ${duration}s linear infinite`,
+          animation: reduced
+            ? "none"
+            : `${
+                direction === "left" ? "testi-marquee-left" : "testi-marquee-right"
+              } ${duration}s linear infinite`,
+          animationPlayState: paused ? "paused" : "running",
         }}
       >
         {doubled.map((t, i) => (

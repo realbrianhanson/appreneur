@@ -1,5 +1,5 @@
 import { ReactNode, useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface MagneticProps {
@@ -15,12 +15,14 @@ interface MagneticProps {
  */
 export function Magnetic({ children, className, strength = 0.15 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 180, damping: 18, mass: 0.4 });
   const sy = useSpring(y, { stiffness: 180, damping: 18, mass: 0.4 });
 
   const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reduced) return;
     const el = ref.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
@@ -34,6 +36,10 @@ export function Magnetic({ children, className, strength = 0.15 }: MagneticProps
     x.set(0);
     y.set(0);
   };
+
+  if (reduced) {
+    return <div ref={ref} className={cn("inline-block", className)}>{children}</div>;
+  }
 
   return (
     <motion.div
