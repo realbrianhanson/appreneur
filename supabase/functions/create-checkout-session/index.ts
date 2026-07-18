@@ -61,13 +61,17 @@ Deno.serve(async (req) => {
   }
 
   const origin = req.headers.get("Origin") ?? Deno.env.get("APP_URL") ?? "https://appreneur.ai";
-  const success_url = body.success_url ?? `${origin}/thank-you?vip=1&session_id={CHECKOUT_SESSION_ID}`;
-  const cancel_url = body.cancel_url ?? `${origin}/vip-offer`;
-
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
 
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
   let productType = body.product_type ?? "vip_bundle";
+
+  const defaultSuccessUrl =
+    productType === "prompt_vault"
+      ? `${origin}/thank-you?vault=1&session_id={CHECKOUT_SESSION_ID}`
+      : `${origin}/thank-you?vip=1&session_id={CHECKOUT_SESSION_ID}`;
+  const success_url = body.success_url ?? defaultSuccessUrl;
+  const cancel_url = body.cancel_url ?? `${origin}/vip-offer`;
 
   if (productType === "vip_bundle") {
     line_items.push({
