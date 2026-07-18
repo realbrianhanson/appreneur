@@ -408,6 +408,9 @@ const DayMission = () => {
     const result = await completeDay(day, timeSpent);
     
     if (result) {
+      // completeDay already persisted this session's time — don't let the
+      // unmount handler add it again.
+      timeFlushedRef.current = true;
       setShowCelebration(true);
       
       if (result.is_graduation) {
