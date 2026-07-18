@@ -301,15 +301,29 @@ const TestimonialCard = ({ t }: { t: TestimonialData }) => {
       }}
     >
       {/* Stars */}
-      <div className="flex items-center gap-1 mb-4">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Star
-            key={i}
-            className="w-4 h-4"
-            style={{ color: "#FFA04D", fill: "#FFA04D" }}
-          />
-        ))}
-      </div>
+      {(() => {
+        const filled = Math.max(0, Math.min(5, t.rating ?? 5));
+        return (
+          <div
+            className="flex items-center gap-1 mb-4"
+            role="img"
+            aria-label={`${filled} out of 5 stars`}
+          >
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star
+                key={i}
+                className="w-4 h-4"
+                aria-hidden="true"
+                style={
+                  i < filled
+                    ? { color: "#FFA04D", fill: "#FFA04D" }
+                    : { color: "rgba(244,242,238,0.25)", fill: "transparent" }
+                }
+              />
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Quote */}
       <p
