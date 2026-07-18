@@ -9,6 +9,7 @@ import brianPhoto from "@/assets/brian-hanson.jpeg";
 
 interface HeroSectionProps {
   onCtaClick: () => void;
+  cohortStartDate?: Date | null;
 }
 
 const trustItems = [
@@ -17,7 +18,10 @@ const trustItems = [
   "Takes 60 seconds",
 ];
 
-export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
+export const HeroSection = ({ onCtaClick, cohortStartDate }: HeroSectionProps) => {
+  const badgeText = cohortStartDate
+    ? `Free 5-Day Challenge · Next Cohort Starts ${cohortStartDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`
+    : "Free 5-Day Challenge · Next Cohort Starting Soon";
   const sectionRef = useRef<HTMLElement>(null);
   const visualWrapRef = useRef<HTMLDivElement>(null);
 
@@ -114,7 +118,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                   color: "#FFA04D",
                 }}
               >
-                Free 5-Day Challenge · Next Cohort Starting Soon
+                {badgeText}
               </span>
             </motion.div>
 
@@ -177,7 +181,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                     className="btn-primary-pill text-base md:text-lg"
                     style={{ padding: "18px 34px" }}
                   >
-                    See if you qualify (3 quick questions)
+                    Claim your free spot (3 quick questions)
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 </Magnetic>
