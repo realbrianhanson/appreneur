@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { Lightbulb, Layout, Blocks, Sparkles, Rocket } from "lucide-react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Lightbulb, PenTool, Hammer, Wand2, Rocket } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 interface DayCard {
@@ -22,19 +22,19 @@ const days: DayCard[] = [
     day: 2,
     title: "Design Your Blueprint",
     description: "Create your app's wireframe and feature list",
-    icon: Layout,
+    icon: PenTool,
   },
   {
     day: 3,
     title: "Build Your Core App",
     description: "Get your first working version live in Lovable",
-    icon: Blocks,
+    icon: Hammer,
   },
   {
     day: 4,
     title: "Polish & Add Magic",
     description: "Integrate AI features, branding, and finishing touches",
-    icon: Sparkles,
+    icon: Wand2,
   },
   {
     day: 5,
@@ -46,153 +46,141 @@ const days: DayCard[] = [
 ];
 
 const JourneyTimeline = () => {
-  const [hoveredDay, setHoveredDay] = useState<number | null>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: railRef,
+    offset: ["start 75%", "end 40%"],
+  });
+  const scaleY = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
   return (
-    <div className="w-full">
-      {/* Desktop: Horizontal Timeline */}
-      <div className="hidden lg:block">
-        <div className="grid grid-cols-5 gap-0 relative">
-          {days.map((day, idx) => {
-            const Icon = day.icon;
-            const isHovered = hoveredDay === day.day;
-            const isLast = idx === days.length - 1;
+    <div ref={railRef} className="relative max-w-3xl mx-auto pl-2 md:pl-4">
+      {/* Vertical rail */}
+      <div
+        aria-hidden
+        className="absolute top-0 bottom-0"
+        style={{
+          left: "31px",
+          width: 2,
+          background: "rgba(255,255,255,0.08)",
+        }}
+      />
+      {/* Animated amber fill overlay */}
+      <motion.div
+        aria-hidden
+        className="absolute top-0 bottom-0"
+        style={{
+          left: "31px",
+          width: 2,
+          originY: 0,
+          scaleY,
+          background: "linear-gradient(180deg, #FFA04D 0%, #FF6A00 100%)",
+          boxShadow: "0 0 12px rgba(255,106,0,0.55)",
+          borderRadius: 2,
+        }}
+      />
 
-            return (
-              <div
-                key={day.day}
-                className="flex flex-col items-center relative"
-                onMouseEnter={() => setHoveredDay(day.day)}
-                onMouseLeave={() => setHoveredDay(null)}
-              >
-                {/* Icon container */}
+      <ol className="relative space-y-8 md:space-y-10">
+        {days.map((d, idx) => {
+          const Icon = d.icon;
+          const isLaunch = d.day === 5;
+
+          return (
+            <li key={d.day} className="relative flex items-start gap-5 md:gap-8">
+              {/* Icon square */}
+              <div className="relative shrink-0" style={{ width: 64, height: 64 }}>
                 <div
-                  className={cn(
-                    "w-24 h-24 rounded-2xl flex items-center justify-center transition-all duration-400 border-2 relative z-10",
-                    isHovered
-                      ? "bg-primary/10 border-primary/40 shadow-glow-primary scale-110 -translate-y-1"
-                      : "bg-card border-border/60 shadow-card hover:border-primary/30"
-                  )}
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center relative z-10"
+                  style={
+                    isLaunch
+                      ? {
+                          background:
+                            "linear-gradient(135deg, #FFA04D 0%, #FF6A00 100%)",
+                          boxShadow:
+                            "0 0 24px rgba(255,106,0,0.45), 0 0 60px rgba(255,106,0,0.25)",
+                          border: "1px solid rgba(255,160,77,0.5)",
+                        }
+                      : {
+                          background: "rgba(255,255,255,0.03)",
+                          border: "1px solid rgba(255,255,255,0.08)",
+                        }
+                  }
                 >
                   <Icon
-                    className={cn(
-                      "w-9 h-9 transition-all duration-300",
-                      isHovered ? "text-primary" : "text-muted-foreground"
-                    )}
+                    className="w-7 h-7"
+                    style={{
+                      color: isLaunch ? "#1A0D00" : "#FFA04D",
+                    }}
+                    strokeWidth={2}
                   />
                 </div>
-
-                {/* Connector: dot + line to next card */}
-                {!isLast && (
-                  <div className="absolute top-[48px] left-[calc(50%+48px)] right-[calc(-50%+48px)] flex items-center z-0">
-                    {/* Left dot */}
-                    <div className={cn(
-                      "w-2.5 h-2.5 rounded-full shrink-0 transition-colors duration-300",
-                      hoveredDay === day.day || hoveredDay === day.day + 1
-                        ? "bg-primary"
-                        : "bg-border"
-                    )} />
-                    {/* Line */}
-                    <div className={cn(
-                      "flex-1 h-[2px] transition-colors duration-500",
-                      idx < 3
-                        ? "bg-gradient-to-r from-primary/30 to-primary/30"
-                        : "bg-gradient-to-r from-primary/30 to-secondary/40"
-                    )} />
-                    {/* Right dot */}
-                    <div className={cn(
-                      "w-2.5 h-2.5 rounded-full shrink-0 transition-colors duration-300",
-                      hoveredDay === day.day + 1
-                        ? "bg-primary"
-                        : "bg-border"
-                    )} />
-                  </div>
-                )}
-
-                {/* Day label */}
-                <div className={cn(
-                  "mt-6 text-[11px] font-bold uppercase tracking-[0.15em] transition-colors duration-300",
-                  isHovered ? "text-primary" : "text-muted-foreground"
-                )}>
-                  Day {day.day}
-                </div>
-
-                {/* Title */}
-                <h4 className={cn(
-                  "mt-2 text-base font-display font-bold text-center leading-tight transition-colors duration-300",
-                  isHovered ? "text-foreground" : "text-foreground/85"
-                )}>
-                  {day.title} {day.emoji}
-                </h4>
-
-                {/* Description */}
-                <p className="mt-2 text-sm text-center text-muted-foreground max-w-[160px] leading-relaxed">
-                  {day.description}
-                </p>
               </div>
-            );
-          })}
-        </div>
-      </div>
 
-      {/* Mobile/Tablet: Vertical Timeline */}
-      <div className="lg:hidden">
-        <div className="space-y-0">
-          {days.map((day, idx) => {
-            const Icon = day.icon;
-            const isHovered = hoveredDay === day.day;
-            const isLast = idx === days.length - 1;
-
-            return (
+              {/* Card */}
               <div
-                key={day.day}
-                className="flex items-start gap-5 relative"
-                onMouseEnter={() => setHoveredDay(day.day)}
-                onMouseLeave={() => setHoveredDay(null)}
+                className="flex-1 rounded-2xl p-5 md:p-6 transition-colors duration-300"
+                style={
+                  isLaunch
+                    ? {
+                        background:
+                          "linear-gradient(135deg, rgba(255,160,77,0.10) 0%, rgba(255,106,0,0.05) 100%)",
+                        border: "1px solid rgba(255,160,77,0.35)",
+                      }
+                    : {
+                        background: "rgba(255,255,255,0.02)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                      }
+                }
               >
-                {/* Left column: icon + connector */}
-                <div className="flex flex-col items-center shrink-0">
-                  <div
-                    className={cn(
-                      "w-16 h-16 rounded-xl flex items-center justify-center transition-all duration-300 border-2 z-10",
-                      isHovered
-                        ? "bg-primary/10 border-primary/40 shadow-glow-primary scale-105"
-                        : "bg-card border-border/60 shadow-card"
-                    )}
+                <div className="flex items-center gap-3 mb-2">
+                  <span
+                    className="inline-block"
+                    style={{
+                      fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                      fontSize: 11,
+                      letterSpacing: "0.3em",
+                      textTransform: "uppercase",
+                      color: "#FFA04D",
+                    }}
                   >
-                    <Icon
-                      className={cn(
-                        "w-7 h-7 transition-colors",
-                        isHovered ? "text-primary" : "text-muted-foreground"
-                      )}
-                    />
-                  </div>
-                  {/* Vertical connector */}
-                  {!isLast && (
-                    <div className="w-[2px] h-8 bg-border/40 my-1" />
+                    Day {String(d.day).padStart(2, "0")}
+                  </span>
+                  {isLaunch && (
+                    <span
+                      className="inline-flex items-center px-2.5 py-0.5 rounded-full"
+                      style={{
+                        background: "rgba(255,160,77,0.15)",
+                        border: "1px solid rgba(255,160,77,0.4)",
+                        fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                        fontSize: 10,
+                        letterSpacing: "0.25em",
+                        color: "#FFA04D",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      Launch
+                    </span>
                   )}
                 </div>
 
-                {/* Content */}
-                <div className="pt-2 pb-6">
-                  <div className={cn(
-                    "text-[11px] font-bold uppercase tracking-[0.15em] transition-colors",
-                    isHovered ? "text-primary" : "text-muted-foreground"
-                  )}>
-                    Day {day.day}
-                  </div>
-                  <h4 className="mt-1 font-display font-bold text-base">
-                    {day.title} {day.emoji}
-                  </h4>
-                  <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
-                    {day.description}
-                  </p>
-                </div>
+                <h4
+                  className="font-bold leading-tight mb-2"
+                  style={{
+                    fontFamily: "'Space Grotesk', system-ui, sans-serif",
+                    fontSize: "clamp(1.25rem, 2.4vw, 1.75rem)",
+                    color: "#F4F2EE",
+                  }}
+                >
+                  {d.title} {d.emoji}
+                </h4>
+                <p className="text-muted-foreground leading-relaxed">
+                  {d.description}
+                </p>
               </div>
-            );
-          })}
-        </div>
-      </div>
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 };
