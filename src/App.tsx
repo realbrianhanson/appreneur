@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect } from "react";
-import Lenis from "lenis";
+import { initLenis, destroyLenis } from "@/lib/lenis";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -48,21 +48,8 @@ const queryClient = new QueryClient();
 
 const App = () => {
   useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    });
-    let rafId: number;
-    const raf = (time: number) => {
-      lenis.raf(time);
-      rafId = requestAnimationFrame(raf);
-    };
-    rafId = requestAnimationFrame(raf);
-    return () => {
-      cancelAnimationFrame(rafId);
-      lenis.destroy();
-    };
+    initLenis();
+    return () => destroyLenis();
   }, []);
 
   return (
