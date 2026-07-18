@@ -124,6 +124,7 @@ const MobileBottomNav = ({ currentDay = 1, isVIP = false }: MobileBottomNavProps
                     <Link
                       key={item.day}
                       to={status !== "locked" ? `/dashboard/day/${item.day}` : "#"}
+                      aria-disabled={status === "locked"}
                       className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                         status === "current"
                           ? "bg-primary/10 text-primary border border-primary/30"
@@ -136,7 +137,12 @@ const MobileBottomNav = ({ currentDay = 1, isVIP = false }: MobileBottomNavProps
                       <Icon className="w-4 h-4" />
                       <span className="flex-1 text-sm">Day {item.day}: {item.title}</span>
                       {status === "completed" && <Check className="w-4 h-4 text-primary" />}
-                      {status === "locked" && <Lock className="w-4 h-4" />}
+                      {status === "locked" && (
+                        <>
+                          <Lock className="w-4 h-4" aria-hidden="true" />
+                          <span className="sr-only">Locked</span>
+                        </>
+                      )}
                     </Link>
                   );
                 })}
@@ -170,6 +176,7 @@ const MobileBottomNav = ({ currentDay = 1, isVIP = false }: MobileBottomNavProps
                     <Link
                       key={item.day}
                       to={status !== "locked" ? `/dashboard/day/${item.day}` : "#"}
+                      aria-disabled={status === "locked"}
                       className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${
                         status === "current"
                           ? "bg-primary/10 text-primary border border-primary/30"
@@ -182,7 +189,12 @@ const MobileBottomNav = ({ currentDay = 1, isVIP = false }: MobileBottomNavProps
                       <Icon className="w-4 h-4" />
                       <span className="flex-1 text-sm">Day {item.day}: {item.title}</span>
                       {status === "completed" && <Check className="w-4 h-4 text-primary" />}
-                      {status === "locked" && <Lock className="w-4 h-4" />}
+                      {status === "locked" && (
+                        <>
+                          <Lock className="w-4 h-4" aria-hidden="true" />
+                          <span className="sr-only">Locked</span>
+                        </>
+                      )}
                     </Link>
                   );
                 })}
