@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface SplitRevealProps {
@@ -26,12 +26,24 @@ export function SplitReveal({
   className,
   as: Tag = "span",
   delay = 0,
-  stagger = 0.025,
-  duration = 0.6,
+  stagger = 0.05,
+  duration = 0.4,
 }: SplitRevealProps) {
   const MotionTag = motion(Tag as any);
   const words = text.split(" ");
-  let charIndex = 0;
+  const reduced = useReducedMotion();
+
+  if (reduced) {
+    return (
+      <Tag aria-label={text} className={cn("inline-block", className)}>
+        {charClassName ? (
+          <span className={charClassName}>{text}</span>
+        ) : (
+          text
+        )}
+      </Tag>
+    );
+  }
 
   return (
     <MotionTag
@@ -48,32 +60,20 @@ export function SplitReveal({
     >
       {words.map((word, wi) => (
         <span key={`wg-${wi}`}>
-          <span
+          <motion.span
             aria-hidden
-            className="inline-flex"
+            className={cn("inline-flex", charClassName)}
+            variants={{
+              hidden: { opacity: 0, y: "0.5em" },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: { duration, ease: [0.22, 1, 0.36, 1] },
+              },
+            }}
           >
-            {Array.from(word).map((char, ci) => {
-              const key = `${wi}-${ci}-${charIndex++}`;
-              return (
-                <motion.span
-                  key={key}
-                  aria-hidden
-                  className={cn("inline-block", charClassName)}
-                  variants={{
-                    hidden: { opacity: 0, y: "0.6em", rotate: -8 },
-                    visible: {
-                      opacity: 1,
-                      y: 0,
-                      rotate: 0,
-                      transition: { duration, ease: [0.22, 1, 0.36, 1] },
-                    },
-                  }}
-                >
-                  {char}
-                </motion.span>
-              );
-            })}
-          </span>
+            {word}
+          </motion.span>
           {wi < words.length - 1 ? " " : null}
         </span>
       ))}
