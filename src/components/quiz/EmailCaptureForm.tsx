@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ArrowRight, Gift, Loader2, Phone } from "lucide-react";
 import { z } from "zod";
 
@@ -72,41 +73,67 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
 
       <form onSubmit={handleSubmit} className="space-y-4 [&_input]:bg-white/[0.03] [&_input]:border-white/10 [&_input]:text-foreground [&_input]:h-12 [&_input:focus-visible]:ring-primary/60 [&_input:focus-visible]:border-primary/60">
         <div className="space-y-2">
+          <Label htmlFor="capture-first-name" className="sr-only">
+            First name
+          </Label>
           <Input
+            id="capture-first-name"
             type="text"
             placeholder="First Name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             className={errors.firstName ? "border-destructive" : ""}
             disabled={isLoading}
+            aria-invalid={!!errors.firstName}
+            aria-describedby={errors.firstName ? "capture-first-name-error" : undefined}
           />
-          {errors.firstName && (
-            <p className="text-sm text-destructive">{errors.firstName}</p>
-          )}
+          <p
+            id="capture-first-name-error"
+            className="text-sm text-destructive"
+            aria-live="polite"
+          >
+            {errors.firstName}
+          </p>
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="capture-email" className="sr-only">
+            Email address
+          </Label>
           <Input
+            id="capture-email"
             type="email"
             placeholder="Email Address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={errors.email ? "border-destructive" : ""}
             disabled={isLoading}
+            autoComplete="email"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "capture-email-error" : undefined}
           />
-          {errors.email && (
-            <p className="text-sm text-destructive">{errors.email}</p>
-          )}
+          <p
+            id="capture-email-error"
+            className="text-sm text-destructive"
+            aria-live="polite"
+          >
+            {errors.email}
+          </p>
         </div>
 
         {showPhone ? (
           <div className="space-y-2">
+            <Label htmlFor="capture-phone" className="sr-only">
+              Phone number (optional)
+            </Label>
             <Input
+              id="capture-phone"
               type="tel"
               placeholder="Phone Number (optional)"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               disabled={isLoading}
+              autoComplete="tel"
             />
             <p className="text-xs text-muted-foreground">
               Get SMS reminders when the challenge starts
