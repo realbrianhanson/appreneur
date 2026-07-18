@@ -17,6 +17,7 @@ import {
 } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { format, subDays, startOfDay, eachDayOfInterval } from "date-fns";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 interface ChartData {
   date: string;
