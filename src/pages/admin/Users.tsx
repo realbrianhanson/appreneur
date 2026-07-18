@@ -9,6 +9,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Download, Search, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { TOTAL_DAYS } from "@/lib/constants";
+import { csvRow } from "@/lib/utils";
+import SEOHead from "@/components/seo/SEOHead";
 
 export interface UserWithProgress {
   id: string;
@@ -208,7 +210,7 @@ export default function AdminUsers() {
       u.fb_ad_id || "",
     ]);
 
-    const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const csv = [csvRow(headers), ...rows.map((r) => csvRow(r))].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
