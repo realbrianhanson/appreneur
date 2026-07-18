@@ -21,7 +21,7 @@ const painPoints: { title: string; description: React.ReactNode }[] = [
 
 const handlePivotClick = (e: React.MouseEvent) => {
   e.preventDefault();
-  scrollTo("#registration");
+  scrollTo("#quiz-section");
 };
 
 const OpeningCopySection = () => {
@@ -144,7 +144,7 @@ const OpeningCopySection = () => {
             </p>
 
             <a
-              href="#registration"
+              href="#quiz-section"
               onClick={handlePivotClick}
               className="relative inline-flex items-center gap-2 text-lg md:text-xl font-semibold group"
               style={{ color: "#FFA04D" }}
