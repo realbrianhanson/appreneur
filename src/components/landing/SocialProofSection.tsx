@@ -1,25 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { TestimonialCarousel, TestimonialData, TestimonialStats } from "@/components/testimonials";
-
-interface StatItemProps {
-  value: string;
-  label: string;
-  isVisible: boolean;
-}
-
-const StatItem = ({ value, label, isVisible }: StatItemProps) => {
-  return (
-    <div className={`text-center px-6 py-4 transition-all duration-700 ${
-      isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-    }`}>
-      <div className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-        {value}
-      </div>
-      <div className="text-muted-foreground mt-2 text-sm md:text-base">{label}</div>
-    </div>
-  );
-};
+import { TestimonialData } from "@/components/testimonials";
+import { CountUp } from "@/components/motion/CountUp";
+import { GhostWord } from "@/components/motion/GhostWord";
 
 // Fallback testimonials with enhanced format
 const fallbackTestimonials: TestimonialData[] = [
@@ -80,14 +64,9 @@ const fallbackTestimonials: TestimonialData[] = [
 ];
 
 export const SocialProofSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const [isStatsVisible, setIsStatsVisible] = useState(false);
-  const [isTestimonialsVisible, setIsTestimonialsVisible] = useState(false);
-  
   const [testimonials, setTestimonials] = useState<TestimonialData[]>(fallbackTestimonials);
 
   useEffect(() => {
-    // Fetch approved testimonials from database
     const fetchTestimonials = async () => {
       const { data, error } = await supabase
         .from("testimonials")
@@ -96,51 +75,50 @@ export const SocialProofSection = () => {
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(9);
-      
+
       if (!error && data && data.length > 0) {
         setTestimonials(data as TestimonialData[]);
       }
     };
-    
+
     fetchTestimonials();
   }, []);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const target = entry.target as HTMLElement;
-            if (target.dataset.section === "stats") setIsStatsVisible(true);
-            if (target.dataset.section === "testimonials") setIsTestimonialsVisible(true);
-            
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    const sections = sectionRef.current?.querySelectorAll("[data-section]");
-    sections?.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, []);
+  // Split testimonials into two rows
+  const rowA = testimonials.filter((_, i) => i % 2 === 0);
+  const rowB = testimonials.filter((_, i) => i % 2 === 1);
+  const safeRowA = rowA.length > 0 ? rowA : testimonials;
+  const safeRowB = rowB.length > 0 ? rowB : testimonials;
 
   return (
-    <section ref={sectionRef} className="relative py-20 md:py-32 overflow-hidden bg-background-secondary">
-      <div className="relative max-w-6xl mx-auto px-4">
-        {/* Section label */}
-        <div className="flex items-center justify-center gap-3 mb-6">
-          <div className="h-px w-10 bg-secondary/40" />
-          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-secondary">Social Proof</span>
-          <div className="h-px w-10 bg-secondary/40" />
+    <section className="relative py-24 md:py-32 overflow-hidden">
+      <GhostWord word="SHIPPED" align="top" />
+
+      <div className="relative max-w-6xl mx-auto px-4 z-10">
+        {/* Eyebrow */}
+        <div className="eyebrow mb-8 flex items-center justify-center gap-4">
+          <span className="h-px w-8 bg-primary/60" />
+          <span>Social Proof</span>
+          <span className="h-px w-8 bg-primary/60" />
         </div>
 
         {/* Headline */}
         <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
+          <h2
+            className="font-bold leading-[1.05] tracking-tight mb-4"
+            style={{
+              fontFamily: "'Space Grotesk', system-ui, sans-serif",
+              fontSize: "clamp(2rem, 5vw, 3.25rem)",
+              color: "#F4F2EE",
+            }}
+          >
             Real People. Real Apps.{" "}
-            <span className="text-gradient-primary">
+            <span
+              className="font-serifit bg-clip-text text-transparent"
+              style={{
+                backgroundImage: "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
+              }}
+            >
               Real Results.
             </span>
           </h2>
@@ -149,25 +127,233 @@ export const SocialProofSection = () => {
           </p>
         </div>
 
-        {/* Stats Bar */}
-        <div
-          data-section="stats"
-          className="grid grid-cols-3 gap-0 bg-card rounded-2xl border border-border shadow-card mb-16 overflow-hidden"
-        >
-          <StatItem value="500+" label="Apps Built" isVisible={isStatsVisible} />
-          <StatItem value="9" label="Countries" isVisible={isStatsVisible} />
-          <StatItem value="4.9★" label="Rating" isVisible={isStatsVisible} />
-        </div>
+        {/* Stats band */}
+        <StatsBand />
+      </div>
 
-        {/* Testimonials Carousel */}
-        <div 
-          data-section="testimonials" 
-          className={`transition-opacity duration-700 ${isTestimonialsVisible ? "opacity-100" : "opacity-0"}`}
+      {/* Testimonial wall — full-bleed marquee */}
+      <div className="relative mt-16 space-y-6">
+        <TestimonialRow items={safeRowA} direction="left" duration={60} />
+        <TestimonialRow items={safeRowB} direction="right" duration={75} />
+      </div>
+
+      <style>{`
+        @keyframes testi-marquee-left {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes testi-marquee-right {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+        .testi-track:hover { animation-play-state: paused; }
+      `}</style>
+    </section>
+  );
+};
+
+/* -------------------- Stats band -------------------- */
+const StatsBand = () => {
+  return (
+    <div
+      className="grid grid-cols-3 rounded-2xl overflow-hidden mb-4"
+      style={{
+        background: "rgba(255,255,255,0.02)",
+        border: "1px solid rgba(255,255,255,0.08)",
+      }}
+    >
+      <StatCell>
+        <StatNumber>
+          <CountUp to={500} duration={1.8} />
+          <span
+            className="bg-clip-text text-transparent"
+            style={{ backgroundImage: "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)" }}
+          >
+            +
+          </span>
+        </StatNumber>
+        <StatLabel>Apps Built</StatLabel>
+      </StatCell>
+
+      <StatCell divider>
+        <StatNumber>
+          <CountUp to={9} duration={1.4} />
+        </StatNumber>
+        <StatLabel>Countries</StatLabel>
+      </StatCell>
+
+      <StatCell divider>
+        <StatNumber>
+          <span className="inline-flex items-center gap-2 md:gap-3">
+            <CountUp to={4.9} decimals={1} duration={1.6} />
+            <Star
+              className="w-6 h-6 md:w-8 md:h-8"
+              style={{ color: "#FFA04D", fill: "#FFA04D" }}
+            />
+          </span>
+        </StatNumber>
+        <StatLabel>Rating</StatLabel>
+      </StatCell>
+    </div>
+  );
+};
+
+const StatCell = ({
+  children,
+  divider = false,
+}: {
+  children: React.ReactNode;
+  divider?: boolean;
+}) => (
+  <div
+    className="flex flex-col items-center justify-center text-center py-8 md:py-10 px-4"
+    style={divider ? { borderLeft: "1px solid rgba(255,255,255,0.08)" } : undefined}
+  >
+    {children}
+  </div>
+);
+
+const StatNumber = ({ children }: { children: React.ReactNode }) => (
+  <div
+    className="font-bold leading-none tracking-tight bg-clip-text text-transparent"
+    style={{
+      fontFamily: "'Space Grotesk', system-ui, sans-serif",
+      fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
+      backgroundImage: "linear-gradient(180deg, #F4F2EE 0%, #FFA04D 120%)",
+    }}
+  >
+    {children}
+  </div>
+);
+
+const StatLabel = ({ children }: { children: React.ReactNode }) => (
+  <div
+    className="mt-3"
+    style={{
+      fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+      fontSize: 11,
+      letterSpacing: "0.3em",
+      textTransform: "uppercase",
+      color: "rgba(244,242,238,0.55)",
+    }}
+  >
+    {children}
+  </div>
+);
+
+/* -------------------- Testimonial marquee -------------------- */
+const TestimonialRow = ({
+  items,
+  direction,
+  duration,
+}: {
+  items: TestimonialData[];
+  direction: "left" | "right";
+  duration: number;
+}) => {
+  const doubled = [...items, ...items];
+  return (
+    <div
+      className="relative overflow-hidden"
+      style={{
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%)",
+        maskImage:
+          "linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%)",
+      }}
+    >
+      <div
+        className="testi-track flex gap-5 w-max py-2"
+        style={{
+          animation: `${
+            direction === "left" ? "testi-marquee-left" : "testi-marquee-right"
+          } ${duration}s linear infinite`,
+        }}
+      >
+        {doubled.map((t, i) => (
+          <TestimonialCard key={`${t.id}-${i}`} t={t} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const TestimonialCard = ({ t }: { t: TestimonialData }) => {
+  const initial = (t.name || "?").trim().charAt(0).toUpperCase();
+  return (
+    <article
+      className="shrink-0 rounded-2xl p-6 flex flex-col"
+      style={{
+        width: 360,
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.08)",
+      }}
+    >
+      {/* Stars */}
+      <div className="flex items-center gap-1 mb-4">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star
+            key={i}
+            className="w-4 h-4"
+            style={{ color: "#FFA04D", fill: "#FFA04D" }}
+          />
+        ))}
+      </div>
+
+      {/* Quote */}
+      <p
+        className="text-base leading-relaxed mb-5"
+        style={{ color: "#F4F2EE" }}
+      >
+        "{t.content}"
+      </p>
+
+      {/* Divider */}
+      <div
+        className="my-1"
+        style={{ height: 1, background: "rgba(255,255,255,0.08)" }}
+      />
+
+      {/* Attribution */}
+      <div className="flex items-center gap-3 mt-5">
+        <div
+          className="w-10 h-10 rounded-full flex items-center justify-center font-semibold"
+          style={{
+            background: "linear-gradient(135deg, #FFA04D 0%, #FF6A00 100%)",
+            color: "#1A0D00",
+            fontFamily: "'Space Grotesk', system-ui, sans-serif",
+          }}
         >
-          <h3 className="text-2xl font-bold text-center mb-10">What Challengers Say</h3>
-          <TestimonialCarousel testimonials={testimonials} autoplayDelay={5000} />
+          {initial}
+        </div>
+        <div className="min-w-0">
+          <div
+            className="font-semibold text-sm"
+            style={{ color: "#F4F2EE" }}
+          >
+            {t.name}
+          </div>
+          {t.app_name && (
+            <div
+              className="text-xs"
+              style={{
+                fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                color: "rgba(244,242,238,0.55)",
+              }}
+            >
+              Built:{" "}
+              <span
+                className="bg-clip-text text-transparent font-semibold"
+                style={{
+                  backgroundImage: "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
+                }}
+              >
+                {t.app_name}
+              </span>
+            </div>
+          )}
         </div>
       </div>
-    </section>
+    </article>
   );
 };
