@@ -1,5 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import { COMMUNITY_URL } from "@/lib/constants";
 import {
   Rocket,
@@ -9,6 +18,7 @@ import {
   ArrowRight,
   ExternalLink,
   Download,
+  Loader2,
 } from "lucide-react";
 
 interface OnboardingWizardProps {
@@ -46,6 +56,7 @@ const OnboardingWizard = ({
   onComplete,
 }: OnboardingWizardProps) => {
   const [step, setStep] = useState(0);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   const next = () => {
     if (step < steps.length - 1) {
@@ -57,11 +68,41 @@ const OnboardingWizard = ({
 
   const skip = () => next();
 
+  const downloadPdf = async () => {
+    setPdfLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("get-resource-url", {
+        body: { resource_key: "day-1/50-profitable-ai-app-ideas.pdf" },
+      });
+      if (error || !data?.url) {
+        toast.error("Could not load PDF. You can grab it from Day 1 anytime.");
+        return;
+      }
+      window.open(data.url, "_blank");
+      toast.success("Downloading 50 Profitable AI App Ideas...");
+    } catch (e) {
+      console.error("PDF fetch failed:", e);
+      toast.error("Could not load PDF. Try again from Day 1.");
+    } finally {
+      setPdfLoading(false);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-2xl overflow-hidden">
-        {/* Card content */}
-        <div className="p-6 md:p-8 space-y-6">
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onComplete();
+      }}
+    >
+      <DialogContent className="sm:max-w-lg">
+        <DialogHeader className="sr-only">
+          <DialogTitle>{steps[step].title}</DialogTitle>
+          <DialogDescription>
+            Onboarding step {step + 1} of {steps.length}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-6">
           {/* Icon */}
           <div className="flex justify-center">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
@@ -104,13 +145,20 @@ const OnboardingWizard = ({
                   variant="cta"
                   size="lg"
                   className="w-full"
-                  onClick={() => {
-                    // TODO: Link to actual PDF resource
-                    window.open("#", "_blank");
-                  }}
+                  onClick={downloadPdf}
+                  disabled={pdfLoading}
                 >
-                  <Download className="w-5 h-5 mr-2" />
-                  Download PDF
+                  {pdfLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-5 h-5 mr-2" />
+                      Download PDF
+                    </>
+                  )}
                 </Button>
                 <Button onClick={next} size="lg" className="w-full">
                   Downloaded — Next
@@ -177,21 +225,29 @@ const OnboardingWizard = ({
               </>
             )}
           </div>
-        </div>
 
-        {/* Step dots */}
-        <div className="flex items-center justify-center gap-2 pb-6">
-          {steps.map((_, i) => (
-            <div
-              key={i}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                i === step ? "bg-primary" : i < step ? "bg-primary/40" : "bg-muted"
-              }`}
-            />
-          ))}
+          {/* Step dots */}
+          <div
+            className="flex items-center justify-center gap-2 pt-2"
+            role="progressbar"
+            aria-valuemin={1}
+            aria-valuemax={steps.length}
+            aria-valuenow={step + 1}
+            aria-label={`Step ${step + 1} of ${steps.length}`}
+          >
+            {steps.map((_, i) => (
+              <div
+                key={i}
+                aria-hidden="true"
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  i === step ? "bg-primary" : i < step ? "bg-primary/40" : "bg-muted"
+                }`}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
