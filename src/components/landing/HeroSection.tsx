@@ -132,7 +132,7 @@ export const HeroSection = ({ onCtaClick, cohortStartDate }: HeroSectionProps) =
               }}
             >
               <span className="block">
-                <SplitReveal text={'Go from \u201CI have an idea\u201D to'} />
+                <SplitReveal text={'Go from \u201CI have an idea\u201D to'} duration={0.35} stagger={0.04} />
               </span>
               <span
                 className="block font-serifit"
@@ -145,12 +145,14 @@ export const HeroSection = ({ onCtaClick, cohortStartDate }: HeroSectionProps) =
               >
                 <SplitReveal
                   text={'\u201CI built that\u201D'}
-                  delay={0.35}
+                  delay={0.15}
+                  duration={0.35}
+                  stagger={0.04}
                   charClassName="text-gradient-primary"
                 />
               </span>
               <span className="block">
-                <SplitReveal text="in 5 days." delay={0.85} />
+                <SplitReveal text="in 5 days." delay={0.3} duration={0.35} stagger={0.04} />
               </span>
             </h1>
 
@@ -158,7 +160,7 @@ export const HeroSection = ({ onCtaClick, cohortStartDate }: HeroSectionProps) =
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.15, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.4, delay: 0.55, ease: [0.22, 1, 0.36, 1] }}
               className="text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0 text-muted-foreground"
             >
               You don't need code, a developer, or a $15K budget. You need 5 days and{" "}
@@ -171,7 +173,7 @@ export const HeroSection = ({ onCtaClick, cohortStartDate }: HeroSectionProps) =
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.35, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.4, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="space-y-6"
             >
               <div className="flex justify-center lg:justify-start">
@@ -211,7 +213,7 @@ export const HeroSection = ({ onCtaClick, cohortStartDate }: HeroSectionProps) =
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.55, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.4, delay: 0.75, ease: [0.22, 1, 0.36, 1] }}
               className="pt-4 flex items-center gap-3 justify-center lg:justify-start"
             >
               <img
