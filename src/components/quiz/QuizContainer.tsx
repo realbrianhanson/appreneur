@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,15 +12,6 @@ import EmailCaptureForm from "./EmailCaptureForm";
 import WaitlistForm from "./WaitlistForm";
 import CountdownTimer from "./CountdownTimer";
 import { Users, Calendar, Check } from "lucide-react";
-
-interface Cohort {
-  id: string;
-  name: string;
-  start_date: string;
-  max_participants: number;
-  spots_taken: number;
-  is_accepting_registrations: boolean;
-}
 
 const quizQuestions = [
   {
