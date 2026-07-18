@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Badge } from "@/components/ui/badge";
+import { GhostWord } from "@/components/motion/GhostWord";
 import {
   Accordion,
   AccordionContent,
@@ -72,7 +73,7 @@ const FAQSection = () => {
 
   return (
     <Section variant="default" spacing="xl" className="relative overflow-hidden">
-      {/* Background accents */}
+      <GhostWord word="ANSWERS" align="top" className="opacity-70" />
       <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-radial from-primary/5 to-transparent blur-3xl -translate-y-1/2" />
       <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-gradient-radial from-secondary/5 to-transparent blur-3xl" />
 
@@ -87,8 +88,11 @@ const FAQSection = () => {
             <Badge variant="outline" className="mx-auto">
               FAQ
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground">
-              Got Questions?
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-foreground leading-[1.05] tracking-tight">
+              Got{" "}
+              <span className="font-serifit italic bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                questions?
+              </span>
             </h2>
             <p className="text-muted-foreground text-lg">
               Everything you need to know about the challenge
@@ -106,9 +110,9 @@ const FAQSection = () => {
                 <AccordionItem
                   key={index}
                   value={`item-${index}`}
-                  className="border border-border/50 rounded-xl px-6 bg-card/30 backdrop-blur-sm data-[state=open]:border-primary/30 data-[state=open]:bg-card/50 transition-all duration-300"
+                  className="border border-border/50 rounded-2xl px-6 bg-card/30 backdrop-blur-sm data-[state=open]:border-primary/50 data-[state=open]:bg-gradient-to-br data-[state=open]:from-primary/10 data-[state=open]:via-card/50 data-[state=open]:to-accent/5 data-[state=open]:shadow-[0_10px_40px_-15px_hsl(var(--primary)/0.35)] transition-all duration-300"
                 >
-                  <AccordionTrigger className="text-left text-base md:text-lg font-semibold hover:text-primary transition-colors py-5 [&[data-state=open]]:text-primary">
+                  <AccordionTrigger className="text-left text-base md:text-lg font-semibold hover:text-primary transition-colors py-5 [&[data-state=open]]:text-primary [&[data-state=open]>svg]:text-primary">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground pb-5 text-base leading-relaxed">
