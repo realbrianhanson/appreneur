@@ -149,12 +149,14 @@ const Index = () => {
 
       {/* Value Stack — anchor the value */}
       <Section variant="default" spacing="lg" className="relative overflow-hidden pb-12 md:pb-16">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-gradient-radial from-secondary/5 via-primary/5 to-transparent blur-3xl" />
-        
+        <GhostWord word="$2,085 → $0" align="top" className="opacity-70" />
         <Container size="wide" className="relative z-10">
           <div className="text-center mb-12 space-y-4">
             <h2 className="text-glow-primary">
-              Everything You Need to Build Your First App
+              Everything You Need to Build Your{" "}
+              <span className="font-serifit italic bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                first app
+              </span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Here's what you're getting when you join the challenge:
