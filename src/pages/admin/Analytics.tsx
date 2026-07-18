@@ -27,7 +27,7 @@ export default function AdminAnalytics() {
   };
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Admin · Analytics">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">

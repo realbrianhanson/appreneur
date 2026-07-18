@@ -122,7 +122,7 @@ export default function AdminCohorts() {
   const selectedCohort = cohorts.find((c) => c.id === selectedCohortId);
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Admin · Cohorts">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

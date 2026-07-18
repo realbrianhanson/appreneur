@@ -24,7 +24,7 @@ export default function AdminSettings() {
   };
 
   return (
-    <AdminLayout requiredRole="super_admin">
+    <AdminLayout requiredRole="super_admin" title="Admin · Settings">
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Admin Settings</h1>

@@ -249,7 +249,7 @@ export default function AdminTestimonials() {
   ];
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Admin · Testimonials">
       <div className="space-y-8">
         {/* Header */}
         <div>

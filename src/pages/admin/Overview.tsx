@@ -182,7 +182,7 @@ export default function AdminOverview() {
   };
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Admin · Overview">
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
