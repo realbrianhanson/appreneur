@@ -276,9 +276,21 @@ const DayMission = () => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [completingTask, setCompletingTask] = useState<string | null>(null);
   const [completingDay, setCompletingDay] = useState(false);
-  const [startTime] = useState(Date.now());
+  // Reset the start time whenever the user navigates to a different day so
+  // time isn't attributed to the wrong day_number.
+  const [startTime, setStartTime] = useState(() => Date.now());
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Marks that the current session's time has already been persisted (via
+  // completeDay or a flush) so the unmount handler doesn't double-count.
+  const timeFlushedRef = useRef(false);
+
+  // Reset timer + flush guard when the day route param changes.
+  useEffect(() => {
+    setStartTime(Date.now());
+    setElapsedSeconds(0);
+    timeFlushedRef.current = false;
+  }, [day]);
 
   // Live timer
   useEffect(() => {
