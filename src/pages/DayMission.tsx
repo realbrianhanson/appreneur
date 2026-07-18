@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { COMMUNITY_URL } from "@/lib/constants";
+import { COMMUNITY_URL, TOTAL_DAYS } from "@/lib/constants";
+import SEOHead from "@/components/seo/SEOHead";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useProgress } from "@/hooks/useProgress";
@@ -266,7 +267,10 @@ const DayMission = () => {
     isLoading: progressLoading 
   } = useProgress();
   
-  const day = parseInt(dayNumber || "1");
+  const rawDay = parseInt(dayNumber || "1", 10);
+  const isValidDay =
+    Number.isInteger(rawDay) && rawDay >= 1 && rawDay <= TOTAL_DAYS;
+  const day = isValidDay ? rawDay : 1;
   const data = dayData[day] || dayData[1];
   const isVIP = profile?.is_vip || false;
   const firstName = profile?.first_name || "Builder";
@@ -291,6 +295,11 @@ const DayMission = () => {
     setElapsedSeconds(0);
     timeFlushedRef.current = false;
   }, [day]);
+
+  // Invalid /dashboard/day/:n → send back to dashboard.
+  useEffect(() => {
+    if (!isValidDay) navigate("/dashboard", { replace: true });
+  }, [isValidDay, navigate]);
 
   // Live timer
   useEffect(() => {
@@ -438,6 +447,7 @@ const DayMission = () => {
 
   return (
     <DashboardLayout userName={firstName} currentDay={day} isVIP={isVIP}>
+      <SEOHead title={`Day ${day} · Appreneur Challenge`} noindex />
       {showConfetti && <Confetti />}
       
       {/* Celebration Screen */}

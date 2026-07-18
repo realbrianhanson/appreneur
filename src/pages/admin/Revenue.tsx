@@ -10,6 +10,7 @@ import { DollarSign, TrendingUp, CreditCard, Download, RefreshCw } from "lucide-
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
+import { csvRow } from "@/lib/utils";
 
 interface Purchase {
   id: string;
@@ -140,15 +141,17 @@ export default function AdminRevenue() {
 
   const handleExport = () => {
     const csv = [
-      ["Date", "Customer", "Email", "Product", "Amount", "Status"].join(","),
-      ...purchases.map(p => [
-        format(new Date(p.created_at), "yyyy-MM-dd HH:mm"),
-        p.profile?.first_name || "Unknown",
-        p.profile?.email || "Unknown",
-        getProductLabel(p.product_type),
-        formatCurrency(p.amount_cents),
-        p.status,
-      ].join(","))
+      csvRow(["Date", "Customer", "Email", "Product", "Amount", "Status"]),
+      ...purchases.map((p) =>
+        csvRow([
+          format(new Date(p.created_at), "yyyy-MM-dd HH:mm"),
+          p.profile?.first_name || "Unknown",
+          p.profile?.email || "Unknown",
+          getProductLabel(p.product_type),
+          formatCurrency(p.amount_cents),
+          p.status,
+        ])
+      ),
     ].join("\n");
 
     const blob = new Blob([csv], { type: "text/csv" });
@@ -160,7 +163,7 @@ export default function AdminRevenue() {
   };
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Admin · Revenue">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

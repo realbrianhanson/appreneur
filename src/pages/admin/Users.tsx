@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Download, Search, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { TOTAL_DAYS } from "@/lib/constants";
+import { csvRow } from "@/lib/utils";
 
 export interface UserWithProgress {
   id: string;
@@ -208,7 +209,7 @@ export default function AdminUsers() {
       u.fb_ad_id || "",
     ]);
 
-    const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const csv = [csvRow(headers), ...rows.map((r) => csvRow(r))].join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -222,7 +223,7 @@ export default function AdminUsers() {
   const selectedUser = users.find((u) => u.id === selectedUserId);
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Admin · Users">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

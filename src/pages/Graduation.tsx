@@ -198,7 +198,7 @@ const Graduation = () => {
   };
 
   return (
-    <DashboardLayout userName={userName} currentDay={5} isVIP={isVIP} userProgress={progress}>
+    <DashboardLayout title="Graduation · Appreneur" userName={userName} currentDay={5} isVIP={isVIP} userProgress={progress}>
       {showConfetti && <Confetti />}
 
       <div className="max-w-4xl mx-auto space-y-10">

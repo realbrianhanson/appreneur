@@ -3,10 +3,6 @@ User-agent: *
 Allow: /
 Disallow: /dashboard
 Disallow: /dashboard/*
-Disallow: /vip-offer
-Disallow: /downsell
-Disallow: /thank-you
-Disallow: /login
 Disallow: /auth/callback
 Disallow: /admin
 Disallow: /admin/*

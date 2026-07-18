@@ -61,7 +61,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <DashboardLayout userName={profile?.first_name || "Builder"}>
+    <DashboardLayout title="Profile · Appreneur" userName={profile?.first_name || "Builder"}>
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Profile</h1>

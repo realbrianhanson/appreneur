@@ -21,10 +21,11 @@ const StickyCtaBar = ({ onCtaClick }: StickyCtaBarProps) => {
 
   return (
     <div
+      aria-hidden={!isVisible}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isVisible
-          ? "translate-y-0 opacity-100"
-          : "-translate-y-full opacity-0"
+          ? "translate-y-0 opacity-100 visible"
+          : "-translate-y-full opacity-0 invisible pointer-events-none"
       }`}
     >
       <div className="bg-background/90 backdrop-blur-lg border-b border-border shadow-[0_4px_20px_-4px_hsl(var(--foreground)/0.08)]">

@@ -241,7 +241,7 @@ const VIPOffer = () => {
       />
 
       {/* Urgent Top Bar - sticky on all devices */}
-      <div className="sticky top-0 z-50 bg-gradient-to-r from-orange-600 to-red-600 text-white py-2 md:py-3">
+      <div className="sticky top-0 z-50 bg-gradient-to-r from-orange-700 to-red-800 text-white py-2 md:py-3">
         <Container size="wide">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 text-center">
             <p className="font-semibold text-sm sm:text-base">

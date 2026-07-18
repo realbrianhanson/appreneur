@@ -252,7 +252,7 @@ export default function WebhooksAdmin() {
   }
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Admin · Webhooks">
     <div className="max-w-6xl">
       <div className="flex justify-between items-center mb-6">
         <div>

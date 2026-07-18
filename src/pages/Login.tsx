@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Zap, Mail, Lock, ArrowRight, Loader2, ArrowLeft } from "lucide-react";
+import SEOHead from "@/components/seo/SEOHead";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -99,6 +100,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
+      <SEOHead title="Log in · Appreneur" noindex />
       <Container size="tight" className="py-12">
         <div className="space-y-8">
           {/* Logo */}

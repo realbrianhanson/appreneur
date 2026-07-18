@@ -18,6 +18,7 @@ import {
   Download,
   Send,
 } from "lucide-react";
+import { csvRow } from "@/lib/utils";
 import { startOfDay, endOfDay } from "date-fns";
 
 interface OverviewStats {
@@ -161,9 +162,9 @@ export default function AdminOverview() {
       if (!users) return;
 
       const csv = [
-        ["First Name", "Email", "Phone", "Created At", "Is VIP"].join(","),
+        csvRow(["First Name", "Email", "Phone", "Created At", "Is VIP"]),
         ...users.map((u) =>
-          [u.first_name, u.email, u.phone || "", u.created_at, u.is_vip].join(",")
+          csvRow([u.first_name, u.email, u.phone || "", u.created_at, u.is_vip])
         ),
       ].join("\n");
 
@@ -180,7 +181,7 @@ export default function AdminOverview() {
   };
 
   return (
-    <AdminLayout>
+    <AdminLayout title="Admin · Overview">
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

@@ -8,13 +8,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useRef } from "react";
+import SEOHead from "@/components/seo/SEOHead";
 
 interface AdminLayoutProps {
   children: ReactNode;
   requiredRole?: "super_admin" | "admin" | "support";
+  title?: string;
 }
 
-export function AdminLayout({ children, requiredRole }: AdminLayoutProps) {
+export function AdminLayout({ children, requiredRole, title = "Admin · Appreneur" }: AdminLayoutProps) {
   const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   const { isAdmin, isSuperAdmin, isSupport, role, isLoading: roleLoading } = useAdminRole();
   const location = useLocation();
@@ -61,6 +63,7 @@ export function AdminLayout({ children, requiredRole }: AdminLayoutProps) {
 
   return (
     <SidebarProvider>
+      <SEOHead title={title} noindex />
       <div className="min-h-screen flex w-full bg-background">
         <AdminSidebar role={role} />
         <div className="flex-1 flex flex-col">
