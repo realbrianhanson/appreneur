@@ -2,9 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Home, ArrowLeft, Search, Zap } from "lucide-react";
+import SEOHead from "@/components/seo/SEOHead";
+import { useAuth } from "@/contexts/AuthContext";
 
 const NotFound = () => {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
@@ -12,6 +15,7 @@ const NotFound = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+      <SEOHead title="Page Not Found · Appreneur" noindex />
       {/* Background Effects */}
       <div className="absolute inset-0 bg-glow-primary opacity-20 pointer-events-none" />
       
@@ -46,9 +50,9 @@ const NotFound = () => {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Button variant="default" size="lg" asChild>
-            <Link to="/dashboard">
+            <Link to={isAuthenticated ? "/dashboard" : "/"}>
               <Home className="w-4 h-4 mr-2" />
-              Go to Dashboard
+              {isAuthenticated ? "Go to Dashboard" : "Go Home"}
             </Link>
           </Button>
           <Button variant="outline" size="lg" onClick={() => window.history.back()}>
@@ -60,9 +64,12 @@ const NotFound = () => {
         {/* Help Link */}
         <p className="text-sm text-muted-foreground">
           Need help?{" "}
-          <Link to="/dashboard/support" className="text-primary hover:underline">
+          <a
+            href="mailto:support@appreneur.ai"
+            className="text-primary hover:underline"
+          >
             Contact Support
-          </Link>
+          </a>
         </p>
       </div>
     </div>
