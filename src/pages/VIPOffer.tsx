@@ -189,8 +189,8 @@ const VIPOffer = () => {
     },
     {
       icon: <Video className="w-5 h-5 text-accent" />,
-      title: "VIP Access: 3-Day AI For Business Event",
-      value: 47,
+      title: "VIP Upgrade: AI For Business Live (priority access + front-row Q&A)",
+      value: 297,
     },
     {
       icon: <Archive className="w-5 h-5 text-secondary" />,
@@ -239,8 +239,8 @@ const VIPOffer = () => {
           {/* Headline */}
           <div className="text-center space-y-2 md:space-y-4">
             <h1 className="text-2xl sm:text-3xl md:text-5xl font-display font-bold text-foreground">
-              Want to Build Your App{" "}
-              <span className="text-gradient-primary">10X Faster?</span>
+              Want a Serious{" "}
+              <span className="text-gradient-primary">Head Start?</span>
             </h1>
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground">
               Upgrade to the Appreneur VIP Bundle for Just{" "}
