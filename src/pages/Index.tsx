@@ -101,14 +101,28 @@ const Index = () => {
       <SocialProofSection />
 
       {/* What You'll Build — show the journey */}
-      <Section variant="muted" spacing="xl" className="relative overflow-hidden">
-        <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-gradient-radial from-primary/5 to-transparent blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-[300px] h-[300px] rounded-full bg-gradient-radial from-accent/5 to-transparent blur-3xl" />
-        
+      <Section variant="default" spacing="xl" className="relative overflow-hidden">
+        <GhostWord word="05 DAYS" align="top" />
+
         <Container size="wide" className="relative z-10">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-glow-primary">
-              Go From Idea to Live App in 5 Days
+            <h2
+              className="font-bold leading-[1.05] tracking-tight"
+              style={{
+                fontFamily: "'Space Grotesk', system-ui, sans-serif",
+                fontSize: "clamp(2rem, 5vw, 3.25rem)",
+                color: "#F4F2EE",
+              }}
+            >
+              Go From Idea to Live App in{" "}
+              <span
+                className="font-serifit bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
+                }}
+              >
+                5 Days
+              </span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Each day builds on the last. By the end, you'll have a real, working app 
