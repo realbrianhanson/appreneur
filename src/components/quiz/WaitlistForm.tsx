@@ -27,8 +27,14 @@ const WaitlistForm = ({ nextCohortDate, onSubmit, isLoading }: WaitlistFormProps
       return;
     }
 
-    await onSubmit(result.data);
-    setSuccess(true);
+    try {
+      await onSubmit(result.data);
+      setSuccess(true);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Couldn't join the waitlist. Please try again.";
+      setError(message);
+    }
   };
 
   if (success) {

@@ -7,6 +7,7 @@ import { trackPageView, trackDownsellView, trackGA4Event, trackFBEvent } from "@
 import { Check, ArrowRight, FileText } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { showError } from "@/lib/toast-utils";
 
 const Downsell = () => {
@@ -18,6 +19,28 @@ const Downsell = () => {
   useEffect(() => {
     trackPageView('/downsell', 'Special Offer — Appreneur Challenge');
     trackDownsellView();
+    (async () => {
+      try {
+        const trackingParams = getStoredTrackingParams();
+        const sessionId =
+          sessionStorage.getItem("session_id") || crypto.randomUUID();
+        sessionStorage.setItem("session_id", sessionId);
+        await supabase.from("funnel_events").insert({
+          session_id: sessionId,
+          user_id: user?.id ?? null,
+          event_type: "downsell_viewed",
+          event_data: {},
+          utm_source: trackingParams.utm_source,
+          utm_medium: trackingParams.utm_medium,
+          utm_campaign: trackingParams.utm_campaign,
+          utm_content: trackingParams.utm_content,
+          fb_ad_id: trackingParams.fb_ad_id,
+        });
+      } catch (err) {
+        console.error("downsell_viewed track error", err);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCheckout = async () => {

@@ -156,10 +156,20 @@ const ThankYou = () => {
     toast.success("You're set. We'll text you when we go live.");
   };
 
-  // Track page view and registration complete on mount
+  // Track page view and registration complete on mount.
+  // Guard the conversion so it fires exactly once per registration — refreshes
+  // or revisits must not re-count it.
   useEffect(() => {
     trackPageView('/thank-you', 'You\'re In! — Appreneur Challenge');
-    trackRegistrationComplete();
+    try {
+      const alreadyTracked = localStorage.getItem("registration_tracked") === "1";
+      if (!alreadyTracked) {
+        trackRegistrationComplete();
+        localStorage.setItem("registration_tracked", "1");
+      }
+    } catch {
+      trackRegistrationComplete();
+    }
     // Clear the persisted VIP countdown so a later visit starts a fresh 15 minutes.
     try { localStorage.removeItem("vip_offer_expires_at"); } catch {}
   }, []);

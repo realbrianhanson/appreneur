@@ -5,6 +5,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { useNextCohort } from "@/hooks/useNextCohort";
 import { sendWelcomeEmail } from "@/lib/email";
+import { fireWebhook } from "@/lib/webhooks";
+import {
+  trackQuizComplete,
+  trackRegistrationComplete as trackRegistrationCompleteAnalytics,
+} from "@/lib/analytics";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import QuizStep from "./QuizStep";
@@ -112,8 +117,39 @@ const QuizContainer = () => {
       if (currentStep < 4) {
         setDirection(1);
         setCurrentStep(currentStep + 1);
+        // On leaving question 3 (moving to the registration form), fire the
+        // quiz_completed funnel event and analytics.
+        if (currentStep === 3) {
+          void trackQuizCompletedEvent(newAnswers);
+        }
       }
     }, 300);
+  };
+
+  const trackQuizCompletedEvent = async (finalAnswers: (string | null)[]) => {
+    try {
+      const trackingParams = getStoredTrackingParams();
+      const sessionId =
+        sessionStorage.getItem("session_id") || crypto.randomUUID();
+      sessionStorage.setItem("session_id", sessionId);
+      trackQuizComplete({
+        answer1: finalAnswers[0] || "",
+        answer2: finalAnswers[1] || "",
+        answer3: finalAnswers[2] || "",
+      });
+      await supabase.from("funnel_events").insert({
+        session_id: sessionId,
+        event_type: "quiz_completed",
+        event_data: { answers: finalAnswers },
+        utm_source: trackingParams.utm_source,
+        utm_medium: trackingParams.utm_medium,
+        utm_campaign: trackingParams.utm_campaign,
+        utm_content: trackingParams.utm_content,
+        fb_ad_id: trackingParams.fb_ad_id,
+      });
+    } catch (err) {
+      console.error("quiz_completed track error", err);
+    }
   };
 
   const handleBack = () => {
@@ -137,34 +173,39 @@ const QuizContainer = () => {
 
   const handleEmailSubmit = async (data: { firstName: string; email: string; phone?: string }) => {
     if (!cohort) return;
-    
+
     setIsSubmitting(true);
-    
+    let spotReservedForThisSignup = false;
+
     try {
       // Get tracking params
       const trackingParams = getStoredTrackingParams();
-      
-      // Step 1: Check if spots are available using atomic reservation
-      const { data: spotReserved, error: spotError } = await supabase.rpc(
-        "reserve_cohort_spot",
-        { p_cohort_id: cohort.id }
-      );
+      const sessionId =
+        sessionStorage.getItem("session_id") || crypto.randomUUID();
+      sessionStorage.setItem("session_id", sessionId);
 
-      if (spotError) {
-        console.error("Error reserving spot:", spotError);
-        throw new Error("Failed to reserve your spot. Please try again.");
-      }
-
-      if (!spotReserved) {
-        // Cohort is full, redirect to waitlist
-        toast.error("This cohort just filled up! Adding you to the waitlist.");
-        await handleWaitlistSubmit(data.email, data.firstName, data.phone);
-        return;
+      // Step 1: Fire lead_captured funnel event (email submitted, not yet signed up).
+      try {
+        await supabase.from("funnel_events").insert({
+          session_id: sessionId,
+          event_type: "lead_captured",
+          event_data: { email: data.email },
+          utm_source: trackingParams.utm_source,
+          utm_medium: trackingParams.utm_medium,
+          utm_campaign: trackingParams.utm_campaign,
+          utm_content: trackingParams.utm_content,
+          fb_ad_id: trackingParams.fb_ad_id,
+        });
+      } catch (e) {
+        console.error("lead_captured track error", e);
       }
 
       // Step 2: Create user account with Supabase Auth using a random password.
       // With email confirmation disabled in Auth settings, signUp returns an active
       // session so the user is signed in immediately — no verification wall.
+      // We pass registration data via user_metadata; handle_new_user (SECURITY
+      // DEFINER) copies these fields into the profile — this works even when
+      // email confirmation is ON and the session isn't yet active.
       const randomPassword = generateRandomPassword();
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
@@ -173,38 +214,6 @@ const QuizContainer = () => {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             first_name: data.firstName,
-            phone: data.phone || null,
-          },
-        },
-      });
-
-      if (signUpError) {
-        // If user already exists, try to sign them in with magic link
-        if (signUpError.message.includes("already registered")) {
-          const { error: magicLinkError } = await supabase.auth.signInWithOtp({
-            email: data.email,
-            options: {
-              emailRedirectTo: `${window.location.origin}/auth/callback`,
-            },
-          });
-          
-          if (magicLinkError) throw magicLinkError;
-          
-          setIsComplete(true);
-          toast.success("Welcome back! Check your email for the login link.");
-          return;
-        }
-        throw signUpError;
-      }
-
-      // Step 3: Update profile with additional data (trigger creates basic profile)
-      if (authData.user) {
-        // Wait a moment for the trigger to create the profile
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        const { error: profileError } = await supabase
-          .from("profiles")
-          .update({
             phone: data.phone || null,
             cohort_id: cohort.id,
             quiz_answers: {
@@ -219,15 +228,70 @@ const QuizContainer = () => {
             fb_ad_id: trackingParams.fb_ad_id,
             fb_adset_id: trackingParams.fb_adset_id,
             fb_campaign_id: trackingParams.fb_campaign_id,
-          })
-          .eq("id", authData.user.id);
+            session_id: sessionId,
+          },
+        },
+      });
 
-        if (profileError) {
-          console.error("Error updating profile:", profileError);
-          // Don't fail registration if profile update fails
+      if (signUpError) {
+        // If user already exists, try to sign them in with magic link
+        if (signUpError.message.includes("already registered")) {
+          const { error: magicLinkError } = await supabase.auth.signInWithOtp({
+            email: data.email,
+            options: {
+              emailRedirectTo: `${window.location.origin}/auth/callback`,
+            },
+          });
+
+          if (magicLinkError) throw magicLinkError;
+
+          setIsComplete(true);
+          toast.success("Welcome back! Check your email for the login link.");
+          return;
+        }
+        throw signUpError;
+      }
+
+      // Step 3: Reserve cohort spot atomically now that we have an authenticated
+      // user. reserve_cohort_spot is authenticated-only, so it must run AFTER signUp.
+      const { data: spotReserved, error: spotError } = await supabase.rpc(
+        "reserve_cohort_spot",
+        { p_cohort_id: cohort.id }
+      );
+
+      if (spotError) {
+        console.error("Error reserving spot:", spotError);
+        throw new Error("Failed to reserve your spot. Please try again.");
+      }
+
+      if (!spotReserved) {
+        // Cohort is full — put them on the waitlist instead of leaving them stranded.
+        toast.error("This cohort just filled up! Adding you to the waitlist.");
+        await handleWaitlistSubmit(data.email, data.firstName, data.phone);
+        return;
+      }
+      spotReservedForThisSignup = true;
+
+      // Step 4: Sync non-privileged profile columns from the client. cohort_id,
+      // quiz_answers and UTM/fbclid are populated by the handle_new_user trigger
+      // from user_metadata (the profiles UPDATE trigger blocks cohort_id here).
+      if (authData.user) {
+        // Wait briefly for handle_new_user trigger to create the profile row.
+        await new Promise((resolve) => setTimeout(resolve, 400));
+
+        // Only push non-privileged, non-metadata fields (first_name, phone)
+        // that the client is allowed to write.
+        if (data.phone) {
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .update({ phone: data.phone })
+            .eq("id", authData.user.id);
+          if (profileError) {
+            console.error("Error updating profile phone:", profileError);
+          }
         }
 
-        // Step 4: Initialize user progress (Day 1 unlocked)
+        // Step 5: Initialize user progress (Day 1 unlocked)
         const { error: progressError } = await supabase.rpc(
           "initialize_user_progress",
           { p_user_id: authData.user.id }
@@ -238,7 +302,7 @@ const QuizContainer = () => {
           // Don't fail registration if progress init fails
         }
 
-        // Step 5: Store quiz lead for tracking (backup)
+        // Step 6: Store quiz lead for tracking (backup)
         await supabase.from("quiz_leads").insert({
           first_name: data.firstName,
           email: data.email,
@@ -248,9 +312,7 @@ const QuizContainer = () => {
           cohort_id: cohort.id,
         });
 
-        const sessionId = sessionStorage.getItem("session_id") || crypto.randomUUID();
-
-        // Step 6: Track funnel event
+        // Step 7: Track registration_complete funnel event + analytics + CRM webhook.
         await supabase.from("funnel_events").insert({
           session_id: sessionId,
           user_id: authData.user.id,
@@ -266,39 +328,68 @@ const QuizContainer = () => {
           fb_ad_id: trackingParams.fb_ad_id,
         });
 
-        // Step 7: Send welcome email
+        trackRegistrationCompleteAnalytics(data.email);
+
+        fireWebhook("user.registered", {
+          user_id: authData.user.id,
+          email: data.email,
+          first_name: data.firstName,
+          cohort_id: cohort.id,
+          utm_params: {
+            utm_source: trackingParams.utm_source || "",
+            utm_medium: trackingParams.utm_medium || "",
+            utm_campaign: trackingParams.utm_campaign || "",
+            utm_content: trackingParams.utm_content || "",
+            fb_ad_id: trackingParams.fb_ad_id || "",
+          },
+          quiz_answers: {
+            answer1: answers[0] || "",
+            answer2: answers[1] || "",
+            answer3: answers[2] || "",
+          },
+        }).catch((err) => console.error("user.registered webhook error", err));
+
+        // Step 8: Send welcome email
         const cohortStartDate = new Date(cohort.start_date).toLocaleDateString("en-US", {
           weekday: "long",
           month: "long",
           day: "numeric",
           year: "numeric",
         });
-        
+
         sendWelcomeEmail(data.email, data.firstName, cohortStartDate).catch(err => {
           console.error("Error sending welcome email:", err);
           // Don't fail registration if email fails
         });
 
-        // Step 8: Track VIP offer shown and route new registrations into the VIP offer.
-        await supabase.from("funnel_events").insert({
-          session_id: sessionId,
-          user_id: authData.user.id,
-          event_type: "vip_offer_shown",
-          event_data: { cohort_id: cohort.id },
-          utm_source: trackingParams.utm_source,
-          utm_medium: trackingParams.utm_medium,
-          utm_campaign: trackingParams.utm_campaign,
-          utm_content: trackingParams.utm_content,
-          fb_ad_id: trackingParams.fb_ad_id,
-        });
+        // Step 9: Route into the offer funnel.
+        // - Session present (email confirmation OFF): send to /vip-offer immediately.
+        // - No session (email confirmation ON): AuthCallback will route to /vip-offer
+        //   on first confirmation. Mark the browser so returning logins skip the OTO.
+        try {
+          localStorage.setItem("pending_registration", "1");
+        } catch {}
 
-        toast.success("You're in! One quick upgrade option before we start...");
-        navigate("/vip-offer");
+        if (authData.session) {
+          toast.success("You're in! One quick upgrade option before we start...");
+          navigate("/vip-offer");
+        } else {
+          setIsComplete(true);
+          toast.success("You're in! Check your email to confirm your account.");
+        }
         return;
       }
 
     } catch (error) {
       console.error("Error submitting registration:", error);
+      // Roll back the phantom cohort reservation if we grabbed one before failing.
+      if (spotReservedForThisSignup && cohort?.id) {
+        try {
+          await supabase.rpc("release_cohort_spot", { p_cohort_id: cohort.id });
+        } catch (releaseErr) {
+          console.error("Failed to release cohort spot:", releaseErr);
+        }
+      }
       toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -307,7 +398,7 @@ const QuizContainer = () => {
 
   const handleWaitlistSubmit = async (email: string, firstName?: string, phone?: string) => {
     const targetCohortId = cohort?.id;
-    
+
     setIsSubmitting(true);
     try {
       const { error } = await supabase.from("waitlist").insert({
@@ -318,7 +409,7 @@ const QuizContainer = () => {
       });
 
       if (error) throw error;
-      
+
       // Track waitlist event
       const trackingParams = getStoredTrackingParams();
       await supabase.from("funnel_events").insert({
@@ -331,11 +422,20 @@ const QuizContainer = () => {
         utm_content: trackingParams.utm_content,
         fb_ad_id: trackingParams.fb_ad_id,
       });
-      
+
+      fireWebhook("user.waitlisted", {
+        email,
+        first_name: firstName,
+        target_cohort: targetCohortId,
+      }).catch((err) => console.error("user.waitlisted webhook error", err));
+
       toast.success("You're on the waitlist! We'll notify you when spots open.");
     } catch (error) {
       console.error("Error joining waitlist:", error);
       toast.error("Something went wrong. Please try again.");
+      // Re-throw so callers (e.g. WaitlistForm) can render an inline error state
+      // instead of showing a false-positive success screen.
+      throw error;
     } finally {
       setIsSubmitting(false);
     }
