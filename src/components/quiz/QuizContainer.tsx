@@ -129,7 +129,19 @@ const QuizContainer = () => {
     }
   };
 
-  const handleEmailSubmit = async (data: { firstName: string; email: string; password: string; phone?: string }) => {
+  // Generate a cryptographically random password (accounts are created with this;
+  // the user can set a real one later from dashboard Settings).
+  const generateRandomPassword = () => {
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    // Base64url — always >= 40 chars, satisfies any HIBP-uncompromised random string.
+    return btoa(String.fromCharCode(...bytes))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "") + "!Aa1";
+  };
+
+  const handleEmailSubmit = async (data: { firstName: string; email: string; phone?: string }) => {
     if (!cohort) return;
     
     setIsSubmitting(true);
@@ -156,10 +168,13 @@ const QuizContainer = () => {
         return;
       }
 
-      // Step 2: Create user account with Supabase Auth
+      // Step 2: Create user account with Supabase Auth using a random password.
+      // With email confirmation disabled in Auth settings, signUp returns an active
+      // session so the user is signed in immediately — no verification wall.
+      const randomPassword = generateRandomPassword();
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
-        password: data.password,
+        password: randomPassword,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
@@ -239,9 +254,11 @@ const QuizContainer = () => {
           cohort_id: cohort.id,
         });
 
+        const sessionId = sessionStorage.getItem("session_id") || crypto.randomUUID();
+
         // Step 6: Track funnel event
         await supabase.from("funnel_events").insert({
-          session_id: sessionStorage.getItem("session_id") || crypto.randomUUID(),
+          session_id: sessionId,
           user_id: authData.user.id,
           event_type: "registration_complete",
           event_data: {
@@ -267,11 +284,25 @@ const QuizContainer = () => {
           console.error("Error sending welcome email:", err);
           // Don't fail registration if email fails
         });
+
+        // Step 8: Track VIP offer shown and route new registrations into the VIP offer.
+        await supabase.from("funnel_events").insert({
+          session_id: sessionId,
+          user_id: authData.user.id,
+          event_type: "vip_offer_shown",
+          event_data: { cohort_id: cohort.id },
+          utm_source: trackingParams.utm_source,
+          utm_medium: trackingParams.utm_medium,
+          utm_campaign: trackingParams.utm_campaign,
+          utm_content: trackingParams.utm_content,
+          fb_ad_id: trackingParams.fb_ad_id,
+        });
+
+        toast.success("You're in! One quick upgrade option before we start...");
+        navigate("/vip-offer");
+        return;
       }
 
-      setIsComplete(true);
-      toast.success("Check your email to verify your account!");
-      
     } catch (error) {
       console.error("Error submitting registration:", error);
       toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.");
