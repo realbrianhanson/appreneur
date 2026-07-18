@@ -276,9 +276,21 @@ const DayMission = () => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [completingTask, setCompletingTask] = useState<string | null>(null);
   const [completingDay, setCompletingDay] = useState(false);
-  const [startTime] = useState(Date.now());
+  // Reset the start time whenever the user navigates to a different day so
+  // time isn't attributed to the wrong day_number.
+  const [startTime, setStartTime] = useState(() => Date.now());
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Marks that the current session's time has already been persisted (via
+  // completeDay or a flush) so the unmount handler doesn't double-count.
+  const timeFlushedRef = useRef(false);
+
+  // Reset timer + flush guard when the day route param changes.
+  useEffect(() => {
+    setStartTime(Date.now());
+    setElapsedSeconds(0);
+    timeFlushedRef.current = false;
+  }, [day]);
 
   // Live timer
   useEffect(() => {
@@ -320,9 +332,11 @@ const DayMission = () => {
 
   // Save time on unmount
   const saveTimeSpent = useCallback(async () => {
+    if (timeFlushedRef.current) return;
     const seconds = Math.floor((Date.now() - startTime) / 1000);
     if (seconds < 5) return;
     if (!profile?.id) return; // Don't write with empty user_id
+    timeFlushedRef.current = true;
     try {
       await supabase.from("user_progress")
         .update({ time_spent_seconds: (currentDayProgress?.time_spent_seconds || 0) + seconds })
@@ -330,6 +344,8 @@ const DayMission = () => {
         .eq("day_number", day);
     } catch (e) {
       console.error("Failed to save time:", e);
+      // Allow a retry on the next unmount/beforeunload if the write failed.
+      timeFlushedRef.current = false;
     }
   }, [startTime, day, profile?.id, currentDayProgress?.time_spent_seconds]);
 
@@ -392,6 +408,9 @@ const DayMission = () => {
     const result = await completeDay(day, timeSpent);
     
     if (result) {
+      // completeDay already persisted this session's time — don't let the
+      // unmount handler add it again.
+      timeFlushedRef.current = true;
       setShowCelebration(true);
       
       if (result.is_graduation) {

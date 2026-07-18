@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { usePauseWhenHidden } from "@/hooks/usePauseWhenHidden";
 import {
   Calendar as CalendarIcon,
   CreditCard,
@@ -40,27 +41,40 @@ const READY_ON = 7400;
 const FADE_OUT = 11200;
 
 export const AppBuilderMockup = () => {
+  const prefersReducedMotion = useReducedMotion();
+  const { ref: containerRef, paused } = usePauseWhenHidden<HTMLDivElement>();
   const [tick, setTick] = useState(0);
-  const [now, setNow] = useState(0);
+  const [now, setNow] = useState(prefersReducedMotion ? FADE_OUT - 1 : 0);
+  const cycleStartRef = useRef<number>(0);
 
-  // Restart cycle
+  // Drive the timeline with a low-frequency timer (~10fps is plenty for a
+  // stepped typing/checklist animation) and pause fully when offscreen or
+  // when the user prefers reduced motion.
   useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), LOOP_MS);
-    return () => clearInterval(id);
-  }, []);
+    if (prefersReducedMotion) {
+      // Show the final resting state; skip the loop entirely.
+      setNow(FADE_OUT - 1);
+      return;
+    }
+    if (paused) return;
 
-  // Elapsed ms in current cycle
-  useEffect(() => {
-    setNow(0);
-    const start = performance.now();
-    let raf = 0;
-    const step = (t: number) => {
-      setNow(t - start);
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [tick]);
+    cycleStartRef.current = performance.now() - now;
+
+    const id = window.setInterval(() => {
+      const elapsed = performance.now() - cycleStartRef.current;
+      if (elapsed >= LOOP_MS) {
+        cycleStartRef.current = performance.now();
+        setTick((t) => t + 1);
+        setNow(0);
+      } else {
+        setNow(elapsed);
+      }
+    }, 100);
+    return () => window.clearInterval(id);
+    // Intentionally exclude `now` — we only want to (re)start the loop when
+    // visibility or motion preference changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paused, prefersReducedMotion]);
 
   // Typewriter progress
   const typeRatio = Math.max(
@@ -80,7 +94,11 @@ export const AppBuilderMockup = () => {
   const fadingOut = now >= FADE_OUT;
 
   return (
-    <div className="relative w-full max-w-[560px] mx-auto" style={{ perspective: 1400 }}>
+    <div
+      ref={containerRef}
+      className="relative w-full max-w-[560px] mx-auto"
+      style={{ perspective: 1400 }}
+    >
       {/* Floating chips */}
       <motion.div
         aria-hidden

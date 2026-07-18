@@ -9,6 +9,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer } fro
 import { supabase } from "@/integrations/supabase/client";
 import { eachDayOfInterval, format, startOfDay } from "date-fns";
 import type { DateRange } from "./DateRangeSelector";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 interface DailyData {
   date: string;
@@ -55,7 +56,7 @@ export function DailyMetricsCharts({ dateRange, refreshKey }: DailyMetricsCharts
       const { data: completions } = await supabase
         .from("user_progress")
         .select("completed_at")
-        .eq("day_number", 7)
+        .eq("day_number", TOTAL_DAYS)
         .eq("is_completed", true)
         .gte("completed_at", dateRange.from.toISOString())
         .lte("completed_at", dateRange.to.toISOString());

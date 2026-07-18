@@ -38,6 +38,16 @@ const chartConfig = {
   orders: { label: "Orders", color: "hsl(var(--secondary))" },
 };
 
+interface RevenueStatsResponse {
+  total_revenue: number;
+  this_month: number;
+  last_month: number;
+  total_orders: number;
+  average_order_value: number;
+  revenue_by_product: Record<string, number>;
+  daily: { day: string; revenue_cents: number; orders: number }[];
+}
+
 export default function AdminRevenue() {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [stats, setStats] = useState<RevenueStats | null>(null);
@@ -51,73 +61,44 @@ export default function AdminRevenue() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      // Fetch all purchases with profile info
-      const { data: purchasesData, error } = await supabase
-        .from("purchases")
-        .select(`
-          *,
-          profile:profiles(first_name, email)
-        `)
-        .order("created_at", { ascending: false })
-        .limit(100);
+      // Aggregate revenue stats — computed server-side across ALL rows
+      // (previous implementation silently capped totals at 100 purchases).
+      const [{ data: statsData, error: statsError }, { data: recent, error: listError }] =
+        await Promise.all([
+          supabase.rpc("get_revenue_stats"),
+          supabase
+            .from("purchases")
+            .select(`*, profile:profiles(first_name, email)`)
+            .order("created_at", { ascending: false })
+            .limit(100),
+        ]);
 
-      if (error) throw error;
+      if (statsError) throw statsError;
+      if (listError) throw listError;
 
-      setPurchases(purchasesData || []);
+      setPurchases(recent || []);
 
-      // Calculate stats
-      const completed = purchasesData?.filter(p => p.status === "completed") || [];
-      const now = new Date();
-      const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
-      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
-
-      const totalRevenue = completed.reduce((sum, p) => sum + p.amount_cents, 0);
-      const thisMonthRevenue = completed
-        .filter(p => new Date(p.created_at) >= thisMonthStart)
-        .reduce((sum, p) => sum + p.amount_cents, 0);
-      const lastMonthRevenue = completed
-        .filter(p => {
-          const date = new Date(p.created_at);
-          return date >= lastMonthStart && date <= lastMonthEnd;
-        })
-        .reduce((sum, p) => sum + p.amount_cents, 0);
-
-      const revenueByProduct: Record<string, number> = {};
-      completed.forEach(p => {
-        revenueByProduct[p.product_type] = (revenueByProduct[p.product_type] || 0) + p.amount_cents;
-      });
-
-      setStats({
-        totalRevenue,
-        thisMonthRevenue,
-        lastMonthRevenue,
-        averageOrderValue: completed.length > 0 ? totalRevenue / completed.length : 0,
-        totalOrders: completed.length,
-        revenueByProduct,
-      });
-
-      // Calculate daily data for last 30 days
-      const last30Days: { date: string; revenue: number; orders: number }[] = [];
-      for (let i = 29; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        const dateStr = format(date, "MMM dd");
-        const dayStart = new Date(date.setHours(0, 0, 0, 0));
-        const dayEnd = new Date(date.setHours(23, 59, 59, 999));
-        
-        const dayPurchases = completed.filter(p => {
-          const pDate = new Date(p.created_at);
-          return pDate >= dayStart && pDate <= dayEnd;
+      const s = (statsData as unknown as RevenueStatsResponse) || null;
+      if (s) {
+        setStats({
+          totalRevenue: Number(s.total_revenue) || 0,
+          thisMonthRevenue: Number(s.this_month) || 0,
+          lastMonthRevenue: Number(s.last_month) || 0,
+          totalOrders: Number(s.total_orders) || 0,
+          averageOrderValue: Number(s.average_order_value) || 0,
+          revenueByProduct: Object.fromEntries(
+            Object.entries(s.revenue_by_product || {}).map(([k, v]) => [k, Number(v) || 0])
+          ),
         });
 
-        last30Days.push({
-          date: dateStr,
-          revenue: dayPurchases.reduce((sum, p) => sum + p.amount_cents, 0) / 100,
-          orders: dayPurchases.length,
-        });
+        setDailyData(
+          (s.daily || []).map((d) => ({
+            date: format(new Date(d.day + "T00:00:00"), "MMM dd"),
+            revenue: (Number(d.revenue_cents) || 0) / 100,
+            orders: Number(d.orders) || 0,
+          }))
+        );
       }
-      setDailyData(last30Days);
 
     } catch (error) {
       console.error("Error fetching revenue data:", error);

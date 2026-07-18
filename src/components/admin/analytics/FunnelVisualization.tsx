@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import type { DateRange } from "./DateRangeSelector";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 interface FunnelStep {
   name: string;
@@ -71,10 +72,10 @@ export function FunnelVisualization({ dateRange, refreshKey }: FunnelVisualizati
         .gte("created_at", fromDate)
         .lte("created_at", toDate);
 
-      const { count: day7Completed } = await supabase
+      const { count: dayFinalCompleted } = await supabase
         .from("user_progress")
         .select("*", { count: "exact", head: true })
-        .eq("day_number", 7)
+        .eq("day_number", TOTAL_DAYS)
         .eq("is_completed", true)
         .gte("created_at", fromDate)
         .lte("created_at", toDate);
@@ -84,10 +85,12 @@ export function FunnelVisualization({ dateRange, refreshKey }: FunnelVisualizati
       const quizStarted = eventCounts["quiz_started"] || 0;
       const quizCompleted = eventCounts["quiz_completed"] || 0;
       const registered = registrations || 0;
-      const otoViewed = eventCounts["oto_viewed"] || eventCounts["vip_offer_viewed"] || 0;
+      // Only count real, emitted event types. If the app doesn't emit an event,
+      // report 0 honestly rather than fabricating a fallback.
+      const otoViewed = eventCounts["vip_offer_viewed"] || 0;
       const otoPurchased = otoPurchases;
       const challengeStarted = day1Completed || 0;
-      const challengeCompleted = day7Completed || 0;
+      const challengeCompleted = dayFinalCompleted || 0;
       const proSignup = proPurchases;
 
       const rawSteps = [

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { Download, Search, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 export interface UserWithProgress {
   id: string;
@@ -103,7 +104,7 @@ export default function AdminUsers() {
           cohort_name: cohort?.name || "None",
           is_vip: profile.is_vip,
           created_at: profile.created_at,
-          current_day: Math.min(currentDay, 7),
+          current_day: Math.min(currentDay, TOTAL_DAYS),
           days_completed: completedDays,
           utm_source: profile.utm_source,
           utm_medium: profile.utm_medium,
@@ -147,8 +148,8 @@ export default function AdminUsers() {
 
       // Progress filter
       if (filters.progressStatus === "not_started" && user.days_completed > 0) return false;
-      if (filters.progressStatus === "in_progress" && (user.days_completed === 0 || user.days_completed >= 7)) return false;
-      if (filters.progressStatus === "completed" && user.days_completed < 7) return false;
+      if (filters.progressStatus === "in_progress" && (user.days_completed === 0 || user.days_completed >= TOTAL_DAYS)) return false;
+      if (filters.progressStatus === "completed" && user.days_completed < TOTAL_DAYS) return false;
 
       // Date range filter
       if (filters.dateFrom) {

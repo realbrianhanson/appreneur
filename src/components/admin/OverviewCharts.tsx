@@ -17,6 +17,7 @@ import {
 } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { format, subDays, startOfDay, eachDayOfInterval } from "date-fns";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 interface ChartData {
   date: string;
@@ -101,7 +102,7 @@ export function OverviewCharts() {
       const { data: completions } = await supabase
         .from("user_progress")
         .select("user_id")
-        .eq("day_number", 7)
+        .eq("day_number", TOTAL_DAYS)
         .eq("is_completed", true);
 
       const totalRegistered = allProfiles?.length || 0;
@@ -124,7 +125,7 @@ export function OverviewCharts() {
         .select("day_number")
         .eq("is_completed", true);
 
-      const dayCounts = [1, 2, 3, 4, 5, 6, 7].map((day) => ({
+      const dayCounts = Array.from({ length: TOTAL_DAYS }, (_, i) => i + 1).map((day) => ({
         day: `Day ${day}`,
         completed: dayProgress?.filter((p) => p.day_number === day).length || 0,
       }));

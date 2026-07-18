@@ -691,6 +691,7 @@ export type Database = {
         }
         Returns: Json
       }
+      get_revenue_stats: { Args: never; Returns: Json }
       get_user_stats: { Args: { p_user_id: string }; Returns: Json }
       has_role: {
         Args: {

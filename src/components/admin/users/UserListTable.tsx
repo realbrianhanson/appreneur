@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { ChevronLeft, ChevronRight, Eye } from "lucide-react";
 import { format } from "date-fns";
 import type { UserWithProgress } from "@/pages/admin/Users";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 interface UserListTableProps {
   users: UserWithProgress[];
@@ -109,11 +110,11 @@ export function UserListTable({
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Progress
-                        value={(user.days_completed / 7) * 100}
+                        value={(user.days_completed / TOTAL_DAYS) * 100}
                         className="w-16 h-2"
                       />
                       <span className="text-sm text-muted-foreground">
-                        Day {user.current_day}/7
+                        Day {user.current_day}/{TOTAL_DAYS}
                       </span>
                     </div>
                   </TableCell>
