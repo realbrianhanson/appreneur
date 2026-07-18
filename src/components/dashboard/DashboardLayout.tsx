@@ -3,6 +3,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardTopBar } from "./DashboardTopBar";
 import { MobileBottomNav } from "./MobileBottomNav";
+import SEOHead from "@/components/seo/SEOHead";
 
 interface UserProgress {
   day_number: number;
@@ -16,6 +17,7 @@ interface DashboardLayoutProps {
   currentDay?: number;
   isVIP?: boolean;
   userProgress?: UserProgress[];
+  title?: string;
 }
 
 const DashboardLayout = ({
@@ -24,9 +26,11 @@ const DashboardLayout = ({
   currentDay = 1,
   isVIP = false,
   userProgress = [],
+  title = "Dashboard · Appreneur",
 }: DashboardLayoutProps) => {
   return (
     <SidebarProvider>
+      <SEOHead title={title} noindex />
       <div className="min-h-screen flex w-full bg-background">
         {/* Desktop sidebar - hidden on mobile */}
         <div className="hidden md:block">
