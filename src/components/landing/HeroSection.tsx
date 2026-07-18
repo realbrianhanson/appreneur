@@ -114,7 +114,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                   color: "#FFA04D",
                 }}
               >
-                Free 5-Day Challenge — Next Cohort Starting Soon
+                Free 5-Day Challenge · Next Cohort Starting Soon
               </span>
             </motion.div>
 
@@ -157,9 +157,10 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
               transition={{ duration: 0.6, delay: 1.15, ease: [0.22, 1, 0.36, 1] }}
               className="text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0 text-muted-foreground"
             >
-              No coding. No developers. No $15K budget. Just you, AI, and a proven system that's helped{" "}
+              You don't need code, a developer, or a $15K budget. You need 5 days and{" "}
+              <strong className="font-semibold text-foreground">the Appreneur Method</strong>: the exact system{" "}
               <strong className="font-semibold text-foreground">500+ entrepreneurs</strong>{" "}
-              ship real, working apps.
+              have used to ship real, working apps.
             </motion.p>
 
             {/* CTA + trust */}
@@ -176,7 +177,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                     className="btn-primary-pill text-base md:text-lg"
                     style={{ padding: "18px 34px" }}
                   >
-                    See if you qualify — 3 quick questions
+                    See if you qualify (3 quick questions)
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 </Magnetic>
@@ -224,7 +225,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                   Taught by Brian Hanson
                 </p>
                 <p className="text-xs text-muted-foreground leading-tight mt-0.5">
-                  4X Inc. 5000 Entrepreneur · 7-Figure Businesses · 150,000+ Students
+                  4X Inc. 5000 Entrepreneur · 7-Figure Businesses · 40,000+ Business Owners Trained
                 </p>
               </div>
             </motion.div>
