@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
+import { TOTAL_DAYS } from "@/lib/constants";
 
 interface CohortMetrics {
   id: string;
@@ -62,11 +63,11 @@ export function CohortAnalysis({ refreshKey }: CohortAnalysisProps) {
         .select("user_id, product_type, amount_cents")
         .eq("status", "completed");
 
-      // Fetch day 7 completions
+      // Fetch final-day completions
       const { data: completions } = await supabase
         .from("user_progress")
         .select("user_id")
-        .eq("day_number", 7)
+        .eq("day_number", TOTAL_DAYS)
         .eq("is_completed", true);
 
       const completedUserIds = new Set(completions?.map((c) => c.user_id) || []);
