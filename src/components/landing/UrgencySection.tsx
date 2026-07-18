@@ -8,7 +8,7 @@ import { useNextCohort } from "@/hooks/useNextCohort";
 const UrgencySection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { targetDate, isFallback, spotsLeft, maxSpots, onExpire } = useNextCohort();
+  const { cohort, targetDate, isFallback, spotsLeft, maxSpots, loading } = useNextCohort();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -29,6 +29,13 @@ const UrgencySection = () => {
   const spotsPct = displayMaxSpots > 0
     ? Math.min(100, Math.max(0, ((displayMaxSpots - displaySpotsLeft) / displayMaxSpots) * 100))
     : 0;
+  // Only show the spots bar once at least 20% of the cohort has filled.
+  // A "500 of 500 spots left · 0%" state reads fake, so hide it until then.
+  const showSpotsBar =
+    !isFallback &&
+    !!cohort &&
+    displayMaxSpots > 0 &&
+    spotsPct >= 20;
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString("en-US", {
@@ -37,6 +44,11 @@ const UrgencySection = () => {
       year: "numeric",
     });
   };
+
+  // The countdown card renders ONLY when a real future cohort exists.
+  // No fallback rendering, no rolling handleExpire.
+  if (loading) return null;
+  if (isFallback || !cohort) return null;
 
   return (
     <Section variant="muted" spacing="lg" className="relative overflow-hidden">
@@ -77,11 +89,11 @@ const UrgencySection = () => {
 
             {/* Countdown */}
             <div className="flex justify-center">
-              <CountdownTimer targetDate={targetDate} onExpire={onExpire} />
+              <CountdownTimer targetDate={targetDate} />
             </div>
 
-            {/* Spots left — only render when a real future cohort exists */}
-            {!isFallback && (
+            {/* Spots left — only render once ≥20% of cohort is filled */}
+            {showSpotsBar && (
             <div className="mt-10 max-w-md mx-auto">
               <div
                 className="flex items-center justify-between text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-2"
