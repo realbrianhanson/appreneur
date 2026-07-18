@@ -19,7 +19,6 @@ import {
   Send,
 } from "lucide-react";
 import { csvRow } from "@/lib/utils";
-import SEOHead from "@/components/seo/SEOHead";
 import { startOfDay, endOfDay } from "date-fns";
 
 interface OverviewStats {

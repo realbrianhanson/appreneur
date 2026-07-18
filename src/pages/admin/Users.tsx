@@ -10,7 +10,6 @@ import { Download, Search, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { TOTAL_DAYS } from "@/lib/constants";
 import { csvRow } from "@/lib/utils";
-import SEOHead from "@/components/seo/SEOHead";
 
 export interface UserWithProgress {
   id: string;

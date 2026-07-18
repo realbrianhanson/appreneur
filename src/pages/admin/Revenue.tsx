@@ -11,7 +11,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
 import { csvRow } from "@/lib/utils";
-import SEOHead from "@/components/seo/SEOHead";
 
 interface Purchase {
   id: string;
