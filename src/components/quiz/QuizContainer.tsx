@@ -398,7 +398,7 @@ const QuizContainer = () => {
 
   const handleWaitlistSubmit = async (email: string, firstName?: string, phone?: string) => {
     const targetCohortId = cohort?.id;
-    
+
     setIsSubmitting(true);
     try {
       const { error } = await supabase.from("waitlist").insert({
@@ -409,7 +409,7 @@ const QuizContainer = () => {
       });
 
       if (error) throw error;
-      
+
       // Track waitlist event
       const trackingParams = getStoredTrackingParams();
       await supabase.from("funnel_events").insert({
@@ -422,11 +422,20 @@ const QuizContainer = () => {
         utm_content: trackingParams.utm_content,
         fb_ad_id: trackingParams.fb_ad_id,
       });
-      
+
+      fireWebhook("user.waitlisted", {
+        email,
+        first_name: firstName,
+        target_cohort: targetCohortId,
+      }).catch((err) => console.error("user.waitlisted webhook error", err));
+
       toast.success("You're on the waitlist! We'll notify you when spots open.");
     } catch (error) {
       console.error("Error joining waitlist:", error);
       toast.error("Something went wrong. Please try again.");
+      // Re-throw so callers (e.g. WaitlistForm) can render an inline error state
+      // instead of showing a false-positive success screen.
+      throw error;
     } finally {
       setIsSubmitting(false);
     }
