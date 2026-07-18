@@ -93,9 +93,14 @@ const templates = {
         As promised, here's your exclusive PDF: <strong style="color: #ffffff;">"50 Profitable AI App Ideas for 2026"</strong>
       </p>
       
-      <a href="${data.loginUrl}" style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #ffffff; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px; margin-bottom: 24px;">
-        Access Your Dashboard →
-      </a>
+      <div style="text-align: center; margin: 8px 0 28px 0;">
+        <a href="${data.loginUrl}" style="display: inline-block; background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: #ffffff; font-size: 18px; font-weight: 700; text-decoration: none; padding: 16px 40px; border-radius: 999px; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35);">
+          Open Your Dashboard →
+        </a>
+        <p style="font-size: 13px; color: #a1a1aa; margin: 12px 0 0 0;">
+          No password? Just enter your email on the login page and we'll send you a magic link.
+        </p>
+      </div>
       
       <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 32px; padding-top: 24px;">
         <h3 style="font-size: 16px; color: #ffffff; margin: 0 0 12px 0;">
