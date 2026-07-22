@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { trackFunnelEvent } from "@/lib/trackFunnelEvent";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { finalizeRegistration } from "@/lib/finalize-registration";
