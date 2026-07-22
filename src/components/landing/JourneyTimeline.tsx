@@ -14,32 +14,37 @@ interface DayCard {
 const days: DayCard[] = [
   {
     day: 1,
-    title: "Find Your Winning Idea",
-    description: "Validate a profitable idea with AI (or grab one of my 50). You end tonight knowing exactly what you're building.",
+    title: "Choose the right app idea",
+    description:
+      "Pick one audience, one problem, and one specific outcome. You end Day 1 with a clear one-line pitch and the direction for the rest of the week.",
     icon: Lightbulb,
   },
   {
     day: 2,
-    title: "Design Your Blueprint",
-    description: "Copy-paste prompts turn your idea into a blueprint: features, screens, flow. Zero design skills required.",
+    title: "Map the first version",
+    description:
+      "Turn the idea into a simple screen flow, wireframe, and feature boundary — what's in your V1, and what waits for later.",
     icon: PenTool,
   },
   {
     day: 3,
-    title: "Build Your Core App",
-    description: "Your first working version goes live. This is the day it stops being an idea.",
+    title: "Build the core experience",
+    description:
+      "Assemble the layout, navigation, and essential data. By the end of the day the core of your first version is real and clickable.",
     icon: Hammer,
   },
   {
     day: 4,
-    title: "Polish & Add Magic",
-    description: "AI features, your branding, and the details that make it feel like a real product.",
+    title: "Add the intelligence",
+    description:
+      "Wire in one genuinely useful AI feature and refine the prompt behind it — the piece that makes your app feel modern and specific.",
     icon: Wand2,
   },
   {
     day: 5,
-    title: "SHIP IT",
-    description: "Deploy it, grab your link, share it with the world. You built that.",
+    title: "Polish, test, and publish",
+    description:
+      "Run the quality checklist, deploy a shareable version, and leave with a next-iteration plan you can execute in week two.",
     icon: Rocket,
     emoji: "🚀",
   },
