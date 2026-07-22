@@ -67,18 +67,23 @@ export const trackFBCustomEvent = (
 
 /**
  * Track when a user completes registration/signup
+ *
+ * Never send email addresses or other direct identifiers to third-party
+ * analytics. Callers may pass a per-session/user-safe id (already hashed or
+ * randomly generated) that Meta/GA can use for dedup.
  */
-export const trackRegistrationComplete = (email?: string) => {
-  // GA4
+export const trackRegistrationComplete = (opts?: { eventId?: string }) => {
+  // GA4 — no PII.
   trackGA4Event('sign_up', {
     method: 'email',
-    ...(email && { user_email: email }),
+    ...(opts?.eventId ? { event_id: opts.eventId } : {}),
   });
 
-  // Facebook Pixel - CompleteRegistration is a standard event
+  // Facebook Pixel - CompleteRegistration is a standard event. No PII.
   trackFBEvent('CompleteRegistration', {
     content_name: 'Appreneur Challenge',
     status: 'complete',
+    ...(opts?.eventId ? { eventID: opts.eventId } : {}),
   });
 
   console.log('[Analytics] Registration complete tracked');
