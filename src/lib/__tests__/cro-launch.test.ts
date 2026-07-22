@@ -29,7 +29,9 @@ describe("CRO: launch-ready control copy", () => {
     expect(HERO_H1).toBe(
       "Build Your First Website or App With AI—in 5 Days—even if tech has always intimidated you.",
     );
-    expect(HERO_SUPPORT_COPY).toMatch(/No coding\. No developer\. No tech background required/);
+    expect(HERO_SUPPORT_COPY).toMatch(/type an email/i);
+    expect(HERO_SUPPORT_COPY).toMatch(/step-by-step video/i);
+    expect(HERO_SUPPORT_COPY).toMatch(/Brian/);
     expect(PRIMARY_CTA_LABEL).toBe("Start My Free 5-Day Challenge");
     expect(SECONDARY_CTA_LABEL).toBe("See What I'll Build");
     expect(REGISTRATION_CTA_LABEL).toBe("Create My Free Challenge Account");
@@ -79,9 +81,9 @@ describe("CRO: authority strip is imported above the fold in Index", () => {
 });
 
 describe("CRO: mechanism section states the mechanism line verbatim", () => {
-  it("MECHANISM_LINE matches the CRO brief", () => {
+  it("MECHANISM_LINE states the belief-bridge line verbatim", () => {
     expect(MECHANISM_LINE).toBe(
-      "One mission. One deliverable. One step closer every day.",
+      "You do not have to understand the technology. You just have to learn how to direct it.",
     );
   });
   it("OpportunityMechanismSection renders MECHANISM_LINE", () => {
