@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { trackFunnelEvent } from "@/lib/trackFunnelEvent";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { finalizeRegistration } from "@/lib/finalize-registration";
@@ -103,7 +104,7 @@ const QuizContainer = () => {
       const sessionId =
         sessionStorage.getItem("session_id") || crypto.randomUUID();
       sessionStorage.setItem("session_id", sessionId);
-      await supabase.from("funnel_events").insert({
+      await trackFunnelEvent({
         session_id: sessionId,
         event_type: "quiz_started",
         event_data: {},
@@ -148,7 +149,7 @@ const QuizContainer = () => {
       // Only the event name is forwarded to external analytics — answer
       // values stay first-party (see funnel_events insert below).
       trackQuizComplete();
-      await supabase.from("funnel_events").insert({
+      await trackFunnelEvent({
         session_id: sessionId,
         event_type: "quiz_completed",
         event_data: { answers: finalAnswers },
@@ -192,20 +193,16 @@ const QuizContainer = () => {
       sessionStorage.setItem("session_id", sessionId);
 
       // Step 1: Fire lead_captured funnel event (email submitted, not yet signed up).
-      try {
-        await supabase.from("funnel_events").insert({
-          session_id: sessionId,
-          event_type: "lead_captured",
-          event_data: {},
-          utm_source: trackingParams.utm_source,
-          utm_medium: trackingParams.utm_medium,
-          utm_campaign: trackingParams.utm_campaign,
-          utm_content: trackingParams.utm_content,
-          fb_ad_id: trackingParams.fb_ad_id,
-        });
-      } catch (e) {
-        console.error("lead_captured track error", e);
-      }
+      await trackFunnelEvent({
+        session_id: sessionId,
+        event_type: "lead_captured",
+        event_data: {},
+        utm_source: trackingParams.utm_source,
+        utm_medium: trackingParams.utm_medium,
+        utm_campaign: trackingParams.utm_campaign,
+        utm_content: trackingParams.utm_content,
+        fb_ad_id: trackingParams.fb_ad_id,
+      });
 
       // Step 2: Create user account. No phone / cohort_id is captured during
       // handle_new_user copies safe attribution fields into profile.
@@ -254,31 +251,14 @@ const QuizContainer = () => {
       }
 
       if (authData.user) {
-        // Give handle_new_user a beat to create the profile row.
+        // Give handle_new_user a beat to create the profile row. All
+        // canonical quiz answers now live on `profiles.quiz_answers` via
+        // signUp() metadata + handle_new_user(); the redundant browser
+        // insert into `quiz_leads` has been removed. `registration_complete`
+        // is emitted server-side by the `finalize-registration` edge
+        // function using canonical session identity — never from the
+        // browser.
         await new Promise((resolve) => setTimeout(resolve, 400));
-
-        // Store quiz lead for tracking (backup) — no cohort_id.
-        await supabase.from("quiz_leads").insert({
-          first_name: data.firstName,
-          email: data.email,
-          answer1: answers[0] || "",
-          answer2: answers[1] || "",
-          answer3: answers[2] || "",
-        });
-
-        await supabase.from("funnel_events").insert({
-          session_id: sessionId,
-          user_id: authData.user.id,
-          event_type: "registration_complete",
-          event_data: {
-            quiz_answers: answers,
-          },
-          utm_source: trackingParams.utm_source,
-          utm_medium: trackingParams.utm_medium,
-          utm_campaign: trackingParams.utm_campaign,
-          utm_content: trackingParams.utm_content,
-          fb_ad_id: trackingParams.fb_ad_id,
-        });
 
         // No email/webhook fire from the browser. Also send no PII to
         // third-party analytics. Dedupe with the anonymous per-browser

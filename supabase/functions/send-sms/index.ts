@@ -77,6 +77,8 @@ async function sendTwilioSMS(to: string, body: string): Promise<{ success: boole
           From: fromNumber,
           Body: body,
         }),
+        // Bounded network timeout so a stalled provider can't hang the fn.
+        signal: AbortSignal.timeout(10_000),
       }
     );
 
@@ -100,6 +102,16 @@ serve(async (req: Request) => {
   }
 
   try {
+    // Feature-flag fail-closed. Default is off. The launch-ready checklist
+    // documents SMS_ENABLED — no SMS sends occur until it is explicitly
+    // set to the string "true" in the edge-function environment.
+    if (Deno.env.get('SMS_ENABLED') !== 'true') {
+      return new Response(
+        JSON.stringify({ success: false, error: 'unavailable' }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
@@ -253,10 +265,10 @@ serve(async (req: Request) => {
     );
 
   } catch (error: unknown) {
+    // Log detail server-side but return a generic message to the caller.
     console.error('SMS function error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ success: false, error: errorMessage }),
+      JSON.stringify({ success: false, error: 'internal_error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

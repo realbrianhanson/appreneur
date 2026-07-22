@@ -1,12 +1,29 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+const ALLOWED_ORIGINS = new Set<string>([
+  "https://appreneur.lovable.app",
+  "https://appreneur.ai",
+  "https://www.appreneur.ai",
+  "http://localhost:5173",
+  "http://localhost:8080",
+]);
+const PREVIEW_ORIGIN_RE = /^https:\/\/id-preview--[a-z0-9-]+\.lovable\.app$/;
+
+function buildCors(req: Request): Record<string, string> {
+  const origin = req.headers.get("Origin") || "";
+  const allowed =
+    ALLOWED_ORIGINS.has(origin) || PREVIEW_ORIGIN_RE.test(origin);
+  return {
+    "Access-Control-Allow-Origin": allowed ? origin : "https://appreneur.ai",
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
+    "Vary": "Origin",
+  };
+}
 
 serve(async (req) => {
+  const corsHeaders = buildCors(req);
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -46,9 +63,9 @@ serve(async (req) => {
       .order("day_number", { ascending: true });
 
     if (progressError) {
-      console.error("Error fetching progress:", progressError);
+      console.error("[get-progress] fetch error", progressError);
       return new Response(
-        JSON.stringify({ error: "Failed to fetch progress" }),
+        JSON.stringify({ error: "internal_error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -59,9 +76,9 @@ serve(async (req) => {
       const { error: initError } = await supabase.rpc("initialize_user_progress");
 
       if (initError) {
-        console.error("Error initializing progress:", initError);
+        console.error("[get-progress] init error", initError);
         return new Response(
-          JSON.stringify({ error: "Failed to initialize progress" }),
+          JSON.stringify({ error: "internal_error" }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -74,8 +91,9 @@ serve(async (req) => {
         .order("day_number", { ascending: true });
 
       if (newProgressError) {
+        console.error("[get-progress] refetch error", newProgressError);
         return new Response(
-          JSON.stringify({ error: "Failed to fetch progress" }),
+          JSON.stringify({ error: "internal_error" }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
@@ -100,9 +118,9 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Error in get-progress:", error);
+    console.error("[get-progress] handler error", error);
     return new Response(
-      JSON.stringify({ error: "Internal server error" }),
+      JSON.stringify({ error: "internal_error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

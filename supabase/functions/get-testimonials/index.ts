@@ -106,22 +106,20 @@ serve(async (req: Request) => {
       throw error;
     }
 
-    // Resolve screenshots: sign object paths for approved rows, keep legacy
-    // full URLs as-is. Never sign a path for an unapproved row (RLS above
-    // already excluded them, but be explicit).
+    // Resolve screenshots: ONLY signed URLs for approved rows in the
+    // private `app-screenshots` bucket. Legacy external URLs are no
+    // longer returned publicly — they may reference arbitrary hosts we
+    // don't control.
     const SIGN_TTL = 300; // 5 minutes
     const resolved = await Promise.all(
       (testimonials || []).map(async (t: Record<string, unknown>) => {
         const path = (t.app_screenshot_path as string | null) ?? null;
-        const legacy = (t.app_screenshot_url as string | null) ?? null;
         let screenshot: string | null = null;
         if (path) {
           const { data: signed } = await signer.storage
             .from("app-screenshots")
             .createSignedUrl(path, SIGN_TTL);
           screenshot = signed?.signedUrl ?? null;
-        } else if (legacy && /^https?:\/\//i.test(legacy)) {
-          screenshot = legacy;
         }
         return {
           id: t.id,
@@ -136,18 +134,10 @@ serve(async (req: Request) => {
       })
     );
 
-    // Get completion count for stats
-    const { count: completedCount } = await supabase
-      .from("user_progress")
-      .select("*", { count: "exact", head: true })
-      .eq("day_number", 5)
-      .eq("is_completed", true);
-
     const response = {
       testimonials: resolved,
       total: count || 0,
       hasMore: offset + limit < (count || 0),
-      completedCount: completedCount || 0,
     };
 
     // Update cache
@@ -164,10 +154,9 @@ serve(async (req: Request) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching testimonials:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error("[get-testimonials] handler error", error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "internal_error" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
