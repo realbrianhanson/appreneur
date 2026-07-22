@@ -1,73 +1,81 @@
-# Welcome to your Lovable project
+# Appreneur Challenge
 
-## Project info
+A free, self-paced, 5-day app-building challenge by **AI For Business**.
+Currently in **prelaunch** — lessons are being recorded and early-access
+signups are open.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Production: <https://appreneur.ai>
 
-## How can I edit this code?
+## Product state
 
-There are several ways of editing your application.
+Feature flags live in [`src/lib/constants.ts`](src/lib/constants.ts):
 
-**Use Lovable**
+| Flag                 | Prelaunch value | Meaning                                     |
+| -------------------- | --------------- | ------------------------------------------- |
+| `PRODUCT_STATUS`     | `"prelaunch"`   | Marketing copy stays truthful about videos. |
+| `VIP_SALES_ENABLED`  | `false`         | Stripe checkout fails closed (HTTP 503).    |
+| `TOTAL_DAYS`         | `5`             | Length of the challenge — do not change.    |
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Flip these only alongside the checks in [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md).
 
-Changes made via Lovable will be committed automatically to this repo.
+## Architecture at a glance
 
-**Use your preferred IDE**
+- **Frontend**: Vite + React 18 + TypeScript + Tailwind + shadcn/ui.
+  Framer Motion for animation. React Router for client routing.
+- **Backend**: Lovable Cloud (managed Supabase). Postgres + RLS,
+  auth, storage, and edge functions.
+- **Deployment**: Lovable hosting for the frontend. Edge functions deploy
+  automatically. Migrations run on approval via the Lovable migration tool.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Key backend surfaces
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- `handle_new_user` trigger — creates the `profiles` row on signup.
+- `initialize_user_progress` / `initialize_user_progress_for` — seed the
+  five `user_progress` rows and unlock Day 1.
+- `complete_task` — server-authoritative task completion. All gating
+  columns are locked behind a `SECURITY DEFINER` trigger that only
+  trusts writes made inside a trusted claim window.
+- `admin_overview_stats` / `admin_list_users` — admin dashboard RPCs.
+- Edge functions: `finalize-registration`, `send-email`, `fire-webhook`,
+  `create-checkout-session` (fail-closed), `complete-day` (time-only,
+  idempotent).
 
-Follow these steps:
+## Local development
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### CI-grade checks
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+npm run lint         # eslint
+npm run typecheck    # tsc --noEmit
+npm run test         # vitest
+npm run check        # runs all three
+```
 
-**Use GitHub Codespaces**
+CI (`.github/workflows/ci.yml`) runs the same commands on every push/PR.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Editing content vs schema
 
-## What technologies are used for this project?
+- **Copy / UI**: edit files under `src/`. Frontend changes take effect
+  in preview immediately, and go live only after clicking Publish.
+- **Schema / RLS / functions**: use the Lovable migration tool. Every
+  new `public` table needs `GRANT` statements in the same migration
+  before RLS is enabled.
+- **Feature flags / release state**: `src/lib/constants.ts`.
 
-This project is built with:
+## Legal & privacy
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+See [`src/pages/Privacy.tsx`](src/pages/Privacy.tsx) and
+[`src/pages/Terms.tsx`](src/pages/Terms.tsx). Both are owned by
+**AI For Business** and last updated **July 22, 2026**.
 
-## How can I deploy this project?
+## Operations
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) — required
+  steps before promoting a build.
+- [`docs/RUNBOOK.md`](docs/RUNBOOK.md) — on-call playbook for common
+  signals (signup outage, email failure, webhook duplicates, etc.).
