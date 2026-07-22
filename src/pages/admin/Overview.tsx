@@ -1,277 +1,182 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { StatsCard } from "@/components/admin/StatsCard";
-import { RecentActivityFeed } from "@/components/admin/RecentActivityFeed";
-import { OverviewCharts } from "@/components/admin/OverviewCharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import {
   UserPlus,
-  DollarSign,
   Activity,
   Trophy,
   Users,
-  Target,
   Percent,
-  TrendingUp,
-  Plus,
-  Download,
-  Send,
+  Mail,
+  Webhook as WebhookIcon,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
-import { csvRow } from "@/lib/utils";
-import { startOfDay, endOfDay } from "date-fns";
 
-interface OverviewStats {
-  registrationsToday: number;
-  revenueToday: number;
-  activeUsersToday: number;
-  completionsToday: number;
-  cohortRegistrations: number;
-  spotsRemaining: number;
-  otoConversionRate: number;
-  completionRate: number;
+interface DeliveryStats {
+  sent: number;
+  failed: number;
+  pending: number;
+  not_configured?: number;
+  total: number;
 }
 
+interface OverviewStats {
+  registrations_today: number;
+  total_users: number;
+  active_last_7_days: number;
+  day5_completions: number;
+  completion_rate: number;
+  email_delivery: DeliveryStats;
+  webhook_delivery: DeliveryStats;
+}
+
+const EMPTY: OverviewStats = {
+  registrations_today: 0,
+  total_users: 0,
+  active_last_7_days: 0,
+  day5_completions: 0,
+  completion_rate: 0,
+  email_delivery: { sent: 0, failed: 0, pending: 0, not_configured: 0, total: 0 },
+  webhook_delivery: { sent: 0, failed: 0, pending: 0, total: 0 },
+};
+
 export default function AdminOverview() {
-  const [stats, setStats] = useState<OverviewStats>({
-    registrationsToday: 0,
-    revenueToday: 0,
-    activeUsersToday: 0,
-    completionsToday: 0,
-    cohortRegistrations: 0,
-    spotsRemaining: 0,
-    otoConversionRate: 0,
-    completionRate: 0,
-  });
+  const [stats, setStats] = useState<OverviewStats>(EMPTY);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
-  const fetchStats = async () => {
+  const load = async () => {
+    setIsLoading(true);
+    setError(null);
     try {
-      const todayStart = startOfDay(new Date()).toISOString();
-      const todayEnd = endOfDay(new Date()).toISOString();
-
-      // Today's registrations
-      const { count: regCount } = await supabase
-        .from("profiles")
-        .select("*", { count: "exact", head: true })
-        .gte("created_at", todayStart)
-        .lte("created_at", todayEnd);
-
-      // Today's revenue
-      const { data: todayPurchases } = await supabase
-        .from("purchases")
-        .select("amount_cents")
-        .eq("status", "completed")
-        .gte("created_at", todayStart)
-        .lte("created_at", todayEnd);
-
-      const revenueToday = todayPurchases?.reduce((sum, p) => sum + p.amount_cents, 0) || 0;
-
-      // Today's completions (Day 5)
-      const { count: completionsCount } = await supabase
-        .from("user_progress")
-        .select("*", { count: "exact", head: true })
-        .eq("day_number", 5)
-        .eq("is_completed", true)
-        .gte("completed_at", todayStart)
-        .lte("completed_at", todayEnd);
-
-      // Active cohort stats
-      const { data: activeCohort } = await supabase
-        .from("cohorts")
-        .select("*")
-        .eq("is_active", true)
-        .maybeSingle();
-
-      // Total registrations for active cohort
-      let cohortRegs = 0;
-      let spotsLeft = 500;
-      if (activeCohort) {
-        const { count } = await supabase
-          .from("profiles")
-          .select("*", { count: "exact", head: true })
-          .eq("cohort_id", activeCohort.id);
-        cohortRegs = count || 0;
-        spotsLeft = activeCohort.max_participants - (activeCohort.spots_taken || 0);
-      }
-
-      // OTO conversion rate (VIP purchases / total registrations)
-      const { count: totalProfiles } = await supabase
-        .from("profiles")
-        .select("*", { count: "exact", head: true });
-
-      const { count: vipPurchases } = await supabase
-        .from("purchases")
-        .select("*", { count: "exact", head: true })
-        .eq("product_type", "vip_bundle")
-        .eq("status", "completed");
-
-      const otoRate = totalProfiles && totalProfiles > 0 
-        ? ((vipPurchases || 0) / totalProfiles) * 100 
-        : 0;
-
-      // Completion rate (Day 5 completions / total registrations)
-      const { count: totalCompletions } = await supabase
-        .from("user_progress")
-        .select("*", { count: "exact", head: true })
-        .eq("day_number", 5)
-        .eq("is_completed", true);
-
-      const compRate = totalProfiles && totalProfiles > 0 
-        ? ((totalCompletions || 0) / totalProfiles) * 100 
-        : 0;
-
-      // Active users today (users who logged in/made progress today)
-      // Using user_progress updates as proxy for activity
-      const { data: activeProgress } = await supabase
-        .from("user_progress")
-        .select("user_id")
-        .gte("updated_at", todayStart)
-        .lte("updated_at", todayEnd);
-
-      const uniqueActiveUsers = new Set(activeProgress?.map(p => p.user_id) || []).size;
-
-      setStats({
-        registrationsToday: regCount || 0,
-        revenueToday: revenueToday / 100,
-        activeUsersToday: uniqueActiveUsers,
-        completionsToday: completionsCount || 0,
-        cohortRegistrations: cohortRegs,
-        spotsRemaining: spotsLeft,
-        otoConversionRate: Math.round(otoRate * 10) / 10,
-        completionRate: Math.round(compRate * 10) / 10,
-      });
-    } catch (error) {
-      console.error("Error fetching stats:", error);
+      const { data, error } = await supabase.rpc("admin_overview_stats");
+      if (error) throw error;
+      setStats((data as unknown as OverviewStats) ?? EMPTY);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to load stats";
+      setError(msg);
+      toast.error("Could not load overview stats");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleExportUsers = async () => {
-    try {
-      const { data: users } = await supabase
-        .from("profiles")
-        .select("first_name, email, phone, created_at, is_vip")
-        .order("created_at", { ascending: false });
+  useEffect(() => {
+    load();
+  }, []);
 
-      if (!users) return;
-
-      const csv = [
-        csvRow(["First Name", "Email", "Phone", "Created At", "Is VIP"]),
-        ...users.map((u) =>
-          csvRow([u.first_name, u.email, u.phone || "", u.created_at, u.is_vip])
-        ),
-      ].join("\n");
-
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `users-export-${new Date().toISOString().split("T")[0]}.csv`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error exporting users:", error);
-    }
-  };
+  const dash = (n: number | undefined) => (isLoading ? "…" : String(n ?? 0));
 
   return (
     <AdminLayout title="Admin · Overview">
       <div className="space-y-6">
-        {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Dashboard Overview</h1>
-            <p className="text-muted-foreground">Monitor your challenge performance</p>
+            <h1 className="text-2xl font-bold text-foreground">Prelaunch Overview</h1>
+            <p className="text-muted-foreground">
+              Free early-access signups, learner activity, and delivery health.
+            </p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="outline" size="sm">
-              <Plus className="w-4 h-4 mr-2" />
-              New Cohort
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleExportUsers}>
-              <Download className="w-4 h-4 mr-2" />
-              Export Users
-            </Button>
-            <Button variant="default" size="sm">
-              <Send className="w-4 h-4 mr-2" />
-              Broadcast SMS
-            </Button>
+          <Button variant="outline" size="sm" onClick={load} disabled={isLoading}>
+            <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+            Refresh
+          </Button>
+        </div>
+
+        {error && (
+          <div className="flex items-center gap-2 p-3 rounded-lg border border-destructive/40 bg-destructive/10 text-sm text-destructive">
+            <AlertCircle className="w-4 h-4" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        <div>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Signups</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatsCard title="Registrations Today" value={dash(stats.registrations_today)} icon={<UserPlus className="w-5 h-5" />} />
+            <StatsCard title="Total Early-Access Users" value={dash(stats.total_users)} icon={<Users className="w-5 h-5" />} />
+            <StatsCard title="Active (Last 7 Days)" value={dash(stats.active_last_7_days)} icon={<Activity className="w-5 h-5" />} />
+            <StatsCard title="Day 5 Completions" value={dash(stats.day5_completions)} icon={<Trophy className="w-5 h-5" />} />
           </div>
         </div>
 
-        {/* Today Stats */}
         <div>
-          <h2 className="text-lg font-semibold text-foreground mb-3">Today</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-3">Engagement</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard
-              title="New Registrations"
-              value={isLoading ? "..." : stats.registrationsToday}
-              icon={<UserPlus className="w-5 h-5" />}
-            />
-            <StatsCard
-              title="Revenue Today"
-              value={isLoading ? "..." : `$${stats.revenueToday.toLocaleString()}`}
-              icon={<DollarSign className="w-5 h-5" />}
-            />
-            <StatsCard
-              title="Active Users"
-              value={isLoading ? "..." : stats.activeUsersToday}
-              icon={<Activity className="w-5 h-5" />}
-            />
-            <StatsCard
-              title="Completions"
-              value={isLoading ? "..." : stats.completionsToday}
-              icon={<Trophy className="w-5 h-5" />}
-            />
-          </div>
-        </div>
-
-        {/* Cohort Stats */}
-        <div>
-          <h2 className="text-lg font-semibold text-foreground mb-3">Current Cohort</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard
-              title="Total Registrations"
-              value={isLoading ? "..." : stats.cohortRegistrations}
-              icon={<Users className="w-5 h-5" />}
-            />
-            <StatsCard
-              title="Spots Remaining"
-              value={isLoading ? "..." : stats.spotsRemaining}
-              icon={<Target className="w-5 h-5" />}
-            />
-            <StatsCard
-              title="OTO Conversion"
-              value={isLoading ? "..." : `${stats.otoConversionRate}%`}
-              icon={<Percent className="w-5 h-5" />}
-            />
             <StatsCard
               title="Completion Rate"
-              value={isLoading ? "..." : `${stats.completionRate}%`}
-              icon={<TrendingUp className="w-5 h-5" />}
+              value={isLoading ? "…" : `${stats.completion_rate ?? 0}%`}
+              icon={<Percent className="w-5 h-5" />}
             />
           </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            Completion rate = Day 5 completions ÷ total registrations. It stays at 0% until
+            lessons open and learners finish the challenge.
+          </p>
         </div>
 
-        {/* Charts */}
-        <OverviewCharts />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="bg-card border-border">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2 text-foreground">
+                <Mail className="w-4 h-4" /> Welcome email delivery
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm">
+              <DeliveryRow label="Sent" value={stats.email_delivery.sent} total={stats.email_delivery.total} tone="ok" />
+              <DeliveryRow label="Pending" value={stats.email_delivery.pending} total={stats.email_delivery.total} tone="muted" />
+              <DeliveryRow label="Failed" value={stats.email_delivery.failed} total={stats.email_delivery.total} tone="bad" />
+              <DeliveryRow label="Not configured" value={stats.email_delivery.not_configured ?? 0} total={stats.email_delivery.total} tone="muted" />
+            </CardContent>
+          </Card>
 
-        {/* Activity Feed */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            {/* Placeholder for future content */}
-          </div>
-          <div>
-            <RecentActivityFeed />
-          </div>
+          <Card className="bg-card border-border">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base flex items-center gap-2 text-foreground">
+                <WebhookIcon className="w-4 h-4" /> user.registered webhook delivery
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm">
+              <DeliveryRow label="Sent" value={stats.webhook_delivery.sent} total={stats.webhook_delivery.total} tone="ok" />
+              <DeliveryRow label="Pending" value={stats.webhook_delivery.pending} total={stats.webhook_delivery.total} tone="muted" />
+              <DeliveryRow label="Failed" value={stats.webhook_delivery.failed} total={stats.webhook_delivery.total} tone="bad" />
+            </CardContent>
+          </Card>
         </div>
       </div>
     </AdminLayout>
+  );
+}
+
+function DeliveryRow({
+  label,
+  value,
+  total,
+  tone,
+}: {
+  label: string;
+  value: number;
+  total: number;
+  tone: "ok" | "bad" | "muted";
+}) {
+  const color =
+    tone === "ok"
+      ? "text-green-500"
+      : tone === "bad"
+      ? "text-destructive"
+      : "text-muted-foreground";
+  return (
+    <div className="flex items-center justify-between py-1.5">
+      <span className="text-muted-foreground">{label}</span>
+      <span className={color}>
+        {value}
+        <span className="text-muted-foreground"> / {total}</span>
+      </span>
+    </div>
   );
 }

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
 import { VIP_SALES_ENABLED } from "@/lib/constants";
 import { PrelaunchSalesPlaceholder } from "@/components/PrelaunchSalesPlaceholder";
-import { trackPageView, trackVIPOfferView } from "@/lib/analytics";
+import { trackPageView } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { getStoredTrackingParams } from "@/hooks/useTrackingParams";
@@ -115,10 +115,11 @@ const VIPOffer = () => {
   const [bumpOffer, setBumpOffer] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  // Track page view and VIP offer view on mount
+  // Track page view on mount — but ONLY when VIP sales are actually enabled.
+  // Placeholder renders (prelaunch) must not be counted as "OTO viewed".
   useEffect(() => {
+    if (!VIP_SALES_ENABLED) return;
     trackPageView('/vip-offer', 'VIP Offer — Appreneur Challenge');
-    trackVIPOfferView();
     // Log the OTO view into funnel_events so the admin funnel dashboard can
     // report OTO view → purchase conversion.
     (async () => {
@@ -145,6 +146,10 @@ const VIPOffer = () => {
     // We intentionally only run this once per mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!VIP_SALES_ENABLED) {
+    return <PrelaunchSalesPlaceholder page="vip-offer" />;
+  }
 
   const handleExpire = () => {
     try { localStorage.removeItem(VIP_EXPIRES_KEY); } catch {}
@@ -232,10 +237,6 @@ const VIPOffer = () => {
   ];
 
   const totalValue = stackItems.reduce((sum, item) => sum + item.value, 0);
-
-  if (!VIP_SALES_ENABLED) {
-    return <PrelaunchSalesPlaceholder page="vip-offer" />;
-  }
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-0">

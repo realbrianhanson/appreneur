@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { Loader2 } from "lucide-react";
 import Index from "./pages/Index";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Lazy-loaded routes
 const Login = lazy(() => import("./pages/Login"));
@@ -25,8 +26,6 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const AdminOverview = lazy(() => import("./pages/admin/Overview"));
 const AdminUsers = lazy(() => import("./pages/admin/Users"));
-const AdminCohorts = lazy(() => import("./pages/admin/Cohorts"));
-const AdminRevenue = lazy(() => import("./pages/admin/Revenue"));
 const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
 const AdminTestimonials = lazy(() => import("./pages/admin/Testimonials"));
 const AdminSettings = lazy(() => import("./pages/admin/Settings"));
@@ -55,6 +54,7 @@ const App = () => {
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ErrorBoundary>
           <Suspense fallback={<RouteLoader />}>
             <Routes>
               {/* Public Routes */}
@@ -68,8 +68,6 @@ const App = () => {
               <Route path="/terms" element={<Terms />} />
               <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminOverview /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
-              <Route path="/admin/cohorts" element={<ProtectedRoute requireAdmin><AdminCohorts /></ProtectedRoute>} />
-              <Route path="/admin/revenue" element={<ProtectedRoute requireAdmin><AdminRevenue /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute requireAdmin><AdminAnalytics /></ProtectedRoute>} />
               <Route path="/admin/testimonials" element={<ProtectedRoute requireAdmin><AdminTestimonials /></ProtectedRoute>} />
               <Route path="/admin/webhooks" element={<ProtectedRoute requireAdmin><WebhooksAdmin /></ProtectedRoute>} />
@@ -121,6 +119,7 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
+          </ErrorBoundary>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

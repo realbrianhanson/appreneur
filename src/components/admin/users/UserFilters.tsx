@@ -14,32 +14,27 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Filter, X } from "lucide-react";
-import type { UserFiltersState } from "@/pages/admin/Users";
+
+export interface UserFiltersState {
+  progressStatus: "all" | "not_started" | "in_progress" | "completed";
+  dateFrom: string;
+  dateTo: string;
+}
 
 interface UserFiltersProps {
   filters: UserFiltersState;
   onFiltersChange: (filters: UserFiltersState) => void;
-  cohorts: { id: string; name: string }[];
 }
 
-export function UserFilters({ filters, onFiltersChange, cohorts }: UserFiltersProps) {
+export function UserFilters({ filters, onFiltersChange }: UserFiltersProps) {
   const activeFiltersCount = [
-    filters.cohortId !== "all",
-    filters.vipStatus !== "all",
     filters.progressStatus !== "all",
     filters.dateFrom,
     filters.dateTo,
   ].filter(Boolean).length;
 
-  const clearFilters = () => {
-    onFiltersChange({
-      cohortId: "all",
-      vipStatus: "all",
-      progressStatus: "all",
-      dateFrom: "",
-      dateTo: "",
-    });
-  };
+  const clearFilters = () =>
+    onFiltersChange({ progressStatus: "all", dateFrom: "", dateTo: "" });
 
   return (
     <Popover>
@@ -66,76 +61,32 @@ export function UserFilters({ filters, onFiltersChange, cohorts }: UserFiltersPr
             )}
           </div>
 
-          {/* Cohort Filter */}
           <div className="space-y-2">
-            <Label>Cohort</Label>
-            <Select
-              value={filters.cohortId}
-              onValueChange={(value) =>
-                onFiltersChange({ ...filters, cohortId: value })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="All cohorts" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All cohorts</SelectItem>
-                {cohorts.map((cohort) => (
-                  <SelectItem key={cohort.id} value={cohort.id}>
-                    {cohort.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* VIP Status Filter */}
-          <div className="space-y-2">
-            <Label>VIP Status</Label>
-            <Select
-              value={filters.vipStatus}
-              onValueChange={(value: "all" | "yes" | "no") =>
-                onFiltersChange({ ...filters, vipStatus: value })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="yes">VIP Only</SelectItem>
-                <SelectItem value="no">Non-VIP Only</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Progress Status Filter */}
-          <div className="space-y-2">
-            <Label>Progress</Label>
+            <Label htmlFor="progress-filter">Progress</Label>
             <Select
               value={filters.progressStatus}
-              onValueChange={(value: "all" | "not_started" | "in_progress" | "completed") =>
+              onValueChange={(value: UserFiltersState["progressStatus"]) =>
                 onFiltersChange({ ...filters, progressStatus: value })
               }
             >
-              <SelectTrigger>
+              <SelectTrigger id="progress-filter">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="not_started">Not Started</SelectItem>
-                <SelectItem value="in_progress">In Progress</SelectItem>
+                <SelectItem value="not_started">Not started</SelectItem>
+                <SelectItem value="in_progress">In progress</SelectItem>
                 <SelectItem value="completed">Completed</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Date Range Filter */}
           <div className="space-y-2">
-            <Label>Registered Between</Label>
+            <Label>Registered between</Label>
             <div className="flex gap-2">
               <Input
                 type="date"
+                aria-label="Registered from"
                 value={filters.dateFrom}
                 onChange={(e) =>
                   onFiltersChange({ ...filters, dateFrom: e.target.value })
@@ -144,6 +95,7 @@ export function UserFilters({ filters, onFiltersChange, cohorts }: UserFiltersPr
               />
               <Input
                 type="date"
+                aria-label="Registered to"
                 value={filters.dateTo}
                 onChange={(e) =>
                   onFiltersChange({ ...filters, dateTo: e.target.value })

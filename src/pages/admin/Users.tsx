@@ -1,26 +1,20 @@
-import { useState, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { UserListTable } from "@/components/admin/users/UserListTable";
-import { UserFilters } from "@/components/admin/users/UserFilters";
+import { UserFilters, UserFiltersState } from "@/components/admin/users/UserFilters";
 import { UserDetailSheet } from "@/components/admin/users/UserDetailSheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { Download, Search, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
-import { TOTAL_DAYS } from "@/lib/constants";
 import { csvRow } from "@/lib/utils";
 
-export interface UserWithProgress {
+export interface UserRow {
   id: string;
   first_name: string;
   email: string;
-  phone: string | null;
-  cohort_id: string | null;
-  cohort_name?: string;
-  is_vip: boolean;
   created_at: string;
-  current_day: number;
   days_completed: number;
   utm_source: string | null;
   utm_medium: string | null;
@@ -30,263 +24,181 @@ export interface UserWithProgress {
   fb_ad_id: string | null;
 }
 
-export interface UserFiltersState {
-  cohortId: string;
-  vipStatus: "all" | "yes" | "no";
-  progressStatus: "all" | "not_started" | "in_progress" | "completed";
-  dateFrom: string;
-  dateTo: string;
-}
+const PAGE_SIZE = 50;
 
-const ITEMS_PER_PAGE = 50;
+const DEFAULT_FILTERS: UserFiltersState = {
+  progressStatus: "all",
+  dateFrom: "",
+  dateTo: "",
+};
 
 export default function AdminUsers() {
-  const [users, setUsers] = useState<UserWithProgress[]>([]);
-  const [cohorts, setCohorts] = useState<{ id: string; name: string }[]>([]);
+  const [rows, setRows] = useState<UserRow[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState<UserFiltersState>(DEFAULT_FILTERS);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState<UserFiltersState>({
-    cohortId: "all",
-    vipStatus: "all",
-    progressStatus: "all",
-    dateFrom: "",
-    dateTo: "",
-  });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const load = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Fetch cohorts
-      const { data: cohortsData } = await supabase
-        .from("cohorts")
-        .select("id, name")
-        .order("start_date", { ascending: false });
-
-      if (cohortsData) {
-        setCohorts(cohortsData);
-      }
-
-      // Fetch all profiles
-      const { data: profiles, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      // Fetch progress for all users
-      const { data: progress } = await supabase
-        .from("user_progress")
-        .select("user_id, day_number, is_completed");
-
-      // Build user data with progress
-      const usersWithProgress: UserWithProgress[] = (profiles || []).map((profile) => {
-        const userProgress = progress?.filter((p) => p.user_id === profile.id) || [];
-        const completedDays = userProgress.filter((p) => p.is_completed).length;
-        const currentDay = userProgress.reduce((max, p) => {
-          if (p.is_completed) return Math.max(max, p.day_number + 1);
-          return max;
-        }, 1);
-
-        const cohort = cohortsData?.find((c) => c.id === profile.cohort_id);
-
-        return {
-          id: profile.id,
-          first_name: profile.first_name,
-          email: profile.email,
-          phone: profile.phone,
-          cohort_id: profile.cohort_id,
-          cohort_name: cohort?.name || "None",
-          is_vip: profile.is_vip,
-          created_at: profile.created_at,
-          current_day: Math.min(currentDay, TOTAL_DAYS),
-          days_completed: completedDays,
-          utm_source: profile.utm_source,
-          utm_medium: profile.utm_medium,
-          utm_campaign: profile.utm_campaign,
-          fb_campaign_id: profile.fb_campaign_id,
-          fb_adset_id: profile.fb_adset_id,
-          fb_ad_id: profile.fb_ad_id,
-        };
+      const { data, error } = await supabase.rpc("admin_list_users", {
+        p_search: search || null,
+        p_progress_status: filters.progressStatus,
+        p_date_from: filters.dateFrom ? new Date(filters.dateFrom).toISOString() : null,
+        p_date_to: filters.dateTo
+          ? new Date(`${filters.dateTo}T23:59:59.999Z`).toISOString()
+          : null,
+        p_limit: PAGE_SIZE,
+        p_offset: (page - 1) * PAGE_SIZE,
       });
-
-      setUsers(usersWithProgress);
-    } catch (error) {
-      console.error("Error fetching users:", error);
+      if (error) throw error;
+      const payload = data as unknown as { rows: UserRow[]; total: number };
+      setRows(payload?.rows ?? []);
+      setTotal(payload?.total ?? 0);
+    } catch (err) {
+      console.error(err);
       toast.error("Failed to load users");
     } finally {
       setIsLoading(false);
     }
+  }, [search, filters, page]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+
+  const handleExport = async () => {
+    try {
+      // Fetch up to first 500 matching users for export (server-capped at 100/page).
+      const chunks: UserRow[] = [];
+      for (let offset = 0; offset < Math.min(total, 500); offset += 100) {
+        const { data, error } = await supabase.rpc("admin_list_users", {
+          p_search: search || null,
+          p_progress_status: filters.progressStatus,
+          p_date_from: filters.dateFrom ? new Date(filters.dateFrom).toISOString() : null,
+          p_date_to: filters.dateTo
+            ? new Date(`${filters.dateTo}T23:59:59.999Z`).toISOString()
+            : null,
+          p_limit: 100,
+          p_offset: offset,
+        });
+        if (error) throw error;
+        chunks.push(...(((data as unknown as { rows: UserRow[] })?.rows) ?? []));
+      }
+
+      const headers = [
+        "First Name",
+        "Email",
+        "Days Completed",
+        "Registered",
+        "UTM Source",
+        "UTM Medium",
+        "UTM Campaign",
+        "FB Campaign ID",
+        "FB Adset ID",
+        "FB Ad ID",
+      ];
+      const csv = [
+        csvRow(headers),
+        ...chunks.map((u) =>
+          csvRow([
+            u.first_name,
+            u.email,
+            u.days_completed,
+            u.created_at,
+            u.utm_source ?? "",
+            u.utm_medium ?? "",
+            u.utm_campaign ?? "",
+            u.fb_campaign_id ?? "",
+            u.fb_adset_id ?? "",
+            u.fb_ad_id ?? "",
+          ]),
+        ),
+      ].join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `users-export-${new Date().toISOString().split("T")[0]}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success(`Exported ${chunks.length} users`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Export failed");
+    }
   };
 
-  // Filter and search users
-  const filteredUsers = useMemo(() => {
-    return users.filter((user) => {
-      // Search filter
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        const matchesSearch =
-          user.first_name.toLowerCase().includes(query) ||
-          user.email.toLowerCase().includes(query) ||
-          user.phone?.toLowerCase().includes(query);
-        if (!matchesSearch) return false;
-      }
-
-      // Cohort filter
-      if (filters.cohortId !== "all" && user.cohort_id !== filters.cohortId) {
-        return false;
-      }
-
-      // VIP filter
-      if (filters.vipStatus === "yes" && !user.is_vip) return false;
-      if (filters.vipStatus === "no" && user.is_vip) return false;
-
-      // Progress filter
-      if (filters.progressStatus === "not_started" && user.days_completed > 0) return false;
-      if (filters.progressStatus === "in_progress" && (user.days_completed === 0 || user.days_completed >= TOTAL_DAYS)) return false;
-      if (filters.progressStatus === "completed" && user.days_completed < TOTAL_DAYS) return false;
-
-      // Date range filter
-      if (filters.dateFrom) {
-        const userDate = new Date(user.created_at);
-        const fromDate = new Date(filters.dateFrom);
-        if (userDate < fromDate) return false;
-      }
-      if (filters.dateTo) {
-        const userDate = new Date(user.created_at);
-        const toDate = new Date(filters.dateTo);
-        toDate.setHours(23, 59, 59, 999);
-        if (userDate > toDate) return false;
-      }
-
-      return true;
-    });
-  }, [users, searchQuery, filters]);
-
-  // Pagination
-  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
-  const paginatedUsers = filteredUsers.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
-  const handleExport = () => {
-    const headers = [
-      "First Name",
-      "Email",
-      "Phone",
-      "Cohort",
-      "VIP",
-      "Days Completed",
-      "Registered",
-      "UTM Source",
-      "UTM Medium",
-      "UTM Campaign",
-      "FB Campaign ID",
-      "FB Adset ID",
-      "FB Ad ID",
-    ];
-
-    const rows = filteredUsers.map((u) => [
-      u.first_name,
-      u.email,
-      u.phone || "",
-      u.cohort_name || "",
-      u.is_vip ? "Yes" : "No",
-      u.days_completed,
-      new Date(u.created_at).toLocaleDateString(),
-      u.utm_source || "",
-      u.utm_medium || "",
-      u.utm_campaign || "",
-      u.fb_campaign_id || "",
-      u.fb_adset_id || "",
-      u.fb_ad_id || "",
-    ]);
-
-    const csv = [csvRow(headers), ...rows.map((r) => csvRow(r))].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `users-export-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    toast.success(`Exported ${filteredUsers.length} users`);
-  };
-
-  const selectedUser = users.find((u) => u.id === selectedUserId);
+  const selectedUser = rows.find((u) => u.id === selectedUserId);
 
   return (
     <AdminLayout title="Admin · Users">
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Users</h1>
+            <h1 className="text-2xl font-bold text-foreground">Early-Access Users</h1>
             <p className="text-muted-foreground">
-              {filteredUsers.length} users {searchQuery && `matching "${searchQuery}"`}
+              {total} {total === 1 ? "user" : "users"}
+              {search && ` matching "${search}"`}
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={fetchData} disabled={isLoading}>
+            <Button variant="outline" size="sm" onClick={load} disabled={isLoading}>
               <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
             </Button>
-            <Button variant="outline" size="sm" onClick={handleExport}>
+            <Button variant="outline" size="sm" onClick={handleExport} disabled={total === 0}>
               <Download className="w-4 h-4 mr-2" />
               Export CSV
             </Button>
           </div>
         </div>
 
-        {/* Search & Filters */}
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search by name, email, or phone..."
-              value={searchQuery}
+              placeholder="Search by name or email…"
+              value={search}
               onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
+                setSearch(e.target.value);
+                setPage(1);
               }}
               className="pl-10"
+              aria-label="Search users"
             />
           </div>
           <UserFilters
             filters={filters}
-            onFiltersChange={(newFilters) => {
-              setFilters(newFilters);
-              setCurrentPage(1);
+            onFiltersChange={(f) => {
+              setFilters(f);
+              setPage(1);
             }}
-            cohorts={cohorts}
           />
         </div>
 
-        {/* Table */}
         <UserListTable
-          users={paginatedUsers}
+          users={rows}
           isLoading={isLoading}
-          onUserClick={(userId) => setSelectedUserId(userId)}
-          currentPage={currentPage}
+          onUserClick={(id) => setSelectedUserId(id)}
+          currentPage={page}
           totalPages={totalPages}
-          onPageChange={setCurrentPage}
-          totalCount={filteredUsers.length}
+          onPageChange={setPage}
+          totalCount={total}
+          pageSize={PAGE_SIZE}
         />
 
-        {/* User Detail Sheet */}
         <UserDetailSheet
           userId={selectedUserId}
           user={selectedUser}
           open={!!selectedUserId}
           onOpenChange={(open) => !open && setSelectedUserId(null)}
-          onUserUpdated={fetchData}
         />
       </div>
     </AdminLayout>

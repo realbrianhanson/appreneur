@@ -3,7 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { Link, useNavigate } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
-import { trackPageView, trackDownsellView, trackGA4Event, trackFBEvent } from "@/lib/analytics";
+import { trackPageView, trackGA4Event, trackFBEvent } from "@/lib/analytics";
 import { Check, ArrowRight, FileText } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,10 +17,10 @@ const Downsell = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Track page view and downsell view on mount
+  // Track page view on mount — but ONLY when VIP sales are actually enabled.
   useEffect(() => {
+    if (!VIP_SALES_ENABLED) return;
     trackPageView('/downsell', 'Special Offer — Appreneur Challenge');
-    trackDownsellView();
     (async () => {
       try {
         const trackingParams = getStoredTrackingParams();
@@ -44,6 +44,10 @@ const Downsell = () => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!VIP_SALES_ENABLED) {
+    return <PrelaunchSalesPlaceholder page="downsell" />;
+  }
 
   const handleCheckout = async () => {
     setIsLoading(true);
@@ -78,10 +82,6 @@ const Downsell = () => {
     "Instant PDF Download",
     "Lifetime Access",
   ];
-
-  if (!VIP_SALES_ENABLED) {
-    return <PrelaunchSalesPlaceholder page="downsell" />;
-  }
 
   return (
     <div className="min-h-screen bg-background flex items-center">
