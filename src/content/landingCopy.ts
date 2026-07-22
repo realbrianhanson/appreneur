@@ -80,6 +80,9 @@ export const REQUIRED_OBJECTION_IDS = [
   "really_free",
   "after_signup",
   "get_stuck",
+  "ai_makes_mistake",
+  "break_anything",
+  "watch_more_than_once",
 ] as const;
 
 export type ObjectionId = (typeof REQUIRED_OBJECTION_IDS)[number];

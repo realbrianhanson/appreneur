@@ -48,12 +48,24 @@ export const HERO_EYEBROW =
 export const HERO_H1 =
   "Build Your First Website or App With AI—in 5 Days—even if tech has always intimidated you.";
 export const HERO_SUPPORT_COPY =
-  "Use everyday English to create something useful for your business—or something you can sell. No coding. No developer. No tech background required.";
+  "If you can type an email and follow a step-by-step video, you can do this. Brian shows you exactly what to click, what to type, and what to do when the AI doesn't get it right the first time.";
 export const CTA_MICROCOPY =
   "Free · Self-paced · Start anytime · Beginner-friendly";
 
-/** Repeated mechanism line used in the opportunity/mechanism section. */
+/**
+ * Belief-bridge mechanism line. This is the sentence that establishes
+ * possibility for a scared, nontechnical, older-beginner audience BEFORE
+ * we ask them to commit. Keep verbatim on the landing page.
+ */
 export const MECHANISM_LINE =
+  "You do not have to understand the technology. You just have to learn how to direct it.";
+
+/** Supporting analogy rendered next to MECHANISM_LINE. */
+export const BELIEF_ANALOGY =
+  "Think of AI as the assistant. You're still the business owner.";
+
+/** Short internal daily-cadence line kept for on-page use in the timeline. */
+export const CADENCE_LINE =
   "One mission. One deliverable. One step closer every day.";
 
 /** Momentum copy placed near a mid-page CTA — no fake urgency. */

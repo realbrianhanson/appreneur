@@ -14,14 +14,14 @@ import {
 
 const LOOP_MS = 12000;
 const PROMPT_TEXT =
-  "Build me a booking app for my salon with calendar, payments, and SMS reminders.";
+  "Build a simple customer quote calculator for my business.";
 
 const CHECKLIST = [
-  "Parsing your idea",
-  "Designing the database",
-  "Generating the UI",
-  "Wiring up payments",
-  "Deploying to production",
+  "Reading what you asked for",
+  "Setting up the page",
+  "Adding the buttons and fields",
+  "Turning on the calculator",
+  "Getting a link you can share",
 ];
 
 // Timeline (ms from cycle start)
@@ -119,7 +119,7 @@ export const AppBuilderMockup = () => {
           }}
         >
           <Sparkles className="w-3 h-3" style={{ color: "#FFA04D" }} />
-          No code · just describe it
+          Type it · watch it work
         </span>
       </motion.div>
 
@@ -246,12 +246,12 @@ export const AppBuilderMockup = () => {
                       className="w-4 h-4 animate-spin"
                       style={{ color: "#FFA04D", animationDuration: "2.5s" }}
                     />
-                    <span
-                      className="text-xs font-medium"
-                      style={{ color: "#FFC89A", letterSpacing: "0.02em" }}
-                    >
-                      AI is building your app…
-                    </span>
+                     <span
+                       className="text-xs font-medium"
+                       style={{ color: "#FFC89A", letterSpacing: "0.02em" }}
+                     >
+                       AI is building your page…
+                     </span>
                   </div>
 
                   <ul className="space-y-1.5">
@@ -354,21 +354,21 @@ export const AppBuilderMockup = () => {
                       >
                         <Zap className="w-3 h-3" style={{ color: "#1A0D00" }} />
                       </span>
-                      <span
-                        className="text-[10px] font-semibold"
-                        style={{ color: "#F4F2EE" }}
-                      >
-                        Salon
-                      </span>
+                       <span
+                         className="text-[10px] font-semibold"
+                         style={{ color: "#F4F2EE" }}
+                       >
+                         Quote Tool
+                       </span>
                     </div>
-                    <span
+                     <span
                       className="text-[9px] px-2 py-0.5 rounded-full font-semibold"
                       style={{
                         background: "linear-gradient(135deg, #FFA04D, #FF6A00)",
                         color: "#1A0D00",
                       }}
                     >
-                      Book
+                      Get Quote
                     </span>
                   </motion.div>
                 )}
@@ -488,7 +488,7 @@ export const AppBuilderMockup = () => {
                         className="text-[10px] font-semibold"
                         style={{ color: "#B8F5C6" }}
                       >
-                        Deployed · your app is live
+                        Live · you can share this link
                       </span>
                     </div>
                     <span
