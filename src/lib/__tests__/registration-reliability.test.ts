@@ -12,7 +12,7 @@ describe("registration reliability — analytics has no PII", () => {
 
   it("does not include user_email in GA4 or FB pixel payloads", async () => {
     const { trackRegistrationComplete } = await import("../analytics");
-    trackRegistrationComplete({ eventId: "user-abc" });
+    trackRegistrationComplete({ eventId: "session-xyz" });
     const gtag = (globalThis as any).gtag as ReturnType<typeof vi.fn>;
     const fbq = (globalThis as any).fbq as ReturnType<typeof vi.fn>;
     const flatGtag = JSON.stringify(gtag.mock.calls);
@@ -21,7 +21,16 @@ describe("registration reliability — analytics has no PII", () => {
     // user_email/em field may appear.
     expect(flatGtag).not.toMatch(/user_email|"em"|@/);
     expect(flatFbq).not.toMatch(/user_email|"em"|@/);
-    expect(flatGtag).toContain("user-abc");
+    expect(flatGtag).toContain("session-xyz");
+  });
+
+  it("QuizContainer passes sessionId (not auth user id) as analytics dedupe eventId", () => {
+    const src = readFileSync(
+      join(process.cwd(), "src/components/quiz/QuizContainer.tsx"),
+      "utf8",
+    );
+    expect(src).toMatch(/trackRegistrationCompleteAnalytics\(\{\s*eventId:\s*sessionId\s*\}\)/);
+    expect(src).not.toMatch(/trackRegistrationCompleteAnalytics\(\{\s*eventId:\s*authData\.user\.id/);
   });
 });
 
