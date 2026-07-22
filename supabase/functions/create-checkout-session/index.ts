@@ -1,15 +1,14 @@
 // Creates a Stripe Checkout Session for the VIP funnel.
 //
+// Prelaunch: this endpoint FAILS CLOSED (HTTP 503) while VIP_SALES_ENABLED is
+// off. When re-enabled it also requires an authenticated user, builds the
+// success/cancel URLs server-side from a same-origin allowlist, and rate-
+// limits per user. Client-sent redirect URLs are never trusted.
+//
 // Products supported (server-side price map — client-sent prices are ignored):
 //   - vip_bundle   ($27)  base VIP upsell
 //   - ship_it_kit  ($7)   optional bump line item added to vip_bundle
 //   - prompt_vault ($7)   downsell
-//
-// Auth: verify_jwt = false so freshly-registered (possibly unconfirmed) users
-// can still redirect to Checkout. When a JWT IS present we validate it and
-// attach user_id / email; otherwise we accept `email` from the body.
-// Idempotency is enforced at the webhook via the unique index on
-// purchases.stripe_checkout_session_id.
 import { createClient } from "npm:@supabase/supabase-js@2";
 import Stripe from "npm:stripe@14";
 
@@ -36,9 +35,47 @@ const PRODUCTS = {
 
 type ProductKey = keyof typeof PRODUCTS;
 
+// Same-origin allowlist for building success/cancel URLs. Anything outside
+// this list is rejected — we never redirect users to a client-supplied host.
+const ALLOWED_ORIGINS = new Set<string>([
+  "https://appreneur.ai",
+  "https://appreneur.lovable.app",
+]);
+function pickTrustedOrigin(headerOrigin: string | null): string {
+  const envOrigin = Deno.env.get("APP_URL");
+  if (envOrigin && ALLOWED_ORIGINS.has(envOrigin)) return envOrigin;
+  if (headerOrigin && ALLOWED_ORIGINS.has(headerOrigin)) return headerOrigin;
+  return "https://appreneur.ai";
+}
+
+// Naive in-memory per-user rate limit: 5 checkout attempts / minute.
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const bucket = rateBuckets.get(key);
+  if (!bucket || bucket.resetAt < now) {
+    rateBuckets.set(key, { count: 1, resetAt: now + 60_000 });
+    return false;
+  }
+  bucket.count += 1;
+  return bucket.count > 5;
+}
+
+function isSalesEnabled(): boolean {
+  return (Deno.env.get("VIP_SALES_ENABLED") ?? "").toLowerCase() === "true";
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json(405, { error: "Method not allowed" });
+
+  // Kill switch: fail closed until the product is ready to sell.
+  if (!isSalesEnabled()) {
+    return json(503, {
+      error: "sales_disabled",
+      message: "VIP details are being finalized. Please try again later.",
+    });
+  }
 
   const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
   if (!stripeKey) {
@@ -52,31 +89,30 @@ Deno.serve(async (req) => {
     );
   }
 
-  // Optional auth — if a JWT is provided we validate and attach the user.
-  let userId: string | null = null;
-  let userEmailFromToken: string | undefined;
+  // Require an authenticated user for the future enabled path.
   const authHeader = req.headers.get("Authorization") ?? "";
-  if (authHeader.startsWith("Bearer ")) {
-    const anonClient = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } },
-    );
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData } = await anonClient.auth.getClaims(token);
-    if (claimsData?.claims) {
-      userId = claimsData.claims.sub as string;
-      userEmailFromToken = (claimsData.claims.email as string | undefined) ?? undefined;
-    }
+  if (!authHeader.startsWith("Bearer ")) {
+    return json(401, { error: "auth_required" });
+  }
+  const anonClient = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_ANON_KEY")!,
+    { global: { headers: { Authorization: authHeader } } },
+  );
+  const token = authHeader.replace("Bearer ", "");
+  const { data: claimsData } = await anonClient.auth.getClaims(token);
+  if (!claimsData?.claims?.sub) return json(401, { error: "auth_required" });
+  const userId = claimsData.claims.sub as string;
+  const userEmailFromToken = (claimsData.claims.email as string | undefined) ?? undefined;
+
+  if (isRateLimited(`u:${userId}`)) {
+    return json(429, { error: "rate_limited" });
   }
 
   let body: {
     product?: string;
     product_type?: string;
     include_bump?: boolean;
-    email?: string;
-    success_url?: string;
-    cancel_url?: string;
   };
   try {
     body = await req.json();
@@ -96,7 +132,7 @@ Deno.serve(async (req) => {
   const productType = productAlias[rawProduct];
   if (!productType) return json(400, { error: "Unknown product" });
 
-  const origin = req.headers.get("Origin") ?? Deno.env.get("APP_URL") ?? "https://appreneur.ai";
+  const origin = pickTrustedOrigin(req.headers.get("Origin"));
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
 
   // Build line items from the server-side price map.
@@ -125,17 +161,15 @@ Deno.serve(async (req) => {
     PRODUCTS[productType].amount_cents +
     (productType === "vip_bundle" && body.include_bump ? PRODUCTS.ship_it_kit.amount_cents : 0);
 
-  // Route success back to /thank-you for VIP, /dashboard for downsell, per spec.
-  const defaultSuccessUrl =
+  // Server-built same-origin success/cancel URLs. Client-supplied URLs are
+  // ignored to prevent open-redirect abuse.
+  const success_url =
     productType === "prompt_vault"
       ? `${origin}/dashboard?purchase=prompt_vault&session_id={CHECKOUT_SESSION_ID}`
       : `${origin}/thank-you?vip=1&session_id={CHECKOUT_SESSION_ID}`;
-  const success_url = body.success_url ?? defaultSuccessUrl;
   const cancel_url =
-    body.cancel_url ??
-    (productType === "prompt_vault" ? `${origin}/downsell` : `${origin}/vip-offer`);
-
-  const customerEmail = userEmailFromToken ?? body.email ?? undefined;
+    productType === "prompt_vault" ? `${origin}/downsell` : `${origin}/vip-offer`;
+  const customerEmail = userEmailFromToken;
 
   try {
     const session = await stripe.checkout.sessions.create({
