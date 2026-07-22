@@ -31,23 +31,23 @@ const StickyCtaBar = ({ onCtaClick }: StickyCtaBarProps) => {
       <div className="bg-background/90 backdrop-blur-lg border-b border-border shadow-[0_4px_20px_-4px_hsl(var(--foreground)/0.08)]">
         <div className="max-w-7xl mx-auto px-4 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-primary" />
+            <Zap className="w-4 h-4 text-primary" aria-hidden="true" />
             <span className="font-display font-bold text-sm md:text-base text-foreground">
               Appreneur Challenge
             </span>
             <span className="hidden md:inline text-sm text-muted-foreground">
-              · Free 5-Day App Building Challenge
+              · Free 5-Day Self-Paced Challenge
             </span>
           </div>
 
           <Button
             variant="cta"
             size="sm"
-            className="text-sm"
+            className="text-sm min-h-11"
             onClick={onCtaClick}
           >
-            Join Free
-            <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            Get Free Early Access
+            <ArrowRight className="w-3.5 h-3.5 ml-1" aria-hidden="true" />
           </Button>
         </div>
       </div>

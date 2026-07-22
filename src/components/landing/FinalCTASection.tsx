@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
-import { ArrowRight, Shield, Check, X } from "lucide-react";
+import { ArrowRight, Shield } from "lucide-react";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { scrollTo } from "@/lib/scroll";
 
@@ -36,80 +36,35 @@ const FinalCTASection = () => {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
-          {/* Headline */}
-          <h2 className="text-4xl md:text-6xl font-display font-bold text-foreground leading-[1.05] tracking-tight mb-12 md:mb-16">
-            Look, you've got{" "}
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground leading-[1.05] tracking-tight mb-6">
+            Ready to move your idea{" "}
             <span className="font-serifit italic bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-              two options
+              off the shelf?
             </span>
           </h2>
 
-          {/* Two Options cards */}
-          <div className="grid md:grid-cols-2 gap-5 md:gap-6 text-left mb-12 md:mb-14">
-            {/* Option 1 — muted */}
-            <div className="relative p-7 md:p-8 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm">
-              <div className="flex items-start gap-4">
-                <div className="shrink-0 w-11 h-11 rounded-full bg-destructive/10 border border-destructive/30 flex items-center justify-center">
-                  <X className="w-5 h-5 text-destructive" />
-                </div>
-                <div className="space-y-2">
-                  <div className="eyebrow font-mono text-xs tracking-[0.2em] text-muted-foreground">
-                    OPTION 01
-                  </div>
-                  <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-                    Keep sitting on the idea, watch AI keep passing you by, and wonder "what if" for another year.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Option 2 — amber */}
-            <div className="relative p-7 md:p-8 rounded-2xl border border-primary/40 bg-gradient-to-br from-primary/[0.08] to-accent/[0.04] backdrop-blur-sm overflow-hidden">
-              <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
-              <div className="relative flex items-start gap-4">
-                <div className="shrink-0 w-11 h-11 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-[0_0_20px_-4px_hsl(var(--primary)/0.6)]">
-                  <Check className="w-5 h-5 text-background" strokeWidth={3} />
-                </div>
-                <div className="space-y-2">
-                  <div className="eyebrow font-mono text-xs tracking-[0.2em] text-primary">
-                    OPTION 02
-                  </div>
-                  <p className="text-base md:text-lg text-foreground/90 leading-relaxed">
-                    Spend 5 days with me, free, and walk away with an app you built yourself.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p className="text-lg md:text-xl text-foreground/80 max-w-2xl mx-auto mb-6">
-            I've made this as easy as I possibly can: free, no catch, and I'm in there with you every day. Just show up and build.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
+            Grab free early access now. We'll email you the moment the full
+            five-day challenge opens.
           </p>
 
-          <p className="font-serifit italic text-3xl md:text-5xl leading-tight bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-10 md:mb-12">
-            The only question is: are you going to do it?
-          </p>
-
-          {/* Magnetic CTA */}
           <Magnetic strength={0.4}>
             <button
               onClick={scrollToQuiz}
-              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-background font-semibold text-base md:text-lg shadow-[0_20px_50px_-15px_hsl(var(--primary)/0.7)] hover:brightness-110 transition-all"
+              className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-background font-semibold text-base md:text-lg shadow-[0_20px_50px_-15px_hsl(var(--primary)/0.7)] hover:brightness-110 transition-all min-h-11"
             >
-              Let's Build This Thing
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              Get Free Early Access
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </button>
           </Magnetic>
 
-          {/* Self-paced tagline */}
           <div className="mt-6 font-mono text-[10px] md:text-[11px] tracking-[0.15em] md:tracking-[0.2em] uppercase text-muted-foreground px-4">
             Five focused days · On your schedule
           </div>
 
-          {/* Fine print */}
           <div className="mt-4 inline-flex items-center gap-2 text-xs text-muted-foreground">
-            <Shield className="w-3.5 h-3.5 text-primary/70" />
-            <span>100% free. No credit card required. Unsubscribe anytime.</span>
+            <Shield className="w-3.5 h-3.5 text-primary/70" aria-hidden="true" />
+            <span>Free · No credit card required · Unsubscribe anytime.</span>
           </div>
         </div>
       </Container>

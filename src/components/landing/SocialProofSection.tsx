@@ -4,107 +4,47 @@ import { useReducedMotion } from "framer-motion";
 import { usePauseWhenHidden } from "@/hooks/usePauseWhenHidden";
 import { supabase } from "@/integrations/supabase/client";
 import { TestimonialData } from "@/components/testimonials";
-import { CountUp } from "@/components/motion/CountUp";
 import { GhostWord } from "@/components/motion/GhostWord";
 
-// Fallback testimonials with enhanced format
-const fallbackTestimonials: TestimonialData[] = [
-  {
-    id: "1",
-    name: "Sarah M.",
-    content: "I went from never building anything to having a live app in 5 days. Brian breaks it down so anyone can do this.",
-    rating: 5,
-    app_name: "TaskFlow Pro",
-    app_screenshot_url: null,
-    is_featured: true,
-  },
-  {
-    id: "2",
-    name: "Marcus T.",
-    content: "I thought I needed to hire a developer. Turns out I just needed this challenge. Built my booking system in 5 days.",
-    rating: 5,
-    app_name: "BookEasy",
-    app_screenshot_url: null,
-    is_featured: true,
-  },
-  {
-    id: "3",
-    name: "Jennifer K.",
-    content: "Zero coding experience. Now I have a live SaaS with real users. The prompts alone saved me 100+ hours.",
-    rating: 5,
-    app_name: "LeadGen AI",
-    app_screenshot_url: null,
-    is_featured: true,
-  },
-  {
-    id: "4",
-    name: "David R.",
-    content: "Shipped my MVP by Day 5. This system just works.",
-    rating: 5,
-    app_name: "LeadFlow",
-    app_screenshot_url: null,
-    is_featured: true,
-  },
-  {
-    id: "5",
-    name: "Amanda L.",
-    content: "Finally understood how to turn my ideas into real products. Built my client portal in a week.",
-    rating: 5,
-    app_name: "ClientHub",
-    app_screenshot_url: null,
-    is_featured: false,
-  },
-  {
-    id: "6",
-    name: "Chris P.",
-    content: "The community support made all the difference. Never felt stuck for more than an hour.",
-    rating: 5,
-    app_name: "CoachBot",
-    app_screenshot_url: null,
-    is_featured: false,
-  },
-];
-
+/**
+ * Social proof — approved database testimonials only.
+ * Renders nothing when there are zero approved testimonials.
+ */
 export const SocialProofSection = () => {
-  const [testimonials, setTestimonials] = useState<TestimonialData[]>(fallbackTestimonials);
+  const [testimonials, setTestimonials] = useState<TestimonialData[] | null>(null);
 
   useEffect(() => {
-    const fetchTestimonials = async () => {
-      // Route through the edge function so screenshots are returned as
-      // short-lived signed URLs (bucket is private post-P0 lockdown).
+    (async () => {
       const { data, error } = await supabase.functions.invoke("get-testimonials", {
         body: { limit: 9, featured_first: true },
       });
       if (!error && data?.testimonials?.length) {
         setTestimonials(data.testimonials as TestimonialData[]);
+      } else {
+        setTestimonials([]);
       }
-    };
-
-    fetchTestimonials();
+    })();
   }, []);
 
-  // Split testimonials into two rows
+  if (!testimonials || testimonials.length === 0) return null;
+
   const rowA = testimonials.filter((_, i) => i % 2 === 0);
   const rowB = testimonials.filter((_, i) => i % 2 === 1);
   const safeRowA = rowA.length > 0 ? rowA : testimonials;
-  const safeRowB = rowB.length > 0 ? rowB : testimonials;
+  const safeRowB = rowB;
 
   return (
     <section className="relative py-24 md:py-32 overflow-hidden">
-      <GhostWord word="SHIPPED" align="top" />
-
+      <GhostWord word="STORIES" align="top" />
       <div className="relative max-w-6xl mx-auto px-4 z-10">
-        {/* Eyebrow */}
         <div className="eyebrow mb-8 flex items-center justify-center gap-4">
-          <span className="h-px w-8 bg-primary/60" />
-          <span>Social Proof</span>
-          <span className="h-px w-8 bg-primary/60" />
+          <span className="h-px w-8 bg-primary/60" aria-hidden="true" />
+          <span>From early builders</span>
+          <span className="h-px w-8 bg-primary/60" aria-hidden="true" />
         </div>
-
-        {/* Headline */}
         <div className="text-center mb-14">
           <h2
-            className="font-bold leading-[1.05] tracking-tight mb-4"
+            className="font-bold leading-[1.05] tracking-tight"
             style={{
               fontFamily: "'Space Grotesk', system-ui, sans-serif",
               fontSize: "clamp(2rem, 5vw, 3.25rem)",
@@ -121,21 +61,16 @@ export const SocialProofSection = () => {
               Now they have an app.
             </span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            500+ entrepreneurs from 9 countries have built working apps using this exact system.
-          </p>
         </div>
-
-        {/* Stats band */}
-        <StatsBand />
       </div>
 
-      {/* Testimonial wall — full-bleed marquee */}
-      <div className="relative mt-16 space-y-6">
+      <div className="relative mt-4 space-y-6">
         <TestimonialRow items={safeRowA} direction="left" duration={60} />
-        <TestimonialRow items={safeRowB} direction="right" duration={75} />
+        {safeRowB.length > 0 && (
+          <TestimonialRow items={safeRowB} direction="right" duration={75} />
+        )}
         <p className="mt-4 text-center text-[11px] text-muted-foreground/60 max-w-2xl mx-auto px-4">
-          Individual results vary. An app by Day 5 requires showing up and doing the daily missions.
+          Individual results vary. Shipping an app takes showing up and doing the missions.
         </p>
       </div>
 
@@ -149,101 +84,14 @@ export const SocialProofSection = () => {
           100% { transform: translateX(0); }
         }
         .testi-track:hover { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) {
+          .testi-track { animation: none !important; }
+        }
       `}</style>
     </section>
   );
 };
 
-/* -------------------- Stats band -------------------- */
-const StatsBand = () => {
-  return (
-    <div
-      className="grid grid-cols-3 rounded-2xl overflow-hidden mb-4"
-      style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid rgba(255,255,255,0.08)",
-      }}
-    >
-      <StatCell>
-        <StatNumber>
-          <CountUp to={500} duration={1.8} />
-          <span
-            className="bg-clip-text text-transparent"
-            style={{ backgroundImage: "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)" }}
-          >
-            +
-          </span>
-        </StatNumber>
-        <StatLabel>Apps Built</StatLabel>
-      </StatCell>
-
-      <StatCell divider>
-        <StatNumber>
-          <CountUp to={9} duration={1.4} />
-        </StatNumber>
-        <StatLabel>Countries</StatLabel>
-      </StatCell>
-
-      <StatCell divider>
-        <StatNumber>
-          <span className="inline-flex items-center gap-2 md:gap-3">
-            <CountUp to={4.9} decimals={1} duration={1.6} />
-            <Star
-              className="w-6 h-6 md:w-8 md:h-8"
-              style={{ color: "#FFA04D", fill: "#FFA04D" }}
-            />
-          </span>
-        </StatNumber>
-        <StatLabel>Rating</StatLabel>
-      </StatCell>
-    </div>
-  );
-};
-
-const StatCell = ({
-  children,
-  divider = false,
-}: {
-  children: React.ReactNode;
-  divider?: boolean;
-}) => (
-  <div
-    className="flex flex-col items-center justify-center text-center py-8 md:py-10 px-4"
-    style={divider ? { borderLeft: "1px solid rgba(255,255,255,0.08)" } : undefined}
-  >
-    {children}
-  </div>
-);
-
-const StatNumber = ({ children }: { children: React.ReactNode }) => (
-  <div
-    className="font-bold leading-none tracking-tight bg-clip-text text-transparent"
-    style={{
-      fontFamily: "'Space Grotesk', system-ui, sans-serif",
-      fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
-      backgroundImage: "linear-gradient(180deg, #F4F2EE 0%, #FFA04D 120%)",
-    }}
-  >
-    {children}
-  </div>
-);
-
-const StatLabel = ({ children }: { children: React.ReactNode }) => (
-  <div
-    className="mt-3"
-    style={{
-      fontFamily: "'JetBrains Mono', ui-monospace, monospace",
-      fontSize: 11,
-      letterSpacing: "0.3em",
-      textTransform: "uppercase",
-      color: "rgba(244,242,238,0.55)",
-    }}
-  >
-    {children}
-  </div>
-);
-
-/* -------------------- Testimonial marquee -------------------- */
 const TestimonialRow = ({
   items,
   direction,
@@ -288,6 +136,7 @@ const TestimonialRow = ({
 
 const TestimonialCard = ({ t }: { t: TestimonialData }) => {
   const initial = (t.name || "?").trim().charAt(0).toUpperCase();
+  const filled = Math.max(0, Math.min(5, t.rating ?? 5));
   return (
     <article
       className="shrink-0 rounded-2xl p-6 flex flex-col"
@@ -297,46 +146,31 @@ const TestimonialCard = ({ t }: { t: TestimonialData }) => {
         border: "1px solid rgba(255,255,255,0.08)",
       }}
     >
-      {/* Stars */}
-      {(() => {
-        const filled = Math.max(0, Math.min(5, t.rating ?? 5));
-        return (
-          <div
-            className="flex items-center gap-1 mb-4"
-            role="img"
-            aria-label={`${filled} out of 5 stars`}
-          >
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                className="w-4 h-4"
-                aria-hidden="true"
-                style={
-                  i < filled
-                    ? { color: "#FFA04D", fill: "#FFA04D" }
-                    : { color: "rgba(244,242,238,0.25)", fill: "transparent" }
-                }
-              />
-            ))}
-          </div>
-        );
-      })()}
-
-      {/* Quote */}
+      <div
+        className="flex items-center gap-1 mb-4"
+        role="img"
+        aria-label={`${filled} out of 5 stars`}
+      >
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star
+            key={i}
+            className="w-4 h-4"
+            aria-hidden="true"
+            style={
+              i < filled
+                ? { color: "#FFA04D", fill: "#FFA04D" }
+                : { color: "rgba(244,242,238,0.25)", fill: "transparent" }
+            }
+          />
+        ))}
+      </div>
       <p
         className="text-base leading-relaxed mb-5"
         style={{ color: "#F4F2EE" }}
       >
-        "{t.content}"
+        &ldquo;{t.content}&rdquo;
       </p>
-
-      {/* Divider */}
-      <div
-        className="my-1"
-        style={{ height: 1, background: "rgba(255,255,255,0.08)" }}
-      />
-
-      {/* Attribution */}
+      <div className="my-1" style={{ height: 1, background: "rgba(255,255,255,0.08)" }} />
       <div className="flex items-center gap-3 mt-5">
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center font-semibold"
@@ -345,14 +179,12 @@ const TestimonialCard = ({ t }: { t: TestimonialData }) => {
             color: "#1A0D00",
             fontFamily: "'Space Grotesk', system-ui, sans-serif",
           }}
+          aria-hidden="true"
         >
           {initial}
         </div>
         <div className="min-w-0">
-          <div
-            className="font-semibold text-sm"
-            style={{ color: "#F4F2EE" }}
-          >
+          <div className="font-semibold text-sm" style={{ color: "#F4F2EE" }}>
             {t.name}
           </div>
           {t.app_name && (
