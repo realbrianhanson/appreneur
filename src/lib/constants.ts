@@ -33,15 +33,35 @@ export const VIP_SALES_ENABLED = false;
  * every surface stays consistent.
  */
 export const CHALLENGE_TAGLINE = "Five focused days, on your schedule.";
-export const PRIMARY_CTA_LABEL = "Start the Free Challenge";
-export const SECONDARY_CTA_LABEL = "See the 5-Day Challenge";
-export const REGISTRATION_CTA_LABEL = "Create My Free Account";
+
+/**
+ * Control copy for the direct-response landing page. Two documented future
+ * headline challengers live in src/content/landingCopy.ts but only the
+ * control renders publicly (no client-side A/B assignment yet — analytics
+ * and consent must land first).
+ */
+export const PRIMARY_CTA_LABEL = "Start My Free 5-Day Challenge";
+export const SECONDARY_CTA_LABEL = "See What You'll Build";
+export const REGISTRATION_CTA_LABEL = "Create My Free Challenge Account";
 export const HERO_EYEBROW =
-  "FREE 5-DAY SELF-PACED CHALLENGE · NO CODE REQUIRED";
+  "THE FREE 5-DAY APP-BUILDING CHALLENGE FOR NON-CODERS";
+export const HERO_H1 =
+  "Turn the app idea in your head into a working first version—in five focused days.";
 export const HERO_SUPPORT_COPY =
-  "A practical, step-by-step challenge that takes you from idea to a working first version—with one focused mission and one concrete win each day.";
+  "No coding. No developer. No wandering through endless tutorials. The Appreneur Challenge gives you one focused mission and one concrete win each day.";
 export const CTA_MICROCOPY =
   "Free · Self-paced · No credit card · Beginner-friendly";
+
+/** Repeated mechanism line used in the opportunity/mechanism section. */
+export const MECHANISM_LINE =
+  "One mission. One deliverable. One step closer every day.";
+
+/** Momentum copy placed near a mid-page CTA — no fake urgency. */
+export const MOMENTUM_LINE =
+  "The longer the idea stays in your notes, the harder it becomes to believe you'll ever build it. Change that today.";
+
+/** Post-account next action wording (used on Thank You + welcome email). */
+export const NEXT_ACTION_LABEL = "Start Day 1";
 
 /**
  * COMMUNITY_URL is only surfaced to users when it points at a real,
