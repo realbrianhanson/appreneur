@@ -3,7 +3,58 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
-async function sendResendEmail(to: string, subject: string, html: string) {
+function escapeHtml(input: unknown): string {
+  const s = String(input ?? "");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeTemplateData(input: unknown): unknown {
+  if (input == null) return input;
+  if (typeof input === "string") return escapeHtml(input);
+  if (typeof input === "number" || typeof input === "boolean") return input;
+  if (Array.isArray(input)) return input.map(escapeTemplateData);
+  if (typeof input === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(input as Record<string, unknown>)) {
+      out[k] = escapeTemplateData(v);
+    }
+    return out;
+  }
+  return input;
+}
+
+function htmlToText(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+const TRANSACTIONAL_FOOTER_HTML = `
+  <div style="text-align: center; margin-top: 24px; color: #71717a; font-size: 12px;">
+    <p style="margin: 0 0 6px 0;">Appreneur Challenge — a project of AI For Business.</p>
+    <p style="margin: 0;">This is a transactional email you received because you signed up.</p>
+  </div>`;
+
+const FROM_EMAIL = Deno.env.get("FROM_EMAIL") ?? "";
+const REPLY_TO_EMAIL = Deno.env.get("REPLY_TO_EMAIL") ?? "";
+
+async function sendResendEmail(to: string, subject: string, html: string, text: string) {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -11,17 +62,20 @@ async function sendResendEmail(to: string, subject: string, html: string) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      // TODO: Verify this domain in Resend dashboard before going live
-      from: "Appreneur Challenge <hello@appreneur.ai>",
+      from: FROM_EMAIL,
       to: [to],
+      reply_to: REPLY_TO_EMAIL,
       subject,
       html,
+      text,
     }),
   });
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Resend API error: ${error}`);
+    // Log full provider error server-side only. Callers receive a generic error.
+    console.error("[send-email] Resend API error", response.status, error);
+    throw new Error("email_send_failed");
   }
 
   return response.json();
@@ -380,6 +434,18 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
+    if (!RESEND_API_KEY || !FROM_EMAIL || !REPLY_TO_EMAIL) {
+      console.warn("[send-email] not configured", {
+        has_key: !!RESEND_API_KEY,
+        has_from: !!FROM_EMAIL,
+        has_reply: !!REPLY_TO_EMAIL,
+      });
+      return new Response(
+        JSON.stringify({ success: false, status: "not_configured" }),
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const templateFn = templates[template];
     if (!templateFn) {
       return new Response(
@@ -388,26 +454,36 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const emailContent = templateFn(data as any);
+    // HTML-escape every string value interpolated into the template so
+    // untrusted data can never inject markup.
+    const safeData = escapeTemplateData(data) as any;
+    const emailContent = templateFn(safeData);
+    const brandedHtml = emailContent.html.replace(
+      /<\/body>/i,
+      `${TRANSACTIONAL_FOOTER_HTML}</body>`,
+    );
+    const text = htmlToText(brandedHtml);
 
     // Send email via Resend using fetch
     const emailResponse = await sendResendEmail(
       to,
       emailContent.subject,
-      emailContent.html
+      brandedHtml,
+      text,
     );
 
-    console.log("Email sent successfully:", emailResponse);
+    console.log("[send-email] sent", { template, id: (emailResponse as any)?.id });
 
     return new Response(
-      JSON.stringify({ success: true, data: emailResponse }),
+      JSON.stringify({ success: true, status: "sent" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
   } catch (error: any) {
-    console.error("Error in send-email function:", error);
+    console.error("[send-email] error", error);
+    // Never surface provider secrets/errors to callers.
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ success: false, error: "email_send_failed" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
