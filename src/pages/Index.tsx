@@ -107,7 +107,7 @@ const Index = () => {
               className="text-lg py-6 min-h-11"
               onClick={scrollToQuiz}
             >
-              Get Free Early Access
+              Start the Free Challenge
               <Zap className="w-5 h-5 ml-2" aria-hidden="true" />
             </Button>
           </div>
@@ -134,14 +134,14 @@ const Index = () => {
           <div className="max-w-2xl mx-auto space-y-8">
             <div className="text-center space-y-3">
               <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground leading-[1.05] tracking-tight">
-                Get early access in{" "}
+                Start the challenge in{" "}
                 <span className="font-serifit italic bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                   60 seconds
                 </span>
               </h2>
               <p className="text-muted-foreground">
-                Answer 3 quick questions, create your free account, and we'll
-                email you the moment the full lessons open.
+                Answer 3 quick questions, create your free account, and jump
+                straight into Day 1.
               </p>
             </div>
             <QuizContainer />
