@@ -62,7 +62,7 @@ function buildWelcomeEmail(data: WelcomeTemplateData): {
 } {
   const firstName = escapeHtml(data.firstName || "there");
   const dashboardUrl = escapeHtml(data.dashboardUrl);
-  const subject = "Welcome to the Appreneur Challenge — Day 1 is ready";
+  const subject = "Your Appreneur Challenge is ready — Start Day 1";
   const html = `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>${subject}</title></head>
 <body style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#0a0a0f;color:#ffffff;">
@@ -70,11 +70,12 @@ function buildWelcomeEmail(data: WelcomeTemplateData): {
     <h1 style="font-size:24px;color:#ffffff;margin:0 0 24px 0;">Welcome, ${firstName}</h1>
     <p style="font-size:16px;line-height:1.6;color:#d4d4d8;margin:0 0 16px 0;">
       Welcome to the Appreneur Challenge — a free, self-paced, five-day
-      program that walks you from app idea to a working first version.
+      app-building challenge that takes you from idea to a working first
+      version.
     </p>
     <p style="font-size:16px;line-height:1.6;color:#d4d4d8;margin:0 0 24px 0;">
-      Day 1 is ready in your dashboard. One focused lesson, one clear
-      deliverable — start whenever you're ready.
+      Day 1 is ready in your dashboard. One focused mission, one concrete
+      win — start whenever you're ready.
     </p>
     <p style="margin:24px 0;">
       <a href="${dashboardUrl}"
@@ -95,7 +96,7 @@ function buildWelcomeEmail(data: WelcomeTemplateData): {
   const text = [
     `Welcome, ${data.firstName || "there"}`,
     "",
-    "Welcome to the Appreneur Challenge — a free, self-paced, five-day program that walks you from app idea to a working first version.",
+    "Welcome to the Appreneur Challenge — a free, self-paced, five-day app-building challenge that takes you from idea to a working first version.",
     "",
     "Day 1 is ready in your dashboard. One focused mission, one concrete win — start whenever you're ready.",
     "",
