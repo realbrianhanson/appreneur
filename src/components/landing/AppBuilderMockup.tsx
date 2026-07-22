@@ -141,7 +141,7 @@ export const AppBuilderMockup = () => {
           }}
         >
           <Zap className="w-3 h-3" style={{ color: "#FFA04D" }} />
-          Live app in 5 days
+          5-day build roadmap
         </span>
       </motion.div>
 

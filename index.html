@@ -5,85 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     <!-- Primary Meta Tags -->
-    <title>Appreneur Challenge — Build Your First App in 5 Days</title>
-    <meta name="title" content="Appreneur Challenge — Build Your First App in 5 Days" />
-    <meta name="description" content="Join 500+ entrepreneurs building real apps without code. Free 5-day challenge teaches you to go from idea to live app." />
-    <meta name="author" content="AI For Beginners" />
-    <meta name="keywords" content="no-code, app development, entrepreneur, build app, Lovable, AI app builder, 5-day challenge" />
-    
+    <title>Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge</title>
+    <meta name="title" content="Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge" />
+    <meta name="description" content="A free, beginner-friendly, self-paced roadmap for turning an app idea into a working first version. Join early access while the lessons are being recorded." />
+    <meta name="author" content="AI For Business" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://appreneur.ai/" />
-    <meta property="og:title" content="Appreneur Challenge — Build Your First App in 5 Days" />
-    <meta property="og:description" content="Join 500+ entrepreneurs building real apps without code. Free 5-day challenge teaches you to go from idea to live app." />
+    <meta property="og:title" content="Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge" />
+    <meta property="og:description" content="A free, beginner-friendly, self-paced roadmap for turning an app idea into a working first version. Join early access while the lessons are being recorded." />
     <meta property="og:image" content="https://appreneur.ai/og-image.png" />
     <meta property="og:site_name" content="Appreneur Challenge" />
-    
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://appreneur.ai/" />
-    <meta name="twitter:title" content="Appreneur Challenge — Build Your First App in 5 Days" />
-    <meta name="twitter:description" content="Join 500+ entrepreneurs building real apps without code. Free 5-day challenge teaches you to go from idea to live app." />
+    <meta name="twitter:title" content="Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge" />
+    <meta name="twitter:description" content="A free, beginner-friendly, self-paced roadmap for turning an app idea into a working first version. Join early access while the lessons are being recorded." />
     <meta name="twitter:image" content="https://appreneur.ai/og-image.png" />
-    <meta name="twitter:site" content="@AIForBeginners" />
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    
+
     <!-- Preload critical fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet" />
-    
-    <!-- Analytics IDs — Replace with your real IDs -->
-    <!-- Replace G-XXXXXXXXXX with your real GA4 Measurement ID -->
-    <meta name="ga4-id" content="G-XXXXXXXXXX" />
-    <!-- Replace XXXXXXXXXXXXXXXX with your real Facebook Pixel ID -->
-    <meta name="fb-pixel-id" content="XXXXXXXXXXXXXXXX" />
 
-    <!-- Google Analytics 4 (GA4) -->
-    <script>
-      (function() {
-        var ga4Id = document.querySelector('meta[name="ga4-id"]')?.getAttribute('content');
-        if (ga4Id && ga4Id !== 'G-XXXXXXXXXX') {
-          var s = document.createElement('script');
-          s.async = true;
-          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ga4Id;
-          document.head.appendChild(s);
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          window.gtag = gtag;
-          gtag('js', new Date());
-          gtag('config', ga4Id);
-        }
-      })();
-    </script>
-    
-    <!-- Facebook Pixel — only loaded when a real Pixel ID is configured. -->
-    <script>
-      (function() {
-        var fbId = document.querySelector('meta[name="fb-pixel-id"]')?.getAttribute('content');
-        if (!fbId || fbId === 'XXXXXXXXXXXXXXXX') return;
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', fbId);
-        fbq('track', 'PageView');
-        // Insert the <noscript> tracking pixel dynamically so it also stays gated.
-        var ns = document.createElement('noscript');
-        var img = document.createElement('img');
-        img.height = 1; img.width = 1; img.style.display = 'none';
-        img.src = 'https://www.facebook.com/tr?id=' + encodeURIComponent(fbId) + '&ev=PageView&noscript=1';
-        img.alt = '';
-        ns.appendChild(img);
-        document.body && document.body.appendChild(ns);
-      })();
-    </script>
+    <!-- External analytics are intentionally OFF during prelaunch.
+         No GA4, Facebook Pixel, or other third-party trackers are loaded here. -->
   </head>
 
   <body>
