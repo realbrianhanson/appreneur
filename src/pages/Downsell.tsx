@@ -9,6 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { showError } from "@/lib/toast-utils";
+import { VIP_SALES_ENABLED } from "@/lib/constants";
+import { PrelaunchSalesPlaceholder } from "@/components/PrelaunchSalesPlaceholder";
 
 const Downsell = () => {
   const { user } = useAuth();
@@ -76,6 +78,10 @@ const Downsell = () => {
     "Instant PDF Download",
     "Lifetime Access",
   ];
+
+  if (!VIP_SALES_ENABLED) {
+    return <PrelaunchSalesPlaceholder page="downsell" />;
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center">
