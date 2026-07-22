@@ -412,14 +412,15 @@ const DayMission = () => {
     if (!allRequiredComplete) return;
     
     setCompletingDay(true);
-    const timeSpent = Math.floor((Date.now() - startTime) / 1000);
-    
-    const result = await completeDay(day, timeSpent);
+
+    // Persist the current session's time exactly once via the owner-scoped
+    // helper (which already carries a flush guard). complete-day is then
+    // invoked without a time snapshot so it never double-counts on retry.
+    await saveTimeSpent();
+
+    const result = await completeDay(day);
     
     if (result) {
-      // completeDay already persisted this session's time — don't let the
-      // unmount handler add it again.
-      timeFlushedRef.current = true;
       setShowCelebration(true);
       
       if (result.is_graduation) {
