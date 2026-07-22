@@ -70,16 +70,13 @@ export const SocialProofSection = () => {
 
   useEffect(() => {
     const fetchTestimonials = async () => {
-      const { data, error } = await supabase
-        .from("testimonials")
-        .select("id, name, content, rating, app_name, app_screenshot_url, is_featured")
-        .eq("is_approved", true)
-        .order("is_featured", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(9);
-
-      if (!error && data && data.length > 0) {
-        setTestimonials(data as TestimonialData[]);
+      // Route through the edge function so screenshots are returned as
+      // short-lived signed URLs (bucket is private post-P0 lockdown).
+      const { data, error } = await supabase.functions.invoke("get-testimonials", {
+        body: { limit: 9, featured_first: true },
+      });
+      if (!error && data?.testimonials?.length) {
+        setTestimonials(data.testimonials as TestimonialData[]);
       }
     };
 
