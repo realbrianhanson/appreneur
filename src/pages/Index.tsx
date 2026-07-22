@@ -12,6 +12,7 @@ import { FinalCTASection } from "@/components/landing/FinalCTASection";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { WhyThisWorks } from "@/components/landing/WhyThisWorks";
 import { EarlyAccessSection } from "@/components/landing/EarlyAccessSection";
+import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { GhostWord } from "@/components/motion/GhostWord";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
@@ -35,7 +36,7 @@ const Index = () => {
       <StickyCtaBar onCtaClick={scrollToQuiz} />
       <SEOHead
         title="Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge"
-        description="A free, self-paced 5-day challenge for entrepreneurs. Turn your idea into a working first version — no code required. Free early access open now."
+        description="A free, self-paced 5-day challenge for entrepreneurs. Turn your app idea into a working first version — no code required. Start Day 1 today."
         canonicalUrl="https://appreneur.ai/"
       />
 
@@ -58,6 +59,9 @@ const Index = () => {
 
       {/* Problem / possibility */}
       <OpeningCopySection />
+
+      {/* Instructor authority — moved higher on the page */}
+      <AboutHostSection />
 
       {/* Why this works — three-part mechanism */}
       <WhyThisWorks />
@@ -114,11 +118,11 @@ const Index = () => {
         </Container>
       </Section>
 
-      {/* Truthful early-access inclusions */}
+      {/* What you'll have by Day 5 — outcomes */}
       <EarlyAccessSection onCtaClick={scrollToQuiz} />
 
-      {/* About Host — credibility */}
-      <AboutHostSection />
+      {/* Approved testimonials — renders null when empty */}
+      <SocialProofSection />
 
       {/* FAQ — overcome objections */}
       <FAQSection />
