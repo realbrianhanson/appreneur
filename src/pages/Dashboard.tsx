@@ -16,7 +16,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { showError } from "@/lib/toast-utils";
 import SEOHead from "@/components/seo/SEOHead";
 import { trackPageView } from "@/lib/analytics";
-import { COMMUNITY_URL } from "@/lib/constants";
+import { COMMUNITY_URL, hasValidCommunityUrl, VIP_SALES_ENABLED } from "@/lib/constants";
 import {
   ArrowRight,
   Clock,
@@ -25,10 +25,7 @@ import {
   TrendingUp,
   Crown,
   ExternalLink,
-  Bell,
-  Calendar,
   Users,
-  X,
 } from "lucide-react";
 
 interface UserStats {
@@ -59,9 +56,9 @@ const dayMeta: Record<number, { title: string; description: string }> = {
 const Dashboard = () => {
   const { user, profile } = useAuth();
   const { progress: hookProgress, stats: hookStats, isLoading, error: progressError, fetchProgress } = useProgress();
-  const [showAnnouncement, setShowAnnouncement] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
+  const showCommunity = hasValidCommunityUrl();
   
   // Testimonial modal state
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
