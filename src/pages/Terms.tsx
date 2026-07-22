@@ -70,8 +70,8 @@ const Terms = () => {
             <h2 className="text-xl font-semibold text-foreground">4. Educational purpose — no outcome guarantee</h2>
             <p>
               The Appreneur Challenge is a free, self-paced, five-day
-              educational roadmap that shows a way to move from an app idea to a
-              working first version using no-code and AI-powered tools. It is
+              educational challenge that shows a way to move from an app idea
+              to a working first version using no-code and AI-powered tools. It is
               provided for educational purposes. We do not guarantee any
               specific result, income, launch, or business outcome. Your
               results depend on the effort you put in and factors outside our

@@ -153,7 +153,7 @@ const OpeningCopySection = () => {
                   backgroundImage: "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
                 }}
               >
-                See the 5-day plan
+                See the 5-Day Challenge
               </span>
               <ArrowDown
                 className="w-5 h-5 shrink-0"
