@@ -2,13 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Gift, Loader2, Phone } from "lucide-react";
+import { ArrowRight, Gift, Loader2 } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(50),
   email: z.string().trim().email("Please enter a valid email").max(255),
-  phone: z.string().trim().max(20).optional(),
 });
 
 interface EmailCaptureFormProps {
@@ -20,15 +19,13 @@ interface EmailCaptureFormProps {
 const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps) => {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [showPhone, setShowPhone] = useState(false);
   const [errors, setErrors] = useState<{ firstName?: string; email?: string }>({});
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
 
-    const result = formSchema.safeParse({ firstName, email, phone: phone || undefined });
+    const result = formSchema.safeParse({ firstName, email });
     if (!result.success) {
       const fieldErrors: { firstName?: string; email?: string } = {};
       result.error.errors.forEach((err) => {
@@ -42,7 +39,6 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
     await onSubmit({
       firstName: result.data.firstName,
       email: result.data.email,
-      phone: result.data.phone,
     });
   };
 
@@ -50,7 +46,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <span className="eyebrow font-mono text-xs tracking-[0.2em] text-primary">
-         FINAL STEP · CLAIM YOUR SPOT
+         FINAL STEP · GET FREE EARLY ACCESS
         </span>
         {onBack && (
           <button
@@ -67,7 +63,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
         That's exactly who this challenge is built for.
         </h3>
         <p className="text-muted-foreground">
-         Lock in your free spot below. It takes about 30 seconds.
+         The lessons are being recorded. Join now and we'll email you when the full challenge opens.
         </p>
       </div>
 
@@ -121,35 +117,6 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
           </p>
         </div>
 
-        {showPhone ? (
-          <div className="space-y-2">
-            <Label htmlFor="capture-phone" className="sr-only">
-              Phone number (optional)
-            </Label>
-            <Input
-              id="capture-phone"
-              type="tel"
-              placeholder="Phone Number (optional)"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              disabled={isLoading}
-              autoComplete="tel"
-            />
-            <p className="text-xs text-muted-foreground">
-              Get SMS reminders when the challenge starts
-            </p>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setShowPhone(true)}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Phone className="w-4 h-4" />
-            Add phone for SMS reminders (optional)
-          </button>
-        )}
-
         <Button
           type="submit"
           size="xl"
@@ -159,11 +126,11 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
           {isLoading ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              Reserving Your Spot...
+              Signing you up...
             </>
           ) : (
             <>
-              Reserve My Free Spot
+              Get Free Early Access
               <ArrowRight className="w-5 h-5" />
             </>
           )}
