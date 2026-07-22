@@ -20,7 +20,6 @@ const AboutHostSection = () => {
     { icon: Award, label: "Inc 5000 Honoree", to: 4, suffix: "X" },
     { icon: TrendingUp, label: "Highest Ranking", to: 80, prefix: "#" },
     { icon: Users, label: "Owners Trained", to: 40, suffix: "K+" },
-    { icon: Heart, label: "Social Followers", to: 1, suffix: "M+" },
   ] as const;
 
   return (
@@ -115,7 +114,7 @@ const AboutHostSection = () => {
           </motion.div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-14 pt-10 border-t border-border/40">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-14 pt-10 border-t border-border/40">
             {stats.map((s, i) => {
               const Icon = s.icon;
               return (

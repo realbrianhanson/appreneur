@@ -33,11 +33,11 @@ const quizQuestions = [
     ],
   },
   {
-    question: "If you could build a real, working app this week, would you commit 60 minutes a day to make it happen?",
+    question: "When the lessons open, can you set aside about 60 minutes for each focused day?",
     options: [
-      { label: "Yes, I'm ready", value: "commit_ready" },
-      { label: "I'd make the time", value: "commit_time" },
-      { label: "Let's do this", value: "commit_lets_go" },
+      { label: "Yes, I can carve out 60 minutes a day", value: "commit_ready" },
+      { label: "I'll make it work", value: "commit_time" },
+      { label: "I'm planning to try", value: "commit_lets_go" },
     ],
   },
 ];
@@ -454,25 +454,17 @@ const QuizContainer = () => {
         </div>
       </div>
 
-      {/* Social Proof */}
-      <div className="text-center space-y-3">
-        <div className="flex items-center justify-center gap-3">
-          <div className="flex -space-x-3">
-            {['JM','SK','AR','LP','TC'].map((initials, i) => (
-              <div
-                key={i}
-                className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-accent border-2 border-background flex items-center justify-center text-[10px] font-bold text-background shadow-[0_2px_10px_-2px_hsl(var(--primary)/0.4)]"
-              >
-                {initials}
-              </div>
-            ))}
-          </div>
-          <span className="text-sm text-foreground/80">
-            <span className="font-semibold text-foreground">500+</span> entrepreneurs enrolled
-          </span>
+      {/* Trust chips */}
+      <div className="text-center space-y-2">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs md:text-sm text-muted-foreground font-mono tracking-wider uppercase">
+          <span>Free</span>
+          <span aria-hidden="true" className="opacity-40">·</span>
+          <span>No credit card</span>
+          <span aria-hidden="true" className="opacity-40">·</span>
+          <span>Beginner-friendly</span>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Five focused days · On your schedule · No coding experience required
+        <p className="text-xs text-muted-foreground/80">
+          We use your info only to create your early-access account and email you when the full challenge opens.
         </p>
       </div>
     </div>

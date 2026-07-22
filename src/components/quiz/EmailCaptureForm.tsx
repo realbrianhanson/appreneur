@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Gift, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -141,21 +141,6 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
       <p className="text-center text-xs text-muted-foreground">
         🔒 No spam. No credit card. Unsubscribe anytime. Your info stays private.
       </p>
-
-      {/* Lead Magnet Callout */}
-      <div className="flex items-start gap-3 p-4 rounded-xl bg-accent/10 border border-accent/30">
-        <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">
-          <Gift className="w-5 h-5 text-accent" />
-        </div>
-        <div>
-          <p className="font-semibold text-sm text-foreground">
-            Plus, instantly download:
-          </p>
-          <p className="text-accent font-display">
-            "50 Profitable AI App Ideas for 2026"
-          </p>
-        </div>
-      </div>
     </div>
   );
 };

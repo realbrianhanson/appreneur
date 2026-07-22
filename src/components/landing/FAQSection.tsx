@@ -14,52 +14,37 @@ const faqs = [
   {
     question: "What if I'm not technical at all?",
     answer:
-      "Perfect. This system is built for entrepreneurs, not engineers. If you can write an email, you can build an app with this method.",
+      "The challenge is built for entrepreneurs, not engineers. If you can write an email, you can follow the daily missions — modern AI tools handle the code while you make the decisions.",
   },
   {
-    question: "What if I don't have an app idea?",
+    question: "Are the sessions live?",
     answer:
-      "That's what the 50 Profitable App Ideas PDF is for. You'll have more ideas than you know what to do with.",
-  },
-  {
-    question: "Is this just theory or do I actually build something?",
-    answer:
-      "You'll have a live, working app by Day 5: something real users can open in a browser, not a mockup or a wireframe.",
-  },
-  {
-    question: "Why is this free?",
-    answer:
-      "Because I want you to experience what's possible. When you see how fast you can build, you'll want to go deeper with my other trainings. This is my best foot forward.",
-  },
-  {
-    question: "What kind of apps can I build?",
-    answer:
-      "Anything from SaaS tools to mobile apps to internal business tools. Past graduates have built CRMs, booking systems, AI chatbots, content generators, and more.",
-  },
-  {
-    question: "How much time do I need each day?",
-    answer:
-      "Plan for 60-90 minutes per day. Each mission is designed to be completed in one focused session.",
-  },
-  {
-    question: "Do I need to buy any software?",
-    answer:
-      "You can start on the AI builder's free plan, and on Day 1 I'll walk through exactly what you need (and what you don't). There's nothing you're required to buy to finish the challenge.",
-  },
-  {
-    question: "Are the sessions live? What about my time zone?",
-    answer:
-      "Daily missions unlock in your dashboard each morning, so you build on your schedule wherever you are. Support runs in the community all day, and everything is recorded.",
+      "No. The lessons are self-paced and are being recorded now. When you sign up for early access, you'll see the day-by-day plan in your dashboard and get an email the moment the full lessons open.",
   },
   {
     question: "What if I fall behind?",
     answer:
-      "You'll have access to all recordings and can catch up at your own pace. Plus, the community is there to help.",
+      "There is no cohort deadline. Each mission unlocks after the prior one is completed, and you can move through the five days on your own schedule.",
   },
   {
-    question: "What happens after the 5 days?",
+    question: "Do I need an app idea already?",
     answer:
-      "You'll have a live, working app. We'll also invite you to our 3-Day AI For Business Live event where you'll learn how to turn your app into a real business.",
+      "It helps to have a rough idea, but it isn't required. Day 1 focuses on picking and validating a small first idea so the rest of the week has direction.",
+  },
+  {
+    question: "How much time do I need each day?",
+    answer:
+      "Plan for roughly 60 minutes per focused day. The missions are designed to fit into a single sitting.",
+  },
+  {
+    question: "Why is this free?",
+    answer:
+      "This is the founding early-access edition. It's free while the experience is being refined so early builders can shape it before wider launch.",
+  },
+  {
+    question: "Do I need to buy any software?",
+    answer:
+      "You can begin on the free plan of the AI builder you'll use. Nothing is required to complete the challenge itself.",
   },
 ];
 

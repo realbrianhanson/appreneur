@@ -481,7 +481,6 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </div>
-                <Badge variant="secondary" className="text-xs mb-3">500+ members</Badge>
                 <Button
                   variant="outline"
                   className="w-full"
