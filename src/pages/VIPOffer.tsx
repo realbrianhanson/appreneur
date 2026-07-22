@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
 import { VIP_SALES_ENABLED } from "@/lib/constants";
-import { PrelaunchSalesPlaceholder } from "@/components/PrelaunchSalesPlaceholder";
 import { trackPageView } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -116,7 +115,7 @@ const VIPOffer = () => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   // Track page view on mount — but ONLY when VIP sales are actually enabled.
-  // Placeholder renders (prelaunch) must not be counted as "OTO viewed".
+  // Disabled-VIP renders redirect away and must not be counted as "OTO viewed".
   useEffect(() => {
     if (!VIP_SALES_ENABLED) return;
     trackPageView('/vip-offer', 'VIP Offer — Appreneur Challenge');
@@ -129,7 +128,7 @@ const VIPOffer = () => {
   }, []);
 
   if (!VIP_SALES_ENABLED) {
-    return <PrelaunchSalesPlaceholder page="vip-offer" />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   const handleExpire = () => {
@@ -334,7 +333,7 @@ const VIPOffer = () => {
                     <span className="text-accent">$7</span>
                   </p>
                   <p className="text-xs md:text-sm text-muted-foreground mt-1">
-                    Includes: Pre-launch QA checklist, bug-testing template, and "First 100
+                    Includes: Launch QA checklist, bug-testing template, and "First 100
                     Users" outreach scripts.{" "}
                     <span className="text-foreground font-medium">($47 value)</span>
                   </p>
