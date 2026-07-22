@@ -19,9 +19,8 @@ const trustItems = [
 ];
 
 export const HeroSection = ({ onCtaClick, cohortStartDate }: HeroSectionProps) => {
-  const badgeText = cohortStartDate
-    ? `Free 5-Day Challenge · Next Cohort Starts ${cohortStartDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`
-    : "Free 5-Day Challenge · Next Cohort Starting Soon";
+  // Product is self-paced. Never fabricate a scheduled-cohort date in the hero.
+  const badgeText = "Free 5-Day Challenge · Self-Paced · Early Access Open";
   const sectionRef = useRef<HTMLElement>(null);
   const visualWrapRef = useRef<HTMLDivElement>(null);
 

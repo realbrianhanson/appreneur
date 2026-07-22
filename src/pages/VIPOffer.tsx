@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
+import { VIP_SALES_ENABLED } from "@/lib/constants";
+import { PrelaunchSalesPlaceholder } from "@/components/PrelaunchSalesPlaceholder";
 import { trackPageView, trackVIPOfferView } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -230,6 +232,10 @@ const VIPOffer = () => {
   ];
 
   const totalValue = stackItems.reduce((sum, item) => sum + item.value, 0);
+
+  if (!VIP_SALES_ENABLED) {
+    return <PrelaunchSalesPlaceholder page="vip-offer" />;
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-0">

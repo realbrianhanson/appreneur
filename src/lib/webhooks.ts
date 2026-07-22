@@ -82,7 +82,7 @@ export const WEBHOOK_EVENT_DESCRIPTIONS: Record<WebhookEventType, string> = {
   'purchase.completed': 'Fires when any purchase is completed',
   'user.started_day': 'Fires when a user begins a challenge day',
   'user.completed_day': 'Fires when a user finishes a challenge day',
-  'user.completed_challenge': 'Fires when a user completes Day 7',
+  'user.completed_challenge': 'Fires when a user completes Day 5',
   'testimonial.submitted': 'Fires when a user submits a testimonial',
 };
 

@@ -16,7 +16,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { showError } from "@/lib/toast-utils";
 import SEOHead from "@/components/seo/SEOHead";
 import { trackPageView } from "@/lib/analytics";
-import { COMMUNITY_URL } from "@/lib/constants";
+import { COMMUNITY_URL, hasValidCommunityUrl, VIP_SALES_ENABLED } from "@/lib/constants";
 import {
   ArrowRight,
   Clock,
@@ -25,10 +25,7 @@ import {
   TrendingUp,
   Crown,
   ExternalLink,
-  Bell,
-  Calendar,
   Users,
-  X,
 } from "lucide-react";
 
 interface UserStats {
@@ -59,9 +56,9 @@ const dayMeta: Record<number, { title: string; description: string }> = {
 const Dashboard = () => {
   const { user, profile } = useAuth();
   const { progress: hookProgress, stats: hookStats, isLoading, error: progressError, fetchProgress } = useProgress();
-  const [showAnnouncement, setShowAnnouncement] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
+  const showCommunity = hasValidCommunityUrl();
   
   // Testimonial modal state
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
@@ -298,35 +295,6 @@ const Dashboard = () => {
       <NotificationBanner userProgress={userProgress} />
 
       <div className="max-w-6xl mx-auto space-y-8">
-        {/* Announcement Banner */}
-        {showAnnouncement && (
-          <div className="relative rounded-xl bg-gradient-to-r from-primary/20 via-accent/20 to-secondary/20 border border-primary/30 p-4">
-            <button
-              onClick={() => setShowAnnouncement(false)}
-              className="absolute top-3 right-3 text-muted-foreground hover:text-foreground"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <div className="flex items-center gap-4 pr-8">
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                <Bell className="w-5 h-5 text-primary" />
-              </div>
-              <div className="flex-1">
-                <p className="font-semibold text-foreground">
-                  🎉 Live Q&A Session Tomorrow at 2pm EST!
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Join Brian for a live coaching call. Bring your questions!
-                </p>
-              </div>
-              <Button variant="outline" size="sm" className="shrink-0">
-                <Calendar className="w-4 h-4 mr-2" />
-                Add to Calendar
-              </Button>
-            </div>
-          </div>
-        )}
-
         {/* Welcome Section */}
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -335,7 +303,8 @@ const Dashboard = () => {
                 Welcome back, {firstName}! 👋
               </h1>
               <p className="text-muted-foreground mt-1">
-                You're making great progress. Let's keep building!
+                Day 1 begins when content opens. Each next mission unlocks after
+                the prior mission is completed.
               </p>
             </div>
           </div>
@@ -498,6 +467,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Community Card */}
+            {showCommunity && (
             <Card className="border-primary/30">
               <CardContent className="p-5">
                 <div className="flex items-center gap-3 mb-3">
@@ -523,9 +493,10 @@ const Dashboard = () => {
                 </Button>
               </CardContent>
             </Card>
+            )}
 
             {/* VIP Upgrade */}
-            {!isVIP && (
+            {!isVIP && VIP_SALES_ENABLED && (
               <Card className="border-secondary/30 bg-gradient-to-br from-secondary/5 to-secondary/10">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-3 mb-3">

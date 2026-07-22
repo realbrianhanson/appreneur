@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -10,8 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Bell, Search, User, Settings, LogOut, ChevronDown } from "lucide-react";
+import { User, Settings, LogOut, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 
 interface DashboardTopBarProps {
@@ -21,7 +19,6 @@ interface DashboardTopBarProps {
 const DashboardTopBar = ({ userName }: DashboardTopBarProps) => {
   const { profile, signOut } = useAuth();
   const navigate = useNavigate();
-  const [showSearch, setShowSearch] = useState(false);
 
   const displayName = userName || profile?.first_name || "Builder";
 
@@ -37,41 +34,10 @@ const DashboardTopBar = ({ userName }: DashboardTopBarProps) => {
         {/* Left - Menu Trigger */}
         <div className="flex items-center gap-4">
           <SidebarTrigger className="lg:hidden" />
-
-          {/* Search */}
-          <div className="hidden md:flex items-center">
-            {showSearch ? (
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-64 pl-9 h-9"
-                  autoFocus
-                  onBlur={() => setShowSearch(false)}
-                />
-              </div>
-            ) : (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSearch(true)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Search className="w-5 h-5" />
-              </Button>
-            )}
-          </div>
         </div>
 
         {/* Right - Actions */}
         <div className="flex items-center gap-2">
-          {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full" />
-          </Button>
-
           {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
