@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProgress } from "@/hooks/useProgress";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
@@ -100,7 +101,7 @@ function formatTime(seconds: number): string {
 
 const Graduation = () => {
   const { profile } = useAuth();
-  const { progress, stats, fetchProgress } = useProgress();
+  const { progress, stats, fetchProgress, isLoading } = useProgress();
   const [showConfetti, setShowConfetti] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const userName = profile?.first_name || "Builder";
@@ -115,11 +116,28 @@ const Graduation = () => {
     return () => clearTimeout(t);
   }, []);
 
+  const day5 = useMemo(
+    () => progress.find((p) => p.day_number === 5),
+    [progress]
+  );
+  const hasCompletedDay5 = !!day5?.is_completed && !!day5?.completed_at;
+
   const completionDate = useMemo(() => {
-    const day5 = progress.find((p) => p.day_number === 5 && p.is_completed);
-    const d = day5?.completed_at ? new Date(day5.completed_at) : new Date();
-    return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
-  }, [progress]);
+    if (!day5?.completed_at) return "";
+    return new Date(day5.completed_at).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }, [day5]);
+
+  // Guard: block the page (and certificate generation) for anyone who
+  // has not actually finished Day 5. We only redirect once progress has
+  // loaded to avoid a flash on the initial render.
+  const progressLoaded = progress.length > 0;
+  if (progressLoaded && !hasCompletedDay5) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const totalTime = useMemo(() => {
     return formatTime(stats?.total_time_seconds ?? 0);
@@ -133,6 +151,10 @@ const Graduation = () => {
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
   const handleDownloadCertificate = async () => {
+    if (!hasCompletedDay5) {
+      showError("Finish Day 5 to unlock your certificate.");
+      return;
+    }
     setIsGenerating(true);
     try {
       const pdf = new jsPDF({ orientation: "landscape", unit: "in", format: "letter" });
