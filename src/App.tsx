@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { Loader2 } from "lucide-react";
 import Index from "./pages/Index";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Lazy-loaded routes
 const Login = lazy(() => import("./pages/Login"));
@@ -53,6 +54,7 @@ const App = () => {
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
+          <ErrorBoundary>
           <Suspense fallback={<RouteLoader />}>
             <Routes>
               {/* Public Routes */}
@@ -117,6 +119,7 @@ const App = () => {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
+          </ErrorBoundary>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
