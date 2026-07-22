@@ -31,57 +31,86 @@ Day 1 MUST be edited so the learner sees something change on screen
 early — before the deeper idea-selection work — to create immediate
 belief. Runtime is NOT published until the final edit is locked.
 
-## Day 1 — Choose the right app idea
-- Outcome: one audience, one problem, one specific outcome, in one sentence.
-- Outline: why "small and specific" wins; audience; problem framing; outcome vs feature; go/no-go.
-- Live demo: pick a real idea on camera.
-- Deliverable: one-line pitch — "For X, this app helps them Y so they can Z."
-- Worksheet: idea worksheet.
-- Chapters: intro / audience / problem / outcome / kill-criteria / recap.
-- B-roll: worksheet fill-in, examples.
-- Mistakes: too broad, feature-as-outcome, chasing a trend, no kill-criteria.
-- CTA: complete Day 1 mission.
+## Day 1 — Choose what to build
+- Plain-English mission: decide what your first website or app will do,
+  in one sentence anyone can understand.
+- Early visible win: within the first few minutes, the learner watches
+  something change on screen so they believe this is possible before
+  the deeper decision work begins.
+- What the learner leaves with: one sentence that names who it is for
+  and what it helps them do.
+- Worksheet: a one-page idea sheet in plain English.
+- Checkpoints: after each step, "what you should see on screen."
+- Recovery: what to do if you feel stuck picking an idea.
+- Pause-and-do prompts, captions, transcript, plain recap.
+- Common mistakes: trying to build for everyone; describing a feature
+  instead of a result; changing your mind mid-lesson.
 
-## Day 2 — Map the first version
-- Outcome: screen flow, wireframe, V1 feature boundary.
-- Outline: minimum viable flow; wireframing; in vs out list.
-- Live demo: sketch flow live.
-- Deliverable: named flow, wireframe, in/out list.
-- Worksheet: flow + feature-boundary template.
-- Chapters: intro / flow / wireframe / boundary / recap.
-- B-roll: paper sketch, wireframe tool.
-- Mistakes: designing before deciding, "one more feature", no boundary.
-- CTA: complete Day 2 mission.
+## Day 2 — Sketch the small first version
+- Plain-English mission: draw a simple sketch of the first version —
+  what pages it has, what buttons are on each page, and what someone
+  clicks first, second, and third.
+- Words defined the first time they appear: page, button, screen. Do
+  NOT assume the learner knows "wireframe", "MVP", or "feature
+  boundary." Say "simple sketch", "small first version", and "what to
+  build now vs later."
+- What the learner leaves with: a simple sketch and a short list of
+  what is in the first version vs what waits until later.
+- Worksheet: sketch template + a "now vs later" list.
+- Checkpoints, recovery steps, pause-and-do prompts, captions,
+  transcript, plain recap.
+- Common mistakes: adding one more thing; skipping the sketch; trying
+  to make it look good before it works.
 
-## Day 3 — Build the core experience
-- Outcome: working core screens, navigation, essential data.
-- Outline: prompting the builder; layout & nav; data model; wiring the path.
-- Live demo: build the core live.
-- Deliverable: clickable core with real data.
-- Worksheet: prompt & data-model checklist.
-- Chapters: intro / prompting / layout & nav / data / wiring / recap.
-- B-roll: builder UI, prompts, live app.
-- Mistakes: visuals before core flow, no data model, vague prompts.
-- CTA: complete Day 3 mission.
+## Day 3 — Build the pages and make the buttons work
+- Plain-English mission: use everyday-English instructions to build
+  the pages you sketched and make the buttons go where they should.
+- Words defined the first time they appear: instructions (what we
+  used to call prompts), page, button, link.
+- What the learner leaves with: a clickable first version they can
+  move around inside.
+- Live demo: type each instruction on camera; show every click.
+- Worksheet: a plain-English "instructions" checklist.
+- Checkpoints, recovery steps ("if your screen looks different, try
+  this"), pause-and-do prompts, captions, transcript, plain recap.
+- Common mistakes: making it look pretty before it works; vague
+  instructions; skipping the checkpoint.
 
-## Day 4 — Add the intelligence
-- Outcome: one useful AI feature with a refined prompt.
-- Outline: pick the AI moment; prompt basics; iterate; guardrails.
-- Live demo: build AI feature and iterate the prompt twice.
-- Deliverable: one AI feature wired in and tuned.
-- Worksheet: AI-feature spec + prompt iteration log.
-- Chapters: intro / picking the moment / prompt v1 / iterate / guardrails / recap.
-- B-roll: prompt playground, feature in-app.
-- Mistakes: bolting AI on for its own sake, one-shot prompts, no guardrails.
-- CTA: complete Day 4 mission.
+## Day 4 — Add one useful AI feature
+- Plain-English mission: add one AI feature that is actually useful to
+  the person using your website or app, and learn what to say when the
+  AI gets it wrong the first time.
+- Words defined the first time they appear: AI feature, instructions,
+  "try again with a smaller ask."
+- What the learner leaves with: one AI feature that works, plus a
+  short list of what to say when the AI doesn't get it right.
+- Live demo: build the feature, watch it get it wrong, fix the
+  instructions, watch it get it right.
+- Worksheet: a "what to say when the AI is wrong" cheat sheet.
+- Checkpoints, recovery steps, pause-and-do prompts, captions,
+  transcript, plain recap.
+- Common mistakes: adding AI just to add AI; giving up after the first
+  wrong answer; asking for too many things at once.
 
-## Day 5 — Polish, test, and publish
-- Outcome: quality-checked, deployed, shareable app + next-iteration plan.
-- Outline: quality checklist; test on phone; deploy; share; next-iteration plan.
-- Live demo: run checklist, deploy live.
-- Deliverable: shareable link + next-iteration plan.
-- Worksheet: quality checklist + next-iteration template.
-- Chapters: intro / checklist / device test / deploy / feedback / next / graduation.
-- B-roll: phone view, deploy screen, share link.
-- Mistakes: polishing forever, no feedback loop, no plan.
-- CTA: complete Day 5, graduate.
+## Day 5 — Test, fix, and put it online
+- Plain-English mission: test it on your phone, fix anything that
+  looks wrong, put it online, and share the link.
+- Words defined the first time they appear: test, put it online (what
+  the tech world calls "deploy"), share link.
+- What the learner leaves with: a real link they can send to someone,
+  and a short "what to improve next" list.
+- Live demo: run the checklist on camera; open on a phone; put it
+  online; share the link.
+- Worksheet: a plain-English quality checklist + a "what to improve
+  next" page.
+- Checkpoints ("if you see this, you're ready to publish"), recovery
+  steps, pause-and-do prompts, captions, transcript, plain recap.
+- Graduation moment: name what was built, congratulate the learner.
+- Common mistakes: polishing forever; skipping the phone test; never
+  actually sharing the link.
+
+## Do not publish runtime claims
+
+Do NOT publish a per-lesson runtime (e.g. "45 minutes") until the
+final edit is locked. Runtime is measured on the final cut, not on
+the recording plan.
