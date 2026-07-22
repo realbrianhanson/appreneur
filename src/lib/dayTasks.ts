@@ -81,3 +81,43 @@ export function canRecordDayCompletion(row: DayRowLike | null | undefined): bool
   if (!row) return false;
   return !!row.is_completed && !!row.completed_at;
 }
+
+// ---------------------------------------------------------------
+// time_spent_seconds snapshot merge (retry-idempotent)
+// ---------------------------------------------------------------
+
+/** Server-side cap for a single accepted snapshot. */
+export const MAX_TIME_PER_CALL_S = 4 * 60 * 60;
+/** Absolute row-level ceiling. */
+export const MAX_TOTAL_TIME_S = 24 * 60 * 60;
+
+/**
+ * Compute the next `time_spent_seconds` value for a day row when a client
+ * sends a *snapshot* of how long the current session has been running.
+ *
+ * Rules:
+ *  - The snapshot is treated as an absolute lower bound, not an increment.
+ *    Two retries of the same value yield the same result (idempotent).
+ *  - The snapshot is per-call capped at MAX_TIME_PER_CALL_S.
+ *  - The row total is clamped to MAX_TOTAL_TIME_S.
+ *  - We return null when there is nothing to do, so callers can skip the
+ *    UPDATE entirely and avoid touching updated_at.
+ */
+export function mergeTimeSnapshot(
+  currentSeconds: number | null | undefined,
+  suppliedSeconds: unknown,
+): number | null {
+  const current = Math.max(0, Math.floor(currentSeconds ?? 0));
+
+  if (
+    typeof suppliedSeconds !== "number" ||
+    !Number.isFinite(suppliedSeconds) ||
+    suppliedSeconds <= 0
+  ) {
+    return null;
+  }
+
+  const capped = Math.floor(Math.min(suppliedSeconds, MAX_TIME_PER_CALL_S));
+  const next = Math.min(Math.max(current, capped), MAX_TOTAL_TIME_S);
+  return next > current ? next : null;
+}
