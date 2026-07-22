@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
+import { finalizeRegistration } from "@/lib/finalize-registration";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -26,7 +27,18 @@ export default function AuthCallback() {
           // Redirect recovery flows to settings so user can set new password
           if (type === "recovery") {
             navigate("/dashboard/settings", { replace: true });
-          } else {
+            return;
+          }
+
+          // Idempotently finalize early-access registration once a valid
+          // session exists. Access must not depend on delivery success.
+          try {
+            await finalizeRegistration();
+          } catch (err) {
+            console.error("[auth-callback] finalize-registration failed", err);
+          }
+
+          {
             // First-time confirmed registrants get routed into the OTO funnel.
             // The "pending_registration" flag is set at signup and cleared here
             // so the VIP offer only shows once per registration.
