@@ -54,6 +54,18 @@ describe("landing/quiz truthfulness in prelaunch", () => {
     expect(src).not.toMatch(/Next Cohort Starts/);
     expect(src).not.toMatch(/Next Cohort Starting Soon/);
   });
+
+  it("HeroSection uses the truthful prelaunch H1 and primary CTA", () => {
+    const src = read("src/components/landing/HeroSection.tsx");
+    expect(src).toMatch(/Turn your app idea into a/);
+    expect(src).toMatch(/working first version/);
+    expect(src).toMatch(/five focused days/);
+    expect(src).toMatch(/Get Free Early Access/);
+    // No unverified marketing claims in hero
+    expect(src).not.toMatch(/500\+/);
+    expect(src).not.toMatch(/9 countries/);
+    expect(src).not.toMatch(/Claim your free spot/);
+  });
 });
 
 describe("thank-you + dashboard have no scheduled cohort promises", () => {
