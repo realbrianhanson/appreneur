@@ -33,7 +33,7 @@ const quizQuestions = [
     ],
   },
   {
-    question: "When the lessons open, can you set aside about 60 minutes for each focused day?",
+    question: "Can you set aside about 60 minutes for each focused day of the challenge?",
     options: [
       { label: "Yes, I can carve out 60 minutes a day", value: "commit_ready" },
       { label: "I'll make it work", value: "commit_time" },
@@ -345,9 +345,8 @@ const QuizContainer = () => {
               Check your inbox to confirm your email
             </h3>
             <p className="text-muted-foreground max-w-md mx-auto">
-              We sent a confirmation link to complete your early-access signup.
-              Open it to activate your account. Your welcome email arrives after
-              you confirm.
+              We sent a confirmation link to activate your account. Open it,
+              sign in, and jump into Day 1.
             </p>
           </div>
           <button
@@ -381,12 +380,12 @@ const QuizContainer = () => {
           <h3 className="text-3xl md:text-4xl font-display font-bold leading-tight tracking-tight">
             You're in.{" "}
             <span className="font-serifit italic bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Early access confirmed.
+              Day 1 is ready.
             </span>
           </h3>
           <p className="text-muted-foreground max-w-md mx-auto">
-            The lessons are being recorded. We'll email you the moment the full
-            challenge opens.
+            Your dashboard is set up. Open Day 1 whenever you're ready to
+            start.
           </p>
         </motion.div>
         <div>
@@ -462,7 +461,7 @@ const QuizContainer = () => {
           <span>Beginner-friendly</span>
         </div>
         <p className="text-xs text-muted-foreground/80">
-          We use your info only to create your early-access account and email you when the full challenge opens.
+          We use your info only to create your free account and send transactional email about the challenge.
         </p>
       </div>
     </div>
