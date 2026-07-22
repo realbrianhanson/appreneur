@@ -4,20 +4,10 @@ import { Section } from "@/components/layout/Section";
 import { ArrowRight, Shield, Check, X } from "lucide-react";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { scrollTo } from "@/lib/scroll";
-import { useNextCohort } from "@/hooks/useNextCohort";
 
 const FinalCTASection = () => {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const { targetDate, isFallback, spotsLeft, loading } = useNextCohort();
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -111,21 +101,9 @@ const FinalCTASection = () => {
             </button>
           </Magnetic>
 
-          {/* Spots + date — JetBrains Mono uppercase */}
-          <div className="mt-6 font-mono text-[10px] md:text-[11px] tracking-[0.15em] md:tracking-[0.2em] uppercase text-muted-foreground px-4 flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-            {loading ? (
-              <span className="opacity-60">Loading cohort…</span>
-            ) : (
-              <>
-                {!isFallback && spotsLeft !== null && (
-                  <>
-                    <span className="text-primary">{spotsLeft} spots left</span>
-                    <span className="opacity-40">·</span>
-                  </>
-                )}
-                <span>Starts {formatDate(targetDate)}</span>
-              </>
-            )}
+          {/* Self-paced tagline */}
+          <div className="mt-6 font-mono text-[10px] md:text-[11px] tracking-[0.15em] md:tracking-[0.2em] uppercase text-muted-foreground px-4">
+            Five focused days · On your schedule
           </div>
 
           {/* Fine print */}
