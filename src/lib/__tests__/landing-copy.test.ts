@@ -53,30 +53,35 @@ describe("SocialProofSection renders only approved DB testimonials", () => {
 });
 
 describe("landing CTA hierarchy", () => {
-  it("Hero primary CTA copy is 'Get Free Early Access'", () => {
+  it("Hero uses PRIMARY_CTA_LABEL for the primary CTA", () => {
     const src = read("src/components/landing/HeroSection.tsx");
-    expect(src).toMatch(/Get Free Early Access/);
+    expect(src).toMatch(/PRIMARY_CTA_LABEL/);
+    expect(src).not.toMatch(/Get Free Early Access/);
   });
-  it("FinalCTASection primary CTA copy is 'Get Free Early Access'", () => {
+  it("FinalCTASection uses PRIMARY_CTA_LABEL", () => {
     const src = read("src/components/landing/FinalCTASection.tsx");
-    expect(src).toMatch(/Get Free Early Access/);
+    expect(src).toMatch(/PRIMARY_CTA_LABEL/);
+    expect(src).not.toMatch(/Get Free Early Access/);
   });
-  it("StickyCtaBar CTA copy is 'Get Free Early Access'", () => {
+  it("StickyCtaBar uses PRIMARY_CTA_LABEL", () => {
     const src = read("src/components/landing/StickyCtaBar.tsx");
-    expect(src).toMatch(/Get Free Early Access/);
+    expect(src).toMatch(/PRIMARY_CTA_LABEL/);
+    expect(src).not.toMatch(/Get Free Early Access/);
     expect(src).not.toMatch(/Join Free/);
   });
-  it("Quiz heading is 'Get early access in 60 seconds'", () => {
+  it("Quiz heading uses launch-ready 'Start the challenge' framing", () => {
     const src = read("src/pages/Index.tsx");
-    expect(src).toMatch(/Get early access in/);
+    expect(src).toMatch(/Start the challenge in/);
     expect(src).toMatch(/60 seconds/);
+    expect(src).not.toMatch(/Get early access/);
   });
 });
 
-describe("Quiz question 3 is prelaunch-truthful", () => {
-  it("uses 'when lessons open' framing, not 'this week'", () => {
+describe("Quiz question 3 is launch-ready truthful", () => {
+  it("frames commitment as 60 minutes per day, not tied to a recording window", () => {
     const src = read("src/components/quiz/QuizContainer.tsx");
-    expect(src).toMatch(/When the lessons open/);
+    expect(src).toMatch(/60 minutes for each focused day/);
+    expect(src).not.toMatch(/When the lessons open/);
     expect(src).not.toMatch(/build a real, working app this week/);
   });
 });
@@ -110,6 +115,41 @@ describe("Landing page structure — no fake urgency / value stack", () => {
     const src = read("src/pages/Index.tsx");
     expect(src).not.toMatch(/ValueStackSection/);
     expect(src).not.toMatch(/ShippedMarquee/);
-    expect(src).not.toMatch(/SocialProofSection/);
   });
+  it("Index.tsx re-includes SocialProofSection (renders null when empty)", () => {
+    const src = read("src/pages/Index.tsx");
+    expect(src).toMatch(/SocialProofSection/);
+  });
+});
+
+describe("launch-ready copy: no unfinished-product phrases in customer surfaces", () => {
+  const surfaces = [
+    "src/pages/Index.tsx",
+    "src/components/landing/HeroSection.tsx",
+    "src/components/landing/FinalCTASection.tsx",
+    "src/components/landing/FAQSection.tsx",
+    "src/components/landing/AboutHostSection.tsx",
+    "src/components/landing/EarlyAccessSection.tsx",
+    "src/components/landing/StickyCtaBar.tsx",
+    "src/components/quiz/QuizContainer.tsx",
+    "src/components/quiz/EmailCaptureForm.tsx",
+    "src/pages/ThankYou.tsx",
+    "src/pages/DayMission.tsx",
+  ];
+  const forbidden = [
+    /Get Free Early Access/,
+    /being recorded/i,
+    /when the lessons open/i,
+    /when lessons open/i,
+    /we'll email you when/i,
+    /lesson preview while videos are recorded/i,
+  ];
+  for (const file of surfaces) {
+    it(`${file} has no unfinished-product phrases`, () => {
+      const src = read(file);
+      for (const p of forbidden) {
+        expect(src, `${file} matched ${p}`).not.toMatch(p);
+      }
+    });
+  }
 });

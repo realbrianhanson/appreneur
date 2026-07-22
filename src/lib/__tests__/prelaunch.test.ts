@@ -42,9 +42,10 @@ describe("landing/quiz truthfulness in prelaunch", () => {
     expect(src).not.toMatch(/CountdownTimer/);
   });
 
-  it("EmailCaptureForm CTA uses truthful early-access copy", () => {
+  it("EmailCaptureForm CTA uses launch-ready registration copy", () => {
     const src = read("src/components/quiz/EmailCaptureForm.tsx");
-    expect(src).toMatch(/Get Free Early Access/);
+    expect(src).toMatch(/REGISTRATION_CTA_LABEL/);
+    expect(src).not.toMatch(/Get Free Early Access/);
     expect(src).not.toMatch(/SMS reminders/);
     expect(src).not.toMatch(/Reserve My Free Spot/);
   });
@@ -55,12 +56,13 @@ describe("landing/quiz truthfulness in prelaunch", () => {
     expect(src).not.toMatch(/Next Cohort Starting Soon/);
   });
 
-  it("HeroSection uses the truthful prelaunch H1 and primary CTA", () => {
+  it("HeroSection uses the launch-ready H1 and primary CTA label", () => {
     const src = read("src/components/landing/HeroSection.tsx");
     expect(src).toMatch(/Turn your app idea into a/);
     expect(src).toMatch(/working first version/);
     expect(src).toMatch(/five focused days/);
-    expect(src).toMatch(/Get Free Early Access/);
+    expect(src).toMatch(/PRIMARY_CTA_LABEL/);
+    expect(src).not.toMatch(/Get Free Early Access/);
     // No unverified marketing claims in hero
     expect(src).not.toMatch(/500\+/);
     expect(src).not.toMatch(/9 countries/);
