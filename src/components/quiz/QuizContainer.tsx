@@ -13,6 +13,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import QuizStep from "./QuizStep";
 import EmailCaptureForm from "./EmailCaptureForm";
 import { Check } from "lucide-react";
+import { PERSONA_STORAGE_KEY } from "@/content/landingCopy";
 
 const quizQuestions = [
   {
@@ -33,11 +34,11 @@ const quizQuestions = [
     ],
   },
   {
-    question: "Can you set aside about 60 minutes for each focused day of the challenge?",
+    question: "Will you commit to completing one focused mission at a time?",
     options: [
-      { label: "Yes, I can carve out 60 minutes a day", value: "commit_ready" },
-      { label: "I'll make it work", value: "commit_time" },
-      { label: "I'm planning to try", value: "commit_lets_go" },
+      { label: "Yes — one mission at a time.", value: "commit_ready" },
+      { label: "I'll do my best.", value: "commit_time" },
+      { label: "I want to try.", value: "commit_lets_go" },
     ],
   },
 ];
@@ -74,6 +75,19 @@ const QuizContainer = () => {
       const params = new URLSearchParams(window.location.search);
       if (params.get("direct") === "1") {
         setCurrentStep(4);
+        return;
+      }
+      // Persona prefill from PersonaChooser on the landing page. Maps 1:1 to
+      // the first quiz option's value, so we set it and jump to Q2.
+      const persona = sessionStorage.getItem(PERSONA_STORAGE_KEY);
+      if (persona === "idea_existing" || persona === "idea_none") {
+        setAnswers((prev) => {
+          const next = [...prev];
+          next[0] = persona;
+          return next;
+        });
+        setCurrentStep(2);
+        sessionStorage.removeItem(PERSONA_STORAGE_KEY);
       }
     } catch {}
   }, []);

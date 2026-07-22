@@ -45,7 +45,7 @@ const FinalCTASection = () => {
           </h2>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            One focused lesson, one clear deliverable, five days. Create your
+            One focused mission, one concrete win, five days. Create your
             free account and start Day 1 today.
           </p>
 
