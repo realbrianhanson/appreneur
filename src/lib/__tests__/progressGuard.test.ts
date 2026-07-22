@@ -32,11 +32,11 @@ describe("mergeTimeSnapshot — retry-idempotent time calculation", () => {
   });
 
   it("clamps the row total at MAX_TOTAL_TIME_S", () => {
-    // Existing near the cap plus a large snapshot must not exceed the cap,
-    // and must never go *down* from the current total.
-    const current = MAX_TOTAL_TIME_S - 10;
-    const result = mergeTimeSnapshot(current, MAX_TIME_PER_CALL_S);
-    expect(result).toBe(MAX_TOTAL_TIME_S);
+    // A pathological snapshot larger than the row ceiling gets clamped
+    // down to MAX_TOTAL_TIME_S — never higher.
+    expect(mergeTimeSnapshot(0, MAX_TOTAL_TIME_S + 10_000)).toBe(MAX_TOTAL_TIME_S);
+    // And once the row is already at the ceiling, further retries are no-ops.
+    expect(mergeTimeSnapshot(MAX_TOTAL_TIME_S, MAX_TOTAL_TIME_S + 500)).toBeNull();
   });
 
   it("is stable across a full retry storm", () => {
