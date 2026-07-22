@@ -34,10 +34,24 @@ serve(async (req: Request) => {
 
   try {
     const url = new URL(req.url);
-    const featured = url.searchParams.get("featured") === "true";
-    const limit = parseInt(url.searchParams.get("limit") || "20");
-    const offset = parseInt(url.searchParams.get("offset") || "0");
-    const minRating = parseInt(url.searchParams.get("min_rating") || "0");
+    let body: Record<string, unknown> = {};
+    if (req.method === "POST") {
+      try { body = await req.json(); } catch { body = {}; }
+    }
+    const featured =
+      url.searchParams.get("featured") === "true" || body.featured === true;
+    const limit = Math.min(
+      50,
+      Math.max(1, parseInt(String(body.limit ?? url.searchParams.get("limit") ?? "20")))
+    );
+    const offset = Math.max(
+      0,
+      parseInt(String(body.offset ?? url.searchParams.get("offset") ?? "0"))
+    );
+    const minRating = Math.max(
+      0,
+      parseInt(String(body.min_rating ?? url.searchParams.get("min_rating") ?? "0"))
+    );
 
     // Generate cache key
     const cacheKey = `testimonials_${featured}_${limit}_${offset}_${minRating}`;
