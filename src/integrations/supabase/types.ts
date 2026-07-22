@@ -749,6 +749,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_users: {
+        Args: {
+          p_date_from?: string
+          p_date_to?: string
+          p_limit?: number
+          p_offset?: number
+          p_progress_status?: string
+          p_search?: string
+        }
+        Returns: Json
+      }
+      admin_overview_stats: { Args: never; Returns: Json }
       claim_registration_delivery: {
         Args: { _kind: string; _max_attempts?: number; _user_id: string }
         Returns: Json
