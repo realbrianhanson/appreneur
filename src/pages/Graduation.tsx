@@ -101,7 +101,7 @@ function formatTime(seconds: number): string {
 
 const Graduation = () => {
   const { profile } = useAuth();
-  const { progress, stats, fetchProgress, isLoading } = useProgress();
+  const { progress, stats, fetchProgress } = useProgress();
   const [showConfetti, setShowConfetti] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const userName = profile?.first_name || "Builder";
