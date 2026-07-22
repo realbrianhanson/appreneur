@@ -6,7 +6,6 @@ import QuizContainer from "@/components/quiz/QuizContainer";
 import JourneyTimeline from "@/components/landing/JourneyTimeline";
 import ValueStackSection from "@/components/landing/ValueStackSection";
 import OpeningCopySection from "@/components/landing/OpeningCopySection";
-import UrgencySection from "@/components/landing/UrgencySection";
 import StickyCtaBar from "@/components/landing/StickyCtaBar";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { AboutHostSection } from "@/components/landing/AboutHostSection";
@@ -18,14 +17,14 @@ import { GhostWord } from "@/components/motion/GhostWord";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
-import { useNextCohort } from "@/hooks/useNextCohort";
+import { IS_PRELAUNCH } from "@/lib/constants";
 import { Zap, Twitter, Linkedin, Youtube } from "lucide-react";
 import { scrollTo } from "@/lib/scroll";
 
 const Index = () => {
-  const { targetDate, isFallback } = useNextCohort();
-  // Only expose real DB cohorts in structured data — never the client-side fallback.
-  const nextCohortDate = !isFallback ? targetDate.toISOString() : null;
+  // During prelaunch there is no scheduled cohort. Never expose a fabricated
+  // date in structured data or the hero.
+  const nextCohortDate: string | null = null;
 
   useEffect(() => {
     trackPageView('/', 'Appreneur Challenge · Build Your First App in 5 Days');
@@ -76,7 +75,7 @@ const Index = () => {
       {/* Hero Section — editorial asymmetric layout */}
       <HeroSection
         onCtaClick={scrollToQuiz}
-        cohortStartDate={!isFallback ? targetDate : null}
+        cohortStartDate={null}
       />
 
       {/* Shipped apps marquee */}
@@ -159,9 +158,6 @@ const Index = () => {
 
       {/* FAQ — overcome objections */}
       <FAQSection />
-
-      {/* Urgency + Quiz — the close (moved to bottom) */}
-      <UrgencySection />
 
       <Section variant="default" spacing="lg" id="quiz-section" className="relative overflow-hidden">
         <GhostWord word="DAY 01" align="top" className="opacity-70" />
