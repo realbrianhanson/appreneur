@@ -74,7 +74,9 @@ describe("index.html sets a real title, description, and canonical", () => {
   const html = read("index.html");
 
   it("has an Appreneur-specific title", () => {
-    expect(html).toMatch(/<title>Appreneur Challenge/);
+    // Launch-ready title leads with the offer + "Appreneur" identity.
+    expect(html).toMatch(/<title>[^<]*Appreneur/);
+    expect(html).toMatch(/App-Building Challenge/i);
     expect(html).not.toMatch(/Lovable App/);
     expect(html).not.toMatch(/Lovable Generated Project/);
   });
