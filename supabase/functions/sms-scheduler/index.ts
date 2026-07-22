@@ -32,6 +32,16 @@ serve(async (req: Request) => {
   }
 
   try {
+    // Feature-flag fail-closed. Cohort/reminder scheduling is a no-op
+    // until SMS_ENABLED is explicitly the string "true" in the edge
+    // function environment.
+    if (Deno.env.get('SMS_ENABLED') !== 'true') {
+      return new Response(
+        JSON.stringify({ success: false, error: 'unavailable' }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
@@ -269,9 +279,8 @@ serve(async (req: Request) => {
 
   } catch (error: unknown) {
     console.error('Scheduler error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      JSON.stringify({ success: false, error: errorMessage }),
+      JSON.stringify({ success: false, error: 'internal_error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

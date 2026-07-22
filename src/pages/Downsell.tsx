@@ -21,27 +21,10 @@ const Downsell = () => {
   useEffect(() => {
     if (!VIP_SALES_ENABLED) return;
     trackPageView('/downsell', 'Special Offer — Appreneur Challenge');
-    (async () => {
-      try {
-        const trackingParams = getStoredTrackingParams();
-        const sessionId =
-          sessionStorage.getItem("session_id") || crypto.randomUUID();
-        sessionStorage.setItem("session_id", sessionId);
-        await supabase.from("funnel_events").insert({
-          session_id: sessionId,
-          user_id: user?.id ?? null,
-          event_type: "downsell_viewed",
-          event_data: {},
-          utm_source: trackingParams.utm_source,
-          utm_medium: trackingParams.utm_medium,
-          utm_campaign: trackingParams.utm_campaign,
-          utm_content: trackingParams.utm_content,
-          fb_ad_id: trackingParams.fb_ad_id,
-        });
-      } catch (err) {
-        console.error("downsell_viewed track error", err);
-      }
-    })();
+    // Direct browser insert into `public.funnel_events` removed in the
+    // security-hardening pass. Anon inserts are RLS-blocked; when VIP
+    // relaunches, emit `downsell_viewed` via an authenticated edge
+    // function with an allowlisted event type.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

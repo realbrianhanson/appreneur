@@ -11,14 +11,23 @@ import Stripe from "npm:stripe@14";
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
+  // Fail-closed feature flag. VIP checkout must remain fully off until the
+  // owner explicitly sets VIP_SALES_ENABLED to the string "true" in the
+  // edge-function environment. Signature verification below is preserved
+  // for when the flag is enabled.
+  if (Deno.env.get("VIP_SALES_ENABLED") !== "true") {
+    return new Response("unavailable", { status: 503 });
+  }
+
   const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
   const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
   if (!stripeKey || !webhookSecret) {
-    return new Response("Stripe webhook not configured", { status: 503 });
+    console.error("[stripe-webhook] missing STRIPE_SECRET_KEY or STRIPE_WEBHOOK_SECRET");
+    return new Response("unavailable", { status: 503 });
   }
 
   const signature = req.headers.get("stripe-signature");
-  if (!signature) return new Response("Missing signature", { status: 400 });
+  if (!signature) return new Response("bad_request", { status: 400 });
 
   const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
   const rawBody = await req.text();
@@ -27,8 +36,9 @@ Deno.serve(async (req) => {
   try {
     event = await stripe.webhooks.constructEventAsync(rawBody, signature, webhookSecret);
   } catch (err) {
-    console.error("Signature verification failed", err);
-    return new Response(`Webhook Error: ${(err as Error).message}`, { status: 400 });
+    // Log detail internally but never echo signature/error detail publicly.
+    console.error("[stripe-webhook] signature verification failed", err);
+    return new Response("bad_request", { status: 400 });
   }
 
   // service_role client so we can bypass RLS to record purchases.
@@ -95,8 +105,8 @@ Deno.serve(async (req) => {
         );
 
       if (upsertError) {
-        console.error("Upsert purchases failed", upsertError);
-        return new Response("db error", { status: 500 });
+        console.error("[stripe-webhook] upsert purchases failed", upsertError);
+        return new Response("internal_error", { status: 500 });
       }
 
       // Flip the VIP flag on the profile for vip_bundle purchases. This is
@@ -112,7 +122,7 @@ Deno.serve(async (req) => {
       headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("Webhook handler error", err);
-    return new Response("handler error", { status: 500 });
+    console.error("[stripe-webhook] handler error", err);
+    return new Response("internal_error", { status: 500 });
   }
 });
