@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container } from "@/components/layout/Container";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
 import { trackPageView, trackGA4Event, trackFBEvent } from "@/lib/analytics";
 import { Check, ArrowRight, FileText } from "lucide-react";
@@ -10,7 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { getStoredTrackingParams } from "@/hooks/useTrackingParams";
 import { showError } from "@/lib/toast-utils";
 import { VIP_SALES_ENABLED } from "@/lib/constants";
-import { PrelaunchSalesPlaceholder } from "@/components/PrelaunchSalesPlaceholder";
 
 const Downsell = () => {
   const { user } = useAuth();
@@ -29,7 +28,7 @@ const Downsell = () => {
   }, []);
 
   if (!VIP_SALES_ENABLED) {
-    return <PrelaunchSalesPlaceholder page="downsell" />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   const handleCheckout = async () => {
