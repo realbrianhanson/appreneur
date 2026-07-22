@@ -16,7 +16,7 @@ import { GhostWord } from "@/components/motion/GhostWord";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
-import { Zap, Twitter, Linkedin, Youtube } from "lucide-react";
+import { Zap } from "lucide-react";
 import { scrollTo } from "@/lib/scroll";
 
 const Index = () => {
