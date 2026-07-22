@@ -18,7 +18,7 @@ interface HeroSectionProps {
 }
 
 const H1_TEXT =
-  "Turn your app idea into a working first version—in five focused days.";
+  "Turn the app idea in your head into a working first version—in five focused days.";
 
 export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -53,7 +53,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
 
   const handleSeePlan = (e: React.MouseEvent) => {
     e.preventDefault();
-    scrollTo("#journey-section", { offset: -40 });
+    scrollTo("#early-access", { offset: -40 });
   };
 
   return (
@@ -115,7 +115,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
               }}
             >
               <span aria-hidden="true">
-                Turn your app idea into a{" "}
+                Turn the app idea in your head into a{" "}
                 <span
                   className="font-serifit italic bg-clip-text text-transparent"
                   style={{
@@ -157,7 +157,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                   </button>
                 </Magnetic>
                 <a
-                  href="#journey-section"
+                  href="#early-access"
                   onClick={handleSeePlan}
                   className="inline-flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline min-h-11"
                 >

@@ -15,7 +15,12 @@ const bioBullets = [
 
 const AboutHostSection = () => {
   return (
-    <Section variant="muted" spacing="xl" className="relative overflow-hidden">
+    <Section
+      id="instructor"
+      variant="muted"
+      spacing="xl"
+      className="relative overflow-hidden"
+    >
       <GhostWord word="BRIAN" align="center" className="opacity-80" />
       <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-gradient-radial from-primary/5 to-transparent blur-3xl" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-gradient-radial from-accent/5 to-transparent blur-3xl" />

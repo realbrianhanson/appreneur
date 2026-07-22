@@ -10,41 +10,54 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const faqs = [
+const faqs: Array<{ id: string; question: string; answer: string }> = [
   {
-    question: "What if I'm not technical at all?",
+    id: "not_technical",
+    question: "I'm not technical — is this really for me?",
     answer:
-      "The challenge is built for entrepreneurs, not engineers. If you can write an email, you can follow the daily missions — modern AI tools handle the code while you make the decisions.",
+      "Yes. The challenge is built for entrepreneurs, not engineers. If you can write an email, you can follow the daily missions. Modern AI builders handle the code while you make the decisions.",
   },
   {
-    question: "Are the sessions live?",
+    id: "dont_know_what_to_build",
+    question: "I don't know what to build yet. Can I still start?",
     answer:
-      "No. Every lesson is on-demand and self-paced. Sign in, open Day 1, and move through the five days on your own schedule.",
+      "Absolutely. Day 1 is designed for exactly this. You'll narrow down to one audience, one problem, and one outcome by the end of the first mission — even if you're starting from a blank page.",
   },
   {
-    question: "When can I start?",
+    id: "what_tools_do_i_need",
+    question: "What tools do I need, and do they cost anything?",
     answer:
-      "Right after you create your free account. Day 1 opens immediately and each next day unlocks as soon as you finish the previous one.",
+      "You can begin on the free plan of the AI builder used in the lessons. Nothing paid is required to complete the challenge itself. If you later choose to publish or scale, some tools have paid tiers — but that is your decision, not a requirement.",
   },
   {
-    question: "What if I fall behind?",
+    id: "miss_a_day",
+    question: "What if I miss a day?",
     answer:
-      "There is no deadline. The challenge is self-paced, so you can take an evening or a month — the plan waits for you.",
+      "Nothing breaks. The challenge is self-paced — pick up wherever you left off. Your progress and next mission are waiting for you when you come back.",
   },
   {
-    question: "Do I need an app idea already?",
+    id: "how_long",
+    question: "How long do I have access?",
     answer:
-      "It helps to have a rough idea, but it isn't required. Day 1 walks you through picking a small, focused first idea so the rest of the week has direction.",
+      "Your free account keeps access to the five missions so you can work at your own pace. No deadline, no cohort clock.",
   },
   {
-    question: "How much time do I need each day?",
+    id: "what_at_the_end",
+    question: "What will I actually have at the end?",
     answer:
-      "Plan for roughly 60 minutes per focused day. The missions are designed to fit into a single sitting.",
+      "By Day 5 the intended outcome is a working, shareable first version of your app, a clear use case, your core user flow, one useful AI feature, and a next-iteration checklist. Your result depends on completing the missions and using the tools provided.",
   },
   {
-    question: "Do I need to buy any software?",
+    id: "really_free",
+    question: "Is it really free? What's the catch?",
     answer:
-      "You can begin on the free plan of the AI builder you'll use. Nothing paid is required to complete the challenge itself.",
+      "Yes. No credit card, no hidden fee for the challenge itself. You'll create a free Appreneur account to save progress, and that's it.",
+  },
+  {
+    id: "after_signup",
+    question: "What happens right after I sign up?",
+    answer:
+      "You land in your dashboard, Day 1 unlocks immediately, and you can start your first mission the moment your account is created.",
   },
 ];
 
@@ -103,7 +116,8 @@ const FAQSection = () => {
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, index) => (
                 <AccordionItem
-                  key={index}
+                  key={faq.id}
+                  data-objection-id={faq.id}
                   value={`item-${index}`}
                   className="border border-border/50 rounded-2xl px-6 bg-card/30 backdrop-blur-sm data-[state=open]:border-primary/50 data-[state=open]:bg-gradient-to-br data-[state=open]:from-primary/10 data-[state=open]:via-card/50 data-[state=open]:to-accent/5 data-[state=open]:shadow-[0_10px_40px_-15px_hsl(var(--primary)/0.35)] transition-all duration-300"
                 >
