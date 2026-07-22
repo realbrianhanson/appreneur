@@ -64,7 +64,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
         That's exactly who this challenge is built for.
         </h3>
         <p className="text-muted-foreground">
-         Create your free account to unlock the full 5-day plan and start Day 1 right now.
+         Create your free account to unlock the full 5-day challenge and start Day 1 right now.
         </p>
       </div>
 
