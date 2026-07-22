@@ -14,7 +14,7 @@ interface SEOHeadProps {
  */
 export const SEOHead = ({
   title = "Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge",
-  description = "A free, beginner-friendly, self-paced roadmap for turning an app idea into a working first version. Join early access while the lessons are being recorded.",
+  description = "A free, beginner-friendly, self-paced 5-day challenge that walks you from app idea to a working first version—one focused lesson and one clear deliverable each day.",
   noindex = false,
   ogImage = "/og-image.png",
   canonicalUrl,
