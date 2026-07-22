@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Star, Upload, Loader2, PartyPopper, X } from "lucide-react";
+import { buildScreenshotPath } from "@/lib/testimonialScreenshot";
 
 interface TestimonialModalProps {
   isOpen: boolean;
@@ -39,12 +40,11 @@ export const TestimonialModal = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        showError("Please upload an image file");
+      // Bucket enforces jpeg/png/webp <= 5MB via a DB trigger — mirror here.
+      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        showError("Please upload a JPEG, PNG, or WebP image");
         return;
       }
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         showError("Image must be less than 5MB");
         return;
@@ -71,26 +71,22 @@ export const TestimonialModal = ({
 
     setIsSubmitting(true);
     try {
-      let screenshotUrl: string | null = null;
+      let screenshotPath: string | null = null;
 
-      // Upload screenshot if provided
+      // Upload screenshot as a private object; we never store a public URL.
       if (screenshot) {
-        const fileExt = screenshot.name.split(".").pop();
-        const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-
+        const path = buildScreenshotPath(user.id, screenshot.name);
         const { error: uploadError } = await supabase.storage
           .from("app-screenshots")
-          .upload(fileName, screenshot);
+          .upload(path, screenshot, {
+            contentType: screenshot.type,
+            upsert: false,
+          });
 
         if (uploadError) {
           throw new Error("Failed to upload screenshot");
         }
-
-        const { data: publicUrl } = supabase.storage
-          .from("app-screenshots")
-          .getPublicUrl(fileName);
-
-        screenshotUrl = publicUrl.publicUrl;
+        screenshotPath = path;
       }
 
       // Insert testimonial
@@ -103,7 +99,8 @@ export const TestimonialModal = ({
           content: quote.trim(),
           rating,
           app_name: appName.trim() || null,
-          app_screenshot_url: screenshotUrl,
+          app_screenshot_path: screenshotPath,
+          app_screenshot_url: null,
           is_approved: false,
           is_featured: false,
         });
