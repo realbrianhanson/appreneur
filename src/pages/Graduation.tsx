@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import jsPDF from "jspdf";
 import { showSuccess, showError } from "@/lib/toast-utils";
+import { canAccessGraduation, graduationDate } from "@/lib/progressGuards";
 
 // Confetti Component
 const Confetti = () => {
@@ -116,20 +117,14 @@ const Graduation = () => {
     return () => clearTimeout(t);
   }, []);
 
-  const day5 = useMemo(
-    () => progress.find((p) => p.day_number === 5),
-    [progress]
-  );
-  const hasCompletedDay5 = !!day5?.is_completed && !!day5?.completed_at;
+  const hasCompletedDay5 = useMemo(() => canAccessGraduation(progress), [progress]);
 
   const completionDate = useMemo(() => {
-    if (!day5?.completed_at) return "";
-    return new Date(day5.completed_at).toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  }, [day5]);
+    const d = graduationDate(progress);
+    return d
+      ? d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+      : "";
+  }, [progress]);
 
   // Guard: block the page (and certificate generation) for anyone who
   // has not actually finished Day 5. We only redirect once progress has
