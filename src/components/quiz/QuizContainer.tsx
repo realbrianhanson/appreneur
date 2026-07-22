@@ -268,9 +268,9 @@ const QuizContainer = () => {
         });
 
         // No email/webhook fire from the browser. Also send no PII to
-        // third-party analytics. Use the auth user's id as a per-user event id
-        // for dedup (not the email address).
-        trackRegistrationCompleteAnalytics({ eventId: authData.user.id });
+        // third-party analytics. Dedupe with the anonymous per-browser
+        // session_id — never the auth user id or email.
+        trackRegistrationCompleteAnalytics({ eventId: sessionId });
 
         if (authData.session) {
           // Server-side, race-safe: init progress + welcome email + webhook.

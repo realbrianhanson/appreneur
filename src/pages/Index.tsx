@@ -16,7 +16,7 @@ import { GhostWord } from "@/components/motion/GhostWord";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
-import { Zap, Twitter, Linkedin, Youtube } from "lucide-react";
+import { Zap } from "lucide-react";
 import { scrollTo } from "@/lib/scroll";
 
 const Index = () => {
@@ -43,11 +43,6 @@ const Index = () => {
         organization={{
           name: "AI For Business",
           url: "https://appreneur.ai",
-          sameAs: [
-            "https://twitter.com/AIForBeginners",
-            "https://linkedin.com/company/aiforbeginners",
-            "https://youtube.com/@AIForBeginners",
-          ],
         }}
         course={{
           name: "The Appreneur Challenge",
@@ -195,36 +190,6 @@ const Index = () => {
                 className="hover:text-primary transition-colors"
               >
                 Contact
-              </a>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <a
-                href="https://twitter.com/AIForBeginners"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
-                aria-label="Twitter"
-              >
-                <Twitter className="w-4 h-4" aria-hidden="true" />
-              </a>
-              <a
-                href="https://linkedin.com/company/aiforbeginners"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-4 h-4" aria-hidden="true" />
-              </a>
-              <a
-                href="https://youtube.com/@AIForBeginners"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-4 h-4" aria-hidden="true" />
               </a>
             </div>
 

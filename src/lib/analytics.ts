@@ -1,20 +1,10 @@
 /**
- * Analytics utility functions for GA4 and Facebook Pixel tracking
- * Replace placeholder IDs in index.html meta tags before using
+ * Analytics utility functions for GA4 and Facebook Pixel tracking.
+ *
+ * External analytics are disabled by default during prelaunch. These helpers
+ * remain safe no-ops unless a vendor snippet is loaded later; they never send
+ * PII (email addresses, auth user ids) to third parties.
  */
-
-// Warn if analytics IDs are still placeholders
-if (typeof document !== 'undefined') {
-  const ga4Id = document.querySelector('meta[name="ga4-id"]')?.getAttribute('content');
-  const fbId = document.querySelector('meta[name="fb-pixel-id"]')?.getAttribute('content');
-
-  if (!ga4Id || ga4Id === 'G-XXXXXXXXXX') {
-    console.warn('[Analytics] GA4 Measurement ID is not configured. Replace G-XXXXXXXXXX in the ga4-id meta tag in index.html.');
-  }
-  if (!fbId || fbId === 'XXXXXXXXXXXXXXXX') {
-    console.warn('[Analytics] Facebook Pixel ID is not configured. Replace XXXXXXXXXXXXXXXX in the fb-pixel-id meta tag in index.html.');
-  }
-}
 
 // Declare global types for analytics
 declare global {
@@ -86,7 +76,6 @@ export const trackRegistrationComplete = (opts?: { eventId?: string }) => {
     ...(opts?.eventId ? { eventID: opts.eventId } : {}),
   });
 
-  console.log('[Analytics] Registration complete tracked');
 };
 
 /**
@@ -101,7 +90,6 @@ export const trackQuizStart = () => {
     content_name: 'Appreneur Challenge Quiz',
   });
 
-  console.log('[Analytics] Quiz start tracked');
 };
 
 /**
@@ -117,7 +105,6 @@ export const trackQuizComplete = (answers?: Record<string, string>) => {
     content_name: 'Appreneur Challenge Quiz Complete',
   });
 
-  console.log('[Analytics] Quiz complete tracked');
 };
 
 /**
@@ -152,7 +139,6 @@ export const trackVIPPurchase = (
     content_type: 'product',
   });
 
-  console.log('[Analytics] VIP purchase tracked:', { value, currency, transactionId: txId });
 };
 
 /**
@@ -169,7 +155,6 @@ export const trackChallengeComplete = () => {
     status: 'complete',
   });
 
-  console.log('[Analytics] Challenge complete tracked');
 };
 
 /**
@@ -186,7 +171,6 @@ export const trackDayComplete = (dayNumber: number) => {
     day_number: dayNumber,
   });
 
-  console.log('[Analytics] Day complete tracked:', dayNumber);
 };
 
 /**
@@ -204,7 +188,6 @@ export const trackPageView = (pagePath: string, pageTitle?: string) => {
     window.fbq('track', 'PageView');
   }
 
-  console.log('[Analytics] Page view tracked:', pagePath);
 };
 
 /**
@@ -226,7 +209,6 @@ export const trackVIPOfferView = () => {
     content_type: 'product',
   });
 
-  console.log('[Analytics] VIP offer view tracked');
 };
 
 /**
@@ -248,5 +230,4 @@ export const trackDownsellView = () => {
     content_type: 'product',
   });
 
-  console.log('[Analytics] Downsell view tracked');
 };

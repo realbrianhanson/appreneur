@@ -34,6 +34,22 @@ function escapeHtml(input: unknown): string {
     .replace(/'/g, "&#39;");
 }
 
+// AbortSignal.timeout is available on the modern Deno runtime; fall back to
+// an AbortController for older versions.
+function withTimeout(ms: number): AbortSignal {
+  const anyAbort = AbortSignal as unknown as {
+    timeout?: (ms: number) => AbortSignal;
+  };
+  if (typeof anyAbort.timeout === "function") {
+    return anyAbort.timeout(ms);
+  }
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), ms);
+  return controller.signal;
+}
+
+const NETWORK_TIMEOUT_MS = 10_000;
+
 interface WelcomeTemplateData {
   firstName: string;
   dashboardUrl: string;
@@ -199,7 +215,7 @@ serve(async (req: Request) => {
     emailStatus = "not_configured";
     await service
       .from("registration_deliveries")
-      .update({ email_status: "not_configured" })
+      .update({ email_status: "not_configured", email_claim_expires_at: null })
       .eq("user_id", userId)
       .neq("email_status", "sent");
   } else if (!userEmail) {
@@ -232,6 +248,7 @@ serve(async (req: Request) => {
             html: built.html,
             text: built.text,
           }),
+          signal: withTimeout(NETWORK_TIMEOUT_MS),
         });
         if (!resp.ok) {
           const errText = await resp.text().catch(() => "");
@@ -241,8 +258,8 @@ serve(async (req: Request) => {
             .from("registration_deliveries")
             .update({
               email_status: "failed",
-              last_error: `resend ${resp.status}`,
-              claim_expires_at: null,
+              email_last_error: `resend ${resp.status}`.slice(0, 200),
+              email_claim_expires_at: null,
             })
             .eq("user_id", userId);
         } else {
@@ -252,19 +269,21 @@ serve(async (req: Request) => {
             .update({
               email_status: "sent",
               email_sent_at: new Date().toISOString(),
-              claim_expires_at: null,
+              email_claim_expires_at: null,
+              email_last_error: null,
             })
             .eq("user_id", userId);
         }
       } catch (err) {
         console.error("[finalize-registration] email send exception", err);
         emailStatus = "failed";
+        const msg = err instanceof Error ? err.name : "email_send_exception";
         await service
           .from("registration_deliveries")
           .update({
             email_status: "failed",
-            last_error: "email_send_exception",
-            claim_expires_at: null,
+            email_last_error: msg.slice(0, 200),
+            email_claim_expires_at: null,
           })
           .eq("user_id", userId);
       }
@@ -305,6 +324,7 @@ serve(async (req: Request) => {
               quiz_answers: quizAnswers,
             },
           }),
+          signal: withTimeout(NETWORK_TIMEOUT_MS),
         });
         if (!resp.ok) {
           webhookStatus = "failed";
@@ -312,8 +332,8 @@ serve(async (req: Request) => {
             .from("registration_deliveries")
             .update({
               webhook_status: "failed",
-              last_error: `fire-webhook ${resp.status}`,
-              claim_expires_at: null,
+              webhook_last_error: `fire-webhook ${resp.status}`.slice(0, 200),
+              webhook_claim_expires_at: null,
             })
             .eq("user_id", userId);
         } else {
@@ -323,19 +343,21 @@ serve(async (req: Request) => {
             .update({
               webhook_status: "sent",
               webhook_sent_at: new Date().toISOString(),
-              claim_expires_at: null,
+              webhook_claim_expires_at: null,
+              webhook_last_error: null,
             })
             .eq("user_id", userId);
         }
       } catch (err) {
         console.error("[finalize-registration] webhook exception", err);
         webhookStatus = "failed";
+        const msg = err instanceof Error ? err.name : "webhook_exception";
         await service
           .from("registration_deliveries")
           .update({
             webhook_status: "failed",
-            last_error: "webhook_exception",
-            claim_expires_at: null,
+            webhook_last_error: msg.slice(0, 200),
+            webhook_claim_expires_at: null,
           })
           .eq("user_id", userId);
       }

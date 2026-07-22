@@ -359,6 +359,9 @@ export type Database = {
           attempts: number
           claim_expires_at: string | null
           created_at: string
+          email_attempts: number
+          email_claim_expires_at: string | null
+          email_last_error: string | null
           email_sent_at: string | null
           email_status: string
           id: string
@@ -366,6 +369,9 @@ export type Database = {
           progress_initialized_at: string | null
           updated_at: string
           user_id: string
+          webhook_attempts: number
+          webhook_claim_expires_at: string | null
+          webhook_last_error: string | null
           webhook_sent_at: string | null
           webhook_status: string
         }
@@ -373,6 +379,9 @@ export type Database = {
           attempts?: number
           claim_expires_at?: string | null
           created_at?: string
+          email_attempts?: number
+          email_claim_expires_at?: string | null
+          email_last_error?: string | null
           email_sent_at?: string | null
           email_status?: string
           id?: string
@@ -380,6 +389,9 @@ export type Database = {
           progress_initialized_at?: string | null
           updated_at?: string
           user_id: string
+          webhook_attempts?: number
+          webhook_claim_expires_at?: string | null
+          webhook_last_error?: string | null
           webhook_sent_at?: string | null
           webhook_status?: string
         }
@@ -387,6 +399,9 @@ export type Database = {
           attempts?: number
           claim_expires_at?: string | null
           created_at?: string
+          email_attempts?: number
+          email_claim_expires_at?: string | null
+          email_last_error?: string | null
           email_sent_at?: string | null
           email_status?: string
           id?: string
@@ -394,6 +409,9 @@ export type Database = {
           progress_initialized_at?: string | null
           updated_at?: string
           user_id?: string
+          webhook_attempts?: number
+          webhook_claim_expires_at?: string | null
+          webhook_last_error?: string | null
           webhook_sent_at?: string | null
           webhook_status?: string
         }

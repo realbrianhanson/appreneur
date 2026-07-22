@@ -20,7 +20,7 @@ const stackItems: StackItem[] = [
   },
   {
     title: "Private Community Access",
-    caption: "Connect with 500+ entrepreneurs building alongside you.",
+    caption: "Connect with entrepreneurs building alongside you.",
     value: 197,
   },
   {
