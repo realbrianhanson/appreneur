@@ -7,6 +7,7 @@ interface DayCard {
   day: number;
   title: string;
   description: string;
+  deliverable: string;
   icon: LucideIcon;
   emoji?: string;
 }
@@ -14,37 +15,47 @@ interface DayCard {
 const days: DayCard[] = [
   {
     day: 1,
-    title: "Choose the right app idea",
+    title: "Choose the idea worth building.",
     description:
-      "Pick one audience, one problem, and one specific outcome. You end Day 1 with a clear one-line pitch and the direction for the rest of the week.",
+      "Stop juggling ten half-ideas. Today you pick the one your future self will thank you for — one audience, one problem, one specific outcome — and lock the direction for the rest of the week.",
+    deliverable:
+      "one clear audience, problem, and outcome, plus a one-sentence app concept you can say out loud.",
     icon: Lightbulb,
   },
   {
     day: 2,
-    title: "Map the first version",
+    title: "Turn the idea into a buildable first version.",
     description:
-      "Turn the idea into a simple screen flow, wireframe, and feature boundary — what's in your V1, and what waits for later.",
+      "Big vision doesn't ship. Today you carve your idea down to a buildable first version so scope stops fighting you: the screens that matter, the flow between them, and the features that wait for later.",
+    deliverable:
+      "a screen flow, a rough wireframe, and a must-have feature boundary for your V1.",
     icon: PenTool,
   },
   {
     day: 3,
-    title: "Build the core experience",
+    title: "Make the core experience real.",
     description:
-      "Assemble the layout, navigation, and essential data. By the end of the day the core of your first version is real and clickable.",
+      "This is the day the app stops being an idea. You assemble the working layout, navigation, and essential data so the core of your first version becomes something you can actually click through.",
+    deliverable:
+      "a working layout, real navigation, and the essential data your app needs.",
     icon: Hammer,
   },
   {
     day: 4,
-    title: "Add the intelligence",
+    title: "Make it genuinely useful with AI.",
     description:
-      "Wire in one genuinely useful AI feature and refine the prompt behind it — the piece that makes your app feel modern and specific.",
+      "AI features are cheap. Useful AI features are rare. Today you wire in one AI capability that actually solves your user's problem, and refine the prompt behind it until the output is worth trusting.",
+    deliverable:
+      "one useful AI feature and the refined prompt that powers it.",
     icon: Wand2,
   },
   {
     day: 5,
-    title: "Polish, test, and publish",
+    title: "Polish it. Test it. Publish it.",
     description:
-      "Run the quality checklist, deploy a shareable version, and leave with a next-iteration plan you can execute in week two.",
+      "Most builders quit right before this day. You won't. You run the quality checklist, fix the rough edges, deploy a shareable version, and walk away with a next-iteration checklist for week two.",
+    deliverable:
+      "a shareable, deployed first version and a next-iteration checklist.",
     icon: Rocket,
     emoji: "🚀",
   },
@@ -180,6 +191,24 @@ const JourneyTimeline = () => {
                 </h4>
                 <p className="text-muted-foreground leading-relaxed">
                   {d.description}
+                </p>
+                <p
+                  className="mt-4 text-sm md:text-[15px] leading-relaxed"
+                  style={{ color: "rgba(244,242,238,0.85)" }}
+                >
+                  <span
+                    className="inline-block mr-2 align-middle"
+                    style={{
+                      fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                      fontSize: 10,
+                      letterSpacing: "0.25em",
+                      textTransform: "uppercase",
+                      color: "#FFA04D",
+                    }}
+                  >
+                    You finish with:
+                  </span>
+                  <span>{d.deliverable}</span>
                 </p>
               </div>
             </li>

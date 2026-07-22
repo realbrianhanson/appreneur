@@ -58,7 +58,7 @@ describe("landing/quiz truthfulness in prelaunch", () => {
 
   it("HeroSection uses the launch-ready H1 and primary CTA label", () => {
     const src = read("src/components/landing/HeroSection.tsx");
-    expect(src).toMatch(/Turn your app idea into a/);
+    expect(src).toMatch(/Turn the app idea in your head into a/);
     expect(src).toMatch(/working first version/);
     expect(src).toMatch(/five focused days/);
     expect(src).toMatch(/PRIMARY_CTA_LABEL/);

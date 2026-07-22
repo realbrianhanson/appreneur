@@ -13,12 +13,18 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { WhyThisWorks } from "@/components/landing/WhyThisWorks";
 import { EarlyAccessSection } from "@/components/landing/EarlyAccessSection";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
+import { AuthorityStrip } from "@/components/landing/AuthorityStrip";
+import { PersonaChooser } from "@/components/landing/PersonaChooser";
+import { LandingVideoSlot } from "@/components/landing/LandingVideoSlot";
+import { OpportunityMechanismSection } from "@/components/landing/OpportunityMechanismSection";
+import { MomentumLine } from "@/components/landing/MomentumLine";
 import { GhostWord } from "@/components/motion/GhostWord";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
 import { trackPageView } from "@/lib/analytics";
 import { Zap } from "lucide-react";
 import { scrollTo } from "@/lib/scroll";
+import { PRIMARY_CTA_LABEL } from "@/lib/constants";
 
 const Index = () => {
   useEffect(() => {
@@ -35,8 +41,8 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <StickyCtaBar onCtaClick={scrollToQuiz} />
       <SEOHead
-        title="Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge"
-        description="A free, self-paced 5-day challenge for entrepreneurs. Turn your app idea into a working first version — no code required. Start Day 1 today."
+        title="The Free 5-Day App-Building Challenge for Non-Coders · Appreneur"
+        description="Turn the app idea in your head into a working first version—in five focused days. Free, self-paced, beginner-friendly. No code. No developer. Start Day 1 today."
         canonicalUrl="https://appreneur.ai/"
       />
 
@@ -57,8 +63,20 @@ const Index = () => {
       {/* Hero */}
       <HeroSection onCtaClick={scrollToQuiz} />
 
-      {/* Problem / possibility */}
+      {/* Authority — tight strip directly below the hero */}
+      <AuthorityStrip />
+
+      {/* Persona chooser — prefills the quiz's first answer */}
+      <PersonaChooser />
+
+      {/* Conditional VSL — renders only when a real URL is configured */}
+      <LandingVideoSlot />
+
+      {/* Problem / why they're stuck */}
       <OpeningCopySection />
+
+      {/* Opportunity + mechanism */}
+      <OpportunityMechanismSection />
 
       {/* Instructor authority — moved higher on the page */}
       <AboutHostSection />
@@ -66,7 +84,7 @@ const Index = () => {
       {/* Why this works — three-part mechanism */}
       <WhyThisWorks />
 
-      {/* 5-day journey */}
+      {/* 5-day challenge — five missions, one working first version */}
       <Section
         id="journey-section"
         variant="default"
@@ -85,7 +103,7 @@ const Index = () => {
                 color: "#F4F2EE",
               }}
             >
-              The{" "}
+              Five missions.{" "}
               <span
                 className="font-serifit bg-clip-text text-transparent"
                 style={{
@@ -93,12 +111,13 @@ const Index = () => {
                     "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
                 }}
               >
-                5-Day Challenge
+                One working first version.
               </span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Five daily missions. One concrete win each day, visible progress,
-              and a Day 5 finish line — all on your schedule.
+              One focused mission a day. One concrete deliverable at the end
+              of every mission. A visible Day 5 finish line — all on your
+              schedule.
             </p>
           </div>
 
@@ -111,7 +130,7 @@ const Index = () => {
               className="text-lg py-6 min-h-11"
               onClick={scrollToQuiz}
             >
-              Start the Free Challenge
+              {PRIMARY_CTA_LABEL}
               <Zap className="w-5 h-5 ml-2" aria-hidden="true" />
             </Button>
           </div>
@@ -120,6 +139,9 @@ const Index = () => {
 
       {/* What you'll have by Day 5 — outcomes */}
       <EarlyAccessSection onCtaClick={scrollToQuiz} />
+
+      {/* Momentum — mid-page CTA, honest, no fake urgency */}
+      <MomentumLine onCtaClick={scrollToQuiz} />
 
       {/* Approved testimonials — renders null when empty */}
       <SocialProofSection />
@@ -138,9 +160,9 @@ const Index = () => {
           <div className="max-w-2xl mx-auto space-y-8">
             <div className="text-center space-y-3">
               <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground leading-[1.05] tracking-tight">
-                Start the challenge in{" "}
+                Choose your starting point.{" "}
                 <span className="font-serifit italic bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-                  60 seconds
+                  We'll tailor your first mission.
                 </span>
               </h2>
               <p className="text-muted-foreground">

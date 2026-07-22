@@ -69,18 +69,19 @@ describe("landing CTA hierarchy", () => {
     expect(src).not.toMatch(/Get Free Early Access/);
     expect(src).not.toMatch(/Join Free/);
   });
-  it("Quiz heading uses launch-ready 'Start the challenge' framing", () => {
+  it("Quiz heading tailors the first mission to the visitor", () => {
     const src = read("src/pages/Index.tsx");
-    expect(src).toMatch(/Start the challenge in/);
-    expect(src).toMatch(/60 seconds/);
+    expect(src).toMatch(/Choose your starting point/);
+    expect(src).toMatch(/We'll tailor your first mission/);
     expect(src).not.toMatch(/Get early access/);
   });
 });
 
-describe("Quiz question 3 is launch-ready truthful", () => {
-  it("frames commitment as 60 minutes per day, not tied to a recording window", () => {
+describe("Quiz question 3 asks for mission-at-a-time commitment", () => {
+  it("does not assert an unverified per-day runtime", () => {
     const src = read("src/components/quiz/QuizContainer.tsx");
-    expect(src).toMatch(/60 minutes for each focused day/);
+    expect(src).toMatch(/one focused mission at a time/);
+    expect(src).not.toMatch(/60 minutes for each focused day/);
     expect(src).not.toMatch(/When the lessons open/);
     expect(src).not.toMatch(/build a real, working app this week/);
   });

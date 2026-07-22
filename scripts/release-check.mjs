@@ -16,6 +16,12 @@ const FORBIDDEN = [
   "we'll email you when",
   "we will email you when",
   "lesson preview while videos are recorded",
+  "5-day plan",
+  "five-day plan",
+  "5-day roadmap",
+  "five-day roadmap",
+  " roadmap",
+  " program.",
 ];
 
 const CUSTOMER_FACING_ROOTS = [
@@ -63,6 +69,12 @@ if (!existsSync(videosPath)) {
     if (!m || !m[1] || m[1].includes("TODO")) {
       failures.push(`Day ${day} videoUrl is not configured in ${videosPath}`);
     }
+  }
+  // Landing-page VSL — the owner committed to recording a 3–5 min VSL.
+  const vslRe = /LANDING_VSL[\s\S]{0,600}?videoUrl\s*:\s*['"]([^'"]*)['"]/;
+  const vslMatch = src.match(vslRe);
+  if (!vslMatch || !vslMatch[1] || vslMatch[1].includes("TODO")) {
+    failures.push(`Landing VSL videoUrl is not configured in ${videosPath}`);
   }
 }
 
