@@ -124,10 +124,12 @@ export default function WebhooksAdmin() {
       return;
     }
 
-    if (!newEndpoint.url.startsWith('https://')) {
+    // Same-family SSRF guard the edge function enforces before delivery.
+    const safety = (await import("@/lib/webhook-url")).isSafeWebhookUrl(newEndpoint.url);
+    if (!safety.ok) {
       toast({
         title: "Error",
-        description: "Webhook URL must use HTTPS",
+        description: safety.reason,
         variant: "destructive",
       });
       return;
