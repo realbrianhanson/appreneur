@@ -34,12 +34,12 @@ export const VIP_SALES_ENABLED = false;
  */
 export const CHALLENGE_TAGLINE = "Five focused days, on your schedule.";
 export const PRIMARY_CTA_LABEL = "Start the Free Challenge";
-export const SECONDARY_CTA_LABEL = "See the 5-Day Plan";
+export const SECONDARY_CTA_LABEL = "See the 5-Day Challenge";
 export const REGISTRATION_CTA_LABEL = "Create My Free Account";
 export const HERO_EYEBROW =
   "FREE 5-DAY SELF-PACED CHALLENGE · NO CODE REQUIRED";
 export const HERO_SUPPORT_COPY =
-  "A practical, step-by-step challenge that walks you from idea to a working first version—with one focused lesson and one clear deliverable each day.";
+  "A practical, step-by-step challenge that takes you from idea to a working first version—with one focused mission and one concrete win each day.";
 export const CTA_MICROCOPY =
   "Free · Self-paced · No credit card · Beginner-friendly";
 
