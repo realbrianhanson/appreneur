@@ -43,11 +43,6 @@ const Index = () => {
         organization={{
           name: "AI For Business",
           url: "https://appreneur.ai",
-          sameAs: [
-            "https://twitter.com/AIForBeginners",
-            "https://linkedin.com/company/aiforbeginners",
-            "https://youtube.com/@AIForBeginners",
-          ],
         }}
         course={{
           name: "The Appreneur Challenge",
