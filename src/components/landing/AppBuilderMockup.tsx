@@ -2,9 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePauseWhenHidden } from "@/hooks/usePauseWhenHidden";
 import {
-  Calendar as CalendarIcon,
-  CreditCard,
-  Bell,
   Check,
   Sparkles,
   Loader2,
@@ -24,7 +21,9 @@ const CHECKLIST = [
   "Getting a link you can share",
 ];
 
-// Timeline (ms from cycle start)
+// Timeline (ms from cycle start). The right panel builds a simple
+// quote-calculator preview step by step: header → input rows → estimated
+// total → live/share banner.
 const TYPE_START = 200;
 const TYPE_END = 3000;
 const BUILD_APPEAR = 3200;
@@ -33,8 +32,8 @@ const CHECK_FIRST = 3600;
 const CHECK_TO_DONE = 500; // spinner -> check delay
 
 const PREVIEW_HEADER = 3400;
-const PREVIEW_CARDS = 4400;
-const PREVIEW_CALENDAR = 5800;
+const PREVIEW_ROWS = 4400;   // input rows (Service, Quantity)
+const PREVIEW_TOTAL = 5800;  // estimated total
 const PREVIEW_DEPLOYED = 7200;
 const READY_ON = 7400;
 
@@ -87,8 +86,8 @@ export const AppBuilderMockup = () => {
 
   const showBuilding = now >= BUILD_APPEAR;
   const showHeader = now >= PREVIEW_HEADER;
-  const showCards = now >= PREVIEW_CARDS;
-  const showCalendar = now >= PREVIEW_CALENDAR;
+  const showRows = now >= PREVIEW_ROWS;
+  const showTotal = now >= PREVIEW_TOTAL;
   const showDeployed = now >= PREVIEW_DEPLOYED;
   const showReady = now >= READY_ON;
   const fadingOut = now >= FADE_OUT;
