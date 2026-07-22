@@ -85,7 +85,7 @@ const Index = () => {
                 color: "#F4F2EE",
               }}
             >
-              A clear path,{" "}
+              The{" "}
               <span
                 className="font-serifit bg-clip-text text-transparent"
                 style={{
@@ -93,12 +93,12 @@ const Index = () => {
                     "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
                 }}
               >
-                one day at a time.
+                5-Day Challenge
               </span>
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Five self-paced missions. Each unlocks after the prior is
-              completed, so you always know what to do next.
+              Five daily missions. One concrete win each day, visible progress,
+              and a Day 5 finish line — all on your schedule.
             </p>
           </div>
 
