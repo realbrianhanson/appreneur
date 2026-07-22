@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
-import { sendWelcomeEmail } from "@/lib/email";
-import { fireWebhook } from "@/lib/webhooks";
+import { finalizeRegistration } from "@/lib/finalize-registration";
 import {
   trackQuizComplete,
   trackRegistrationComplete as trackRegistrationCompleteAnalytics,
@@ -54,6 +53,7 @@ const QuizContainer = () => {
   const [answers, setAnswers] = useState<(string | null)[]>([null, null, null]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
+  const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
   const stepHeadingRef = useRef<HTMLHeadingElement | null>(null);
 
   // Move focus to the new step's heading on every step change so
@@ -183,7 +183,7 @@ const QuizContainer = () => {
         await supabase.from("funnel_events").insert({
           session_id: sessionId,
           event_type: "lead_captured",
-          event_data: { email: data.email },
+          event_data: {},
           utm_source: trackingParams.utm_source,
           utm_medium: trackingParams.utm_medium,
           utm_campaign: trackingParams.utm_campaign,
@@ -244,14 +244,6 @@ const QuizContainer = () => {
         // Give handle_new_user a beat to create the profile row.
         await new Promise((resolve) => setTimeout(resolve, 400));
 
-        // Initialize the 5 progress rows using the safe no-argument RPC.
-        const { error: progressError } = await supabase.rpc(
-          "initialize_user_progress"
-        );
-        if (progressError) {
-          console.error("Error initializing progress:", progressError);
-        }
-
         // Store quiz lead for tracking (backup) — no cohort_id in prelaunch.
         await supabase.from("quiz_leads").insert({
           first_name: data.firstName,
@@ -275,35 +267,38 @@ const QuizContainer = () => {
           fb_ad_id: trackingParams.fb_ad_id,
         });
 
-        trackRegistrationCompleteAnalytics(data.email);
-
-        fireWebhook("user.registered", {
-          user_id: authData.user.id,
-          email: data.email,
-          first_name: data.firstName,
-          utm_params: {
-            utm_source: trackingParams.utm_source || "",
-            utm_medium: trackingParams.utm_medium || "",
-            utm_campaign: trackingParams.utm_campaign || "",
-            utm_content: trackingParams.utm_content || "",
-            fb_ad_id: trackingParams.fb_ad_id || "",
-          },
-          quiz_answers: {
-            answer1: answers[0] || "",
-            answer2: answers[1] || "",
-            answer3: answers[2] || "",
-          },
-        }).catch((err) => console.error("user.registered webhook error", err));
-
-        // Fire-and-forget welcome email. We don't claim it's sent to the user
-        // unless the server confirms it, so no toast promise here.
-        sendWelcomeEmail(data.email, data.firstName, "").catch(err => {
-          console.error("Error sending welcome email:", err);
-        });
+        // No email/webhook fire from the browser. Also send no PII to
+        // third-party analytics. Use the auth user's id as a per-user event id
+        // for dedup (not the email address).
+        trackRegistrationCompleteAnalytics({ eventId: authData.user.id });
 
         if (authData.session) {
+          // Server-side, race-safe: init progress + welcome email + webhook.
+          try {
+            await finalizeRegistration({
+              firstName: data.firstName,
+              quizAnswers: {
+                answer1: answers[0] || "",
+                answer2: answers[1] || "",
+                answer3: answers[2] || "",
+              },
+              utmParams: {
+                utm_source: trackingParams.utm_source || "",
+                utm_medium: trackingParams.utm_medium || "",
+                utm_campaign: trackingParams.utm_campaign || "",
+                utm_content: trackingParams.utm_content || "",
+                fb_ad_id: trackingParams.fb_ad_id || "",
+              },
+            });
+          } catch (err) {
+            console.error("finalize-registration failed", err);
+          }
           navigate(`/thank-you?name=${encodeURIComponent(data.firstName)}`);
         } else {
+          // Email confirmation required — no session yet, so we cannot
+          // trigger finalize-registration and must not claim the welcome
+          // email was sent.
+          setNeedsEmailConfirmation(true);
           setIsComplete(true);
         }
         return;
@@ -341,6 +336,34 @@ const QuizContainer = () => {
   }
 
   if (isComplete) {
+    if (needsEmailConfirmation) {
+      return (
+        <div className="text-center space-y-6 p-8 md:p-10 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10">
+          <div className="w-20 h-20 mx-auto rounded-full bg-primary/20 flex items-center justify-center">
+            <span className="text-4xl" aria-hidden="true">📬</span>
+          </div>
+          <div className="space-y-3">
+            <h3 className="text-2xl md:text-3xl font-display font-bold leading-tight tracking-tight">
+              Check your inbox to confirm your email
+            </h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              We sent a confirmation link to complete your early-access signup.
+              Open it to activate your account. Your welcome email arrives after
+              you confirm.
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setIsComplete(false);
+              setNeedsEmailConfirmation(false);
+            }}
+            className="text-xs text-muted-foreground hover:text-primary transition-colors"
+          >
+            Wrong email? Try again
+          </button>
+        </div>
+      );
+    }
     return (
       <div className="text-center space-y-6 p-8 md:p-10 rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10">
         <motion.div

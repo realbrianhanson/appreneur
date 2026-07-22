@@ -354,6 +354,51 @@ export type Database = {
           },
         ]
       }
+      registration_deliveries: {
+        Row: {
+          attempts: number
+          claim_expires_at: string | null
+          created_at: string
+          email_sent_at: string | null
+          email_status: string
+          id: string
+          last_error: string | null
+          progress_initialized_at: string | null
+          updated_at: string
+          user_id: string
+          webhook_sent_at: string | null
+          webhook_status: string
+        }
+        Insert: {
+          attempts?: number
+          claim_expires_at?: string | null
+          created_at?: string
+          email_sent_at?: string | null
+          email_status?: string
+          id?: string
+          last_error?: string | null
+          progress_initialized_at?: string | null
+          updated_at?: string
+          user_id: string
+          webhook_sent_at?: string | null
+          webhook_status?: string
+        }
+        Update: {
+          attempts?: number
+          claim_expires_at?: string | null
+          created_at?: string
+          email_sent_at?: string | null
+          email_status?: string
+          id?: string
+          last_error?: string | null
+          progress_initialized_at?: string | null
+          updated_at?: string
+          user_id?: string
+          webhook_sent_at?: string | null
+          webhook_status?: string
+        }
+        Relationships: []
+      }
       sms_logs: {
         Row: {
           created_at: string
@@ -686,6 +731,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_registration_delivery: {
+        Args: { _kind: string; _max_attempts?: number; _user_id: string }
+        Returns: Json
+      }
       complete_task: {
         Args: { p_day_number: number; p_task_id: string }
         Returns: Json

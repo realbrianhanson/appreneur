@@ -3,7 +3,7 @@ import { Container } from "@/components/layout/Container";
 import { Button } from "@/components/ui/button";
 import { Link, useSearchParams } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
-import { trackPageView, trackRegistrationComplete } from "@/lib/analytics";
+import { trackPageView } from "@/lib/analytics";
 import {
   COMMUNITY_URL,
   COMMUNITY_NAME,
@@ -104,20 +104,10 @@ const ThankYou = () => {
   const [showConfetti, setShowConfetti] = useState(true);
   const showCommunity = hasValidCommunityUrl();
 
-  // Track page view and registration complete on mount.
-  // Guard the conversion so it fires exactly once per registration — refreshes
-  // or revisits must not re-count it.
+  // Track page view only. Registration analytics fire once in QuizContainer
+  // and AuthCallback so we don't re-count here on refresh/revisit.
   useEffect(() => {
     trackPageView('/thank-you', "You're In! — Appreneur Challenge");
-    try {
-      const alreadyTracked = localStorage.getItem("registration_tracked") === "1";
-      if (!alreadyTracked) {
-        trackRegistrationComplete();
-        localStorage.setItem("registration_tracked", "1");
-      }
-    } catch {
-      trackRegistrationComplete();
-    }
   }, []);
 
   // Hide confetti after animation
