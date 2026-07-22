@@ -125,8 +125,9 @@ export default function WebhooksAdmin() {
     }
 
     // Same-family SSRF guard the edge function enforces before delivery.
-    const safety = (await import("@/lib/webhook-url")).isSafeWebhookUrl(newEndpoint.url);
-    if (!safety.ok) {
+    const { isSafeWebhookUrl } = await import("@/lib/webhook-url");
+    const safety = isSafeWebhookUrl(newEndpoint.url);
+    if (safety.ok === false) {
       toast({
         title: "Error",
         description: safety.reason,
