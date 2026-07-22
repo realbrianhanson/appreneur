@@ -17,8 +17,10 @@ describe("registration reliability — analytics has no PII", () => {
     const fbq = (globalThis as any).fbq as ReturnType<typeof vi.fn>;
     const flatGtag = JSON.stringify(gtag.mock.calls);
     const flatFbq = JSON.stringify(fbq.mock.calls);
-    expect(flatGtag.toLowerCase()).not.toContain("email");
-    expect(flatFbq.toLowerCase()).not.toContain("email");
+    // "method":"email" is allowed (a category), but no email address or
+    // user_email/em field may appear.
+    expect(flatGtag).not.toMatch(/user_email|"em"|@/);
+    expect(flatFbq).not.toMatch(/user_email|"em"|@/);
     expect(flatGtag).toContain("user-abc");
   });
 });
