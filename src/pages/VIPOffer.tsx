@@ -115,15 +115,10 @@ const VIPOffer = () => {
   const [bumpOffer, setBumpOffer] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  // While VIP sales are disabled, render the honest placeholder BEFORE any
-  // page-view / funnel_events tracking fires. This avoids counting placeholder
-  // impressions as "OTO viewed".
-  if (!VIP_SALES_ENABLED) {
-    return <PrelaunchSalesPlaceholder page="vip-offer" />;
-  }
-
-  // Track page view on mount (sales-enabled path only).
+  // Track page view on mount — but ONLY when VIP sales are actually enabled.
+  // Placeholder renders (prelaunch) must not be counted as "OTO viewed".
   useEffect(() => {
+    if (!VIP_SALES_ENABLED) return;
     trackPageView('/vip-offer', 'VIP Offer — Appreneur Challenge');
     // Log the OTO view into funnel_events so the admin funnel dashboard can
     // report OTO view → purchase conversion.
@@ -151,6 +146,10 @@ const VIPOffer = () => {
     // We intentionally only run this once per mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!VIP_SALES_ENABLED) {
+    return <PrelaunchSalesPlaceholder page="vip-offer" />;
+  }
 
   const handleExpire = () => {
     try { localStorage.removeItem(VIP_EXPIRES_KEY); } catch {}

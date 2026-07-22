@@ -17,14 +17,9 @@ const Downsell = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  // While VIP sales are disabled, render the honest placeholder before any
-  // tracking fires.
-  if (!VIP_SALES_ENABLED) {
-    return <PrelaunchSalesPlaceholder page="downsell" />;
-  }
-
-  // Track page view on mount (sales-enabled path only).
+  // Track page view on mount — but ONLY when VIP sales are actually enabled.
   useEffect(() => {
+    if (!VIP_SALES_ENABLED) return;
     trackPageView('/downsell', 'Special Offer — Appreneur Challenge');
     (async () => {
       try {
@@ -49,6 +44,10 @@ const Downsell = () => {
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!VIP_SALES_ENABLED) {
+    return <PrelaunchSalesPlaceholder page="downsell" />;
+  }
 
   const handleCheckout = async () => {
     setIsLoading(true);
