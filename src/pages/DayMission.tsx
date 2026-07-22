@@ -515,8 +515,8 @@ const DayMission = () => {
                   <Video className="w-8 h-8 text-primary/50" />
                 </div>
                 <div className="text-center px-6">
-                  <p className="font-semibold text-foreground">Lesson video is being recorded</p>
-                  <p className="text-sm text-muted-foreground">We'll email you the moment this lesson is ready.</p>
+                  <p className="font-semibold text-foreground">Lesson video coming soon</p>
+                  <p className="text-sm text-muted-foreground">You can complete this day's mission below while we finalize the video.</p>
                 </div>
               </div>
             ) : (

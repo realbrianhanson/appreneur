@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap } from "lucide-react";
+import { PRIMARY_CTA_LABEL } from "@/lib/constants";
 
 interface StickyCtaBarProps {
   onCtaClick: () => void;
@@ -46,7 +47,7 @@ const StickyCtaBar = ({ onCtaClick }: StickyCtaBarProps) => {
             className="text-sm min-h-11"
             onClick={onCtaClick}
           >
-            Get Free Early Access
+            {PRIMARY_CTA_LABEL}
             <ArrowRight className="w-3.5 h-3.5 ml-1" aria-hidden="true" />
           </Button>
         </div>

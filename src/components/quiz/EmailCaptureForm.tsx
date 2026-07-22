@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { z } from "zod";
+import { REGISTRATION_CTA_LABEL } from "@/lib/constants";
 
 const formSchema = z.object({
   firstName: z.string().trim().min(1, "First name is required").max(50),
@@ -46,7 +47,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <span className="eyebrow font-mono text-xs tracking-[0.2em] text-primary">
-         FINAL STEP · GET FREE EARLY ACCESS
+         FINAL STEP · CREATE YOUR FREE ACCOUNT
         </span>
         {onBack && (
           <button
@@ -63,7 +64,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
         That's exactly who this challenge is built for.
         </h3>
         <p className="text-muted-foreground">
-         The lessons are being recorded. Join now and we'll email you when the full challenge opens.
+         Create your free account to unlock the full 5-day plan and start Day 1 right now.
         </p>
       </div>
 
@@ -130,7 +131,7 @@ const EmailCaptureForm = ({ onSubmit, isLoading, onBack }: EmailCaptureFormProps
             </>
           ) : (
             <>
-              Get Free Early Access
+              {REGISTRATION_CTA_LABEL}
               <ArrowRight className="w-5 h-5" />
             </>
           )}

@@ -78,12 +78,13 @@ const Terms = () => {
               control.
             </p>
 
-            <h2 className="text-xl font-semibold text-foreground">5. Prelaunch availability</h2>
+            <h2 className="text-xl font-semibold text-foreground">5. Service availability</h2>
             <p>
-              The Service is currently in an early-access, prelaunch phase.
-              Lessons and downloadable resources are still being produced and
-              are not yet available. We may change or delay the schedule,
-              content, and features of the Service without notice.
+              The Service is offered on an as-available basis. We may change,
+              suspend, or evolve the content, features, and delivery of the
+              Service at any time as we improve it. Some lessons, tools, or
+              downloadable resources may be added, changed, or removed over
+              time.
             </p>
 
             <h2 className="text-xl font-semibold text-foreground">6. User-submitted content</h2>
@@ -101,8 +102,8 @@ const Terms = () => {
             <h2 className="text-xl font-semibold text-foreground">7. Intellectual property</h2>
             <p>
               The Service and its original content — including the site design,
-              text, and any videos or downloadable materials we publish once the
-              challenge opens — are owned by AI For Business and are protected
+              text, and any videos or downloadable materials we publish as part
+              of the challenge — are owned by AI For Business and are protected
               by intellectual-property laws. You may use the Service for your
               own personal learning. You may not resell or redistribute our
               materials without written permission.

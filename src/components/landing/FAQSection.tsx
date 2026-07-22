@@ -19,17 +19,22 @@ const faqs = [
   {
     question: "Are the sessions live?",
     answer:
-      "No. The lessons are self-paced and are being recorded now. When you sign up for early access, you'll see the day-by-day plan in your dashboard and get an email the moment the full lessons open.",
+      "No. Every lesson is on-demand and self-paced. Sign in, open Day 1, and move through the five days on your own schedule.",
+  },
+  {
+    question: "When can I start?",
+    answer:
+      "Right after you create your free account. Day 1 opens immediately and each next day unlocks as soon as you finish the previous one.",
   },
   {
     question: "What if I fall behind?",
     answer:
-      "There is no cohort deadline. Each mission unlocks after the prior one is completed, and you can move through the five days on your own schedule.",
+      "There is no deadline. The challenge is self-paced, so you can take an evening or a month — the plan waits for you.",
   },
   {
     question: "Do I need an app idea already?",
     answer:
-      "It helps to have a rough idea, but it isn't required. Day 1 focuses on picking and validating a small first idea so the rest of the week has direction.",
+      "It helps to have a rough idea, but it isn't required. Day 1 walks you through picking a small, focused first idea so the rest of the week has direction.",
   },
   {
     question: "How much time do I need each day?",
@@ -37,14 +42,9 @@ const faqs = [
       "Plan for roughly 60 minutes per focused day. The missions are designed to fit into a single sitting.",
   },
   {
-    question: "Why is this free?",
-    answer:
-      "This is the founding early-access edition. It's free while the experience is being refined so early builders can shape it before wider launch.",
-  },
-  {
     question: "Do I need to buy any software?",
     answer:
-      "You can begin on the free plan of the AI builder you'll use. Nothing is required to complete the challenge itself.",
+      "You can begin on the free plan of the AI builder you'll use. Nothing paid is required to complete the challenge itself.",
   },
 ];
 

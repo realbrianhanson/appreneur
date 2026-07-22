@@ -4,6 +4,7 @@ import { Section } from "@/components/layout/Section";
 import { ArrowRight, Shield } from "lucide-react";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { scrollTo } from "@/lib/scroll";
+import { PRIMARY_CTA_LABEL } from "@/lib/constants";
 
 const FinalCTASection = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -44,8 +45,8 @@ const FinalCTASection = () => {
           </h2>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            Grab free early access now. We'll email you the moment the full
-            five-day challenge opens.
+            One focused lesson, one clear deliverable, five days. Create your
+            free account and start Day 1 today.
           </p>
 
           <Magnetic strength={0.4}>
@@ -53,7 +54,7 @@ const FinalCTASection = () => {
               onClick={scrollToQuiz}
               className="group inline-flex items-center gap-3 px-8 py-4 rounded-full bg-gradient-to-r from-primary to-accent text-background font-semibold text-base md:text-lg shadow-[0_20px_50px_-15px_hsl(var(--primary)/0.7)] hover:brightness-110 transition-all min-h-11"
             >
-              Get Free Early Access
+              {PRIMARY_CTA_LABEL}
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
             </button>
           </Magnetic>

@@ -12,6 +12,7 @@ import { FinalCTASection } from "@/components/landing/FinalCTASection";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { WhyThisWorks } from "@/components/landing/WhyThisWorks";
 import { EarlyAccessSection } from "@/components/landing/EarlyAccessSection";
+import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { GhostWord } from "@/components/motion/GhostWord";
 import SEOHead from "@/components/seo/SEOHead";
 import StructuredData from "@/components/seo/StructuredData";
@@ -35,7 +36,7 @@ const Index = () => {
       <StickyCtaBar onCtaClick={scrollToQuiz} />
       <SEOHead
         title="Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge"
-        description="A free, self-paced 5-day challenge for entrepreneurs. Turn your idea into a working first version — no code required. Free early access open now."
+        description="A free, self-paced 5-day challenge for entrepreneurs. Turn your app idea into a working first version — no code required. Start Day 1 today."
         canonicalUrl="https://appreneur.ai/"
       />
 
@@ -58,6 +59,9 @@ const Index = () => {
 
       {/* Problem / possibility */}
       <OpeningCopySection />
+
+      {/* Instructor authority — moved higher on the page */}
+      <AboutHostSection />
 
       {/* Why this works — three-part mechanism */}
       <WhyThisWorks />
@@ -107,18 +111,18 @@ const Index = () => {
               className="text-lg py-6 min-h-11"
               onClick={scrollToQuiz}
             >
-              Get Free Early Access
+              Start the Free Challenge
               <Zap className="w-5 h-5 ml-2" aria-hidden="true" />
             </Button>
           </div>
         </Container>
       </Section>
 
-      {/* Truthful early-access inclusions */}
+      {/* What you'll have by Day 5 — outcomes */}
       <EarlyAccessSection onCtaClick={scrollToQuiz} />
 
-      {/* About Host — credibility */}
-      <AboutHostSection />
+      {/* Approved testimonials — renders null when empty */}
+      <SocialProofSection />
 
       {/* FAQ — overcome objections */}
       <FAQSection />
@@ -134,14 +138,14 @@ const Index = () => {
           <div className="max-w-2xl mx-auto space-y-8">
             <div className="text-center space-y-3">
               <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground leading-[1.05] tracking-tight">
-                Get early access in{" "}
+                Start the challenge in{" "}
                 <span className="font-serifit italic bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                   60 seconds
                 </span>
               </h2>
               <p className="text-muted-foreground">
-                Answer 3 quick questions, create your free account, and we'll
-                email you the moment the full lessons open.
+                Answer 3 quick questions, create your free account, and jump
+                straight into Day 1.
               </p>
             </div>
             <QuizContainer />

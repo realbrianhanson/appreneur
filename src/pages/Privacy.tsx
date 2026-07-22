@@ -39,8 +39,8 @@ const Privacy = () => {
             <p>
               The Appreneur Challenge (the "Service") is a project of AI For
               Business ("we", "us"). This policy explains, in plain English,
-              what personal information we collect while the Service is in its
-              early-access, prelaunch phase, and how we use it. Questions:{" "}
+              what personal information we collect when you use the Service
+              and how we use it. Questions:{" "}
               <a href="mailto:privacy@appreneur.ai" className="text-primary hover:underline">
                 privacy@appreneur.ai
               </a>
@@ -90,7 +90,7 @@ const Privacy = () => {
               <li>To deliver the challenge experience and track your progress.</li>
               <li>
                 To send you transactional email about the Service (for example a
-                welcome email, login link, or an update when new lessons open).
+                welcome email, login link, or an important update).
               </li>
               <li>
                 To understand how the funnel performs so we can improve it.
@@ -125,11 +125,11 @@ const Privacy = () => {
 
             <h2 className="text-xl font-semibold text-foreground">4. Third-party analytics and advertising</h2>
             <p>
-              During the prelaunch phase, third-party analytics (such as Google
-              Analytics or the Meta Pixel) are disabled by default. If we enable
-              external analytics later, we will not send email addresses or
-              account identifiers to them. Any dedupe id used will be an
-              anonymous per-browser session identifier.
+              Third-party analytics (such as Google Analytics or the Meta
+              Pixel) are disabled by default. If we enable external analytics
+              later, we will not send email addresses or account identifiers
+              to them. Any dedupe id used will be an anonymous per-browser
+              session identifier.
             </p>
 
             <h2 className="text-xl font-semibold text-foreground">5. No sale of personal information</h2>

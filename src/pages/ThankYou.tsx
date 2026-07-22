@@ -136,8 +136,8 @@ const ThankYou = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title="You're In — Appreneur Challenge Early Access"
-        description="Early access confirmed. We'll email you when the full challenge opens."
+        title="You're In — Start Day 1 of the Appreneur Challenge"
+        description="Your free account is ready. Open Day 1 and start building your first version."
         noindex={true}
       />
       
@@ -151,23 +151,23 @@ const ThankYou = () => {
               <Sparkles className="w-10 h-10 text-primary" />
             </div>
             <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground">
-              You're on the list! 🎉
+              You're in! 🎉
             </h1>
             <p className="text-xl text-muted-foreground">
-              Early access confirmed,{" "}
+              Welcome,{" "}
               <span className="text-primary font-semibold">{firstName}</span>
             </p>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              The lessons are being recorded right now. We'll email you the
-              moment the full challenge opens.
+              Your free account is set up and Day 1 is ready to go. Jump in
+              whenever you're ready to start building.
             </p>
           </div>
 
           {/* Primary + secondary CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button variant="cta" size="lg" asChild className="gap-2">
-              <Link to="/dashboard">
-                Preview your dashboard
+              <Link to="/dashboard/day/1">
+                Start Day 1
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
@@ -265,7 +265,7 @@ const ThankYou = () => {
                 Join the {COMMUNITY_NAME}
               </h2>
               <p className="text-muted-foreground mb-4">
-                Meet other builders while we finish recording the lessons.
+                Meet other builders working through the challenge.
               </p>
               <Button variant="outline" asChild className="gap-2">
                 <a href={COMMUNITY_URL} target="_blank" rel="noopener noreferrer">
