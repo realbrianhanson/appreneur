@@ -18,7 +18,7 @@ interface HeroSectionProps {
 }
 
 const H1_TEXT =
-  "Turn the app idea in your head into a working first version—in five focused days.";
+  "Build Your First Website or App With AI—in 5 Days—even if tech has always intimidated you.";
 
 export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -115,7 +115,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
               }}
             >
               <span aria-hidden="true">
-                Turn the app idea in your head into a{" "}
+                Build Your First Website or App{" "}
                 <span
                   className="font-serifit italic bg-clip-text text-transparent"
                   style={{
@@ -123,9 +123,9 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                       "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
                   }}
                 >
-                  working first version
+                  With AI—in 5 Days
                 </span>
-                <span>—in five focused days.</span>
+                <span>—even if tech has always intimidated you.</span>
               </span>
             </h1>
 

@@ -17,26 +17,27 @@ import { PERSONA_STORAGE_KEY } from "@/content/landingCopy";
 
 const quizQuestions = [
   {
-    question: "Do you have an app idea you've been sitting on?",
+    question: "Which of these sounds most like you?",
     options: [
-      { label: "Yes, I've had this idea for a while", value: "idea_existing" },
-      { label: "Yes, I have a few ideas actually", value: "idea_multiple" },
-      { label: "Not yet, but I want to build something", value: "idea_none" },
+      { label: "I want to build something for my business", value: "for_business" },
+      { label: "I want to build websites or apps I can sell", value: "to_sell" },
+      { label: "Honestly, a little of both", value: "both" },
     ],
   },
   {
-    question: "What's stopped you from building it?",
+    question: "What's held you back from building your own website or app?",
     options: [
-      { label: "I don't know how to code", value: "blocker_code" },
-      { label: "I thought it would be too expensive", value: "blocker_cost" },
-      { label: "I didn't know where to start", value: "blocker_start" },
-      { label: "All of the above", value: "blocker_all" },
+      { label: "Technology feels overwhelming", value: "tech_overwhelm" },
+      { label: "Hiring a developer is too expensive", value: "dev_expensive" },
+      { label: "I don't know what to build", value: "unsure_what" },
+      { label: "I don't know where to start", value: "unsure_start" },
+      { label: "Honestly, several of these", value: "several" },
     ],
   },
   {
     question: "Will you commit to completing one focused mission at a time?",
     options: [
-      { label: "Yes — one mission at a time.", value: "commit_ready" },
+      { label: "Yes — one focused mission at a time.", value: "commit_ready" },
       { label: "I'll do my best.", value: "commit_time" },
       { label: "I want to try.", value: "commit_lets_go" },
     ],
@@ -80,7 +81,7 @@ const QuizContainer = () => {
       // Persona prefill from PersonaChooser on the landing page. Maps 1:1 to
       // the first quiz option's value, so we set it and jump to Q2.
       const persona = sessionStorage.getItem(PERSONA_STORAGE_KEY);
-      if (persona === "idea_existing" || persona === "idea_none") {
+      if (persona === "for_business" || persona === "to_sell") {
         setAnswers((prev) => {
           const next = [...prev];
           next[0] = persona;
