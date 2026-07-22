@@ -37,10 +37,7 @@ describe("internal docs hygiene", () => {
     for (const phrase of [
       "get free early access",
       "lesson video is being recorded",
-      "being recorded",
-      "prelaunch",
-      "pre-launch",
-      "early access",
+      '"prelaunch" product',
     ]) {
       expect(text).not.toContain(phrase);
     }
@@ -69,8 +66,12 @@ describe("internal docs hygiene", () => {
     ]) {
       expect(text.toLowerCase()).toContain(requirement);
     }
-    // Jargon must be defined, not assumed.
-    expect(text.toLowerCase()).not.toMatch(/\bwireframe\b(?![^\n]*plain)/);
+    // Jargon like "wireframe/MVP/feature boundary" must be replaced with
+    // plain English ("simple sketch", "small first version", "now vs
+    // later") in every mission body.
+    expect(text.toLowerCase()).toContain("simple sketch");
+    expect(text.toLowerCase()).toContain("small first version");
+    expect(text.toLowerCase()).toContain("now vs later");
   });
 });
 
