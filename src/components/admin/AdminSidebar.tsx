@@ -14,8 +14,6 @@ import {
 import {
   LayoutDashboard,
   Users,
-  Calendar,
-  DollarSign,
   BarChart3,
   Webhook,
   MessageSquare,
@@ -32,8 +30,6 @@ type AppRole = Database["public"]["Enums"]["app_role"];
 const mainNavItems = [
   { title: "Dashboard", icon: LayoutDashboard, url: "/admin" },
   { title: "Users", icon: Users, url: "/admin/users" },
-  { title: "Cohorts", icon: Calendar, url: "/admin/cohorts" },
-  { title: "Revenue", icon: DollarSign, url: "/admin/revenue" },
   { title: "Analytics", icon: BarChart3, url: "/admin/analytics" },
   { title: "Webhooks", icon: Webhook, url: "/admin/webhooks" },
   { title: "Testimonials", icon: MessageSquare, url: "/admin/testimonials" },

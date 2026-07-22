@@ -25,8 +25,6 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const AdminOverview = lazy(() => import("./pages/admin/Overview"));
 const AdminUsers = lazy(() => import("./pages/admin/Users"));
-const AdminCohorts = lazy(() => import("./pages/admin/Cohorts"));
-const AdminRevenue = lazy(() => import("./pages/admin/Revenue"));
 const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
 const AdminTestimonials = lazy(() => import("./pages/admin/Testimonials"));
 const AdminSettings = lazy(() => import("./pages/admin/Settings"));
@@ -68,8 +66,6 @@ const App = () => {
               <Route path="/terms" element={<Terms />} />
               <Route path="/admin" element={<ProtectedRoute requireAdmin><AdminOverview /></ProtectedRoute>} />
               <Route path="/admin/users" element={<ProtectedRoute requireAdmin><AdminUsers /></ProtectedRoute>} />
-              <Route path="/admin/cohorts" element={<ProtectedRoute requireAdmin><AdminCohorts /></ProtectedRoute>} />
-              <Route path="/admin/revenue" element={<ProtectedRoute requireAdmin><AdminRevenue /></ProtectedRoute>} />
               <Route path="/admin/analytics" element={<ProtectedRoute requireAdmin><AdminAnalytics /></ProtectedRoute>} />
               <Route path="/admin/testimonials" element={<ProtectedRoute requireAdmin><AdminTestimonials /></ProtectedRoute>} />
               <Route path="/admin/webhooks" element={<ProtectedRoute requireAdmin><WebhooksAdmin /></ProtectedRoute>} />
