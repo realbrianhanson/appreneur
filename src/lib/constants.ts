@@ -41,16 +41,16 @@ export const CHALLENGE_TAGLINE = "Five focused days, on your schedule.";
  * and consent must land first).
  */
 export const PRIMARY_CTA_LABEL = "Start My Free 5-Day Challenge";
-export const SECONDARY_CTA_LABEL = "See What You'll Build";
+export const SECONDARY_CTA_LABEL = "See What I'll Build";
 export const REGISTRATION_CTA_LABEL = "Create My Free Challenge Account";
 export const HERO_EYEBROW =
-  "THE FREE 5-DAY APP-BUILDING CHALLENGE FOR NON-CODERS";
+  "THE FREE 5-DAY AI WEBSITE & APP-BUILDING CHALLENGE FOR BEGINNERS";
 export const HERO_H1 =
-  "Turn the app idea in your head into a working first version—in five focused days.";
+  "Build Your First Website or App With AI—in 5 Days—even if tech has always intimidated you.";
 export const HERO_SUPPORT_COPY =
-  "No coding. No developer. No wandering through endless tutorials. The Appreneur Challenge gives you one focused mission and one concrete win each day.";
+  "Use everyday English to create something useful for your business—or something you can sell. No coding. No developer. No tech background required.";
 export const CTA_MICROCOPY =
-  "Free · Self-paced · No credit card · Beginner-friendly";
+  "Free · Self-paced · Start anytime · Beginner-friendly";
 
 /** Repeated mechanism line used in the opportunity/mechanism section. */
 export const MECHANISM_LINE =
