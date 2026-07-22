@@ -140,7 +140,7 @@ serve(async (req: Request) => {
     const { count: completedCount } = await supabase
       .from("user_progress")
       .select("*", { count: "exact", head: true })
-      .eq("day_number", 7)
+      .eq("day_number", 5)
       .eq("is_completed", true);
 
     const response = {
