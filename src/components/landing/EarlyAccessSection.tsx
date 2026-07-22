@@ -3,27 +3,32 @@ import { Section } from "@/components/layout/Section";
 import { GhostWord } from "@/components/motion/GhostWord";
 import { motion, useReducedMotion } from "framer-motion";
 import { Check } from "lucide-react";
+import { PRIMARY_CTA_LABEL, CTA_MICROCOPY } from "@/lib/constants";
 
 const inclusions = [
   {
-    title: "Free account, no credit card",
-    body: "Sign up in under a minute. Nothing to buy while the challenge is being built.",
+    title: "A working first version of your app",
+    body: "Not a slide deck. A live, clickable V1 you can open on your phone by Day 5.",
   },
   {
-    title: "Five-day self-paced roadmap",
-    body: "The full Day 1 → Day 5 plan waiting in your dashboard.",
+    title: "A clear use case",
+    body: "One audience, one problem, one specific outcome — pinned so every decision serves it.",
   },
   {
-    title: "Progress tracking",
-    body: "Each mission unlocks as the prior one is completed, so momentum is visible.",
+    title: "Your core user flow",
+    body: "The essential screens, navigation, and data your first version needs to feel real.",
   },
   {
-    title: "Lesson previews while videos are recorded",
-    body: "You'll see the shape of each mission and know exactly what's coming.",
+    title: "One useful AI feature",
+    body: "A single AI capability wired in and tuned — the piece that makes your app feel modern.",
   },
   {
-    title: "Email notification when full lessons open",
-    body: "One email when the recorded lessons are ready — no ongoing spam.",
+    title: "A shareable, deployed version",
+    body: "A link you can send to a friend, a customer, or a co-founder for honest feedback.",
+  },
+  {
+    title: "A next-iteration plan",
+    body: "A short list of what to build, cut, or test next so momentum carries into week two.",
   },
 ];
 
@@ -40,12 +45,12 @@ export const EarlyAccessSection = ({
       spacing="xl"
       className="relative overflow-hidden"
     >
-      <GhostWord word="INCLUDED" align="top" className="opacity-70" />
+      <GhostWord word="OUTCOME" align="top" className="opacity-70" />
       <Container size="wide" className="relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-12 md:mb-14">
           <div className="eyebrow mb-6 flex items-center justify-center gap-4">
             <span className="h-px w-8 bg-primary/60" aria-hidden="true" />
-            <span>What early access includes</span>
+            <span>What you'll have by Day 5</span>
             <span className="h-px w-8 bg-primary/60" aria-hidden="true" />
           </div>
           <h2
@@ -55,7 +60,7 @@ export const EarlyAccessSection = ({
               fontSize: "clamp(2rem, 5vw, 3.25rem)",
             }}
           >
-            No hype.{" "}
+            Five days.{" "}
             <span
               className="font-serifit italic bg-clip-text text-transparent"
               style={{
@@ -63,12 +68,13 @@ export const EarlyAccessSection = ({
                   "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
               }}
             >
-              Just what's ready today.
+              One working first version.
             </span>
           </h2>
           <p className="mt-5 text-muted-foreground text-lg">
-            The lessons are still being recorded. Here's exactly what you get
-            the moment you sign up — and what we'll notify you about next.
+            This is the intended outcome for participants who follow every
+            step. Real results depend on the effort you bring — not a promise
+            of a specific business or income result.
           </p>
         </div>
 
@@ -118,10 +124,10 @@ export const EarlyAccessSection = ({
             className="btn-primary-pill text-base md:text-lg"
             style={{ padding: "16px 32px" }}
           >
-            Get Free Early Access
+            {PRIMARY_CTA_LABEL}
           </button>
           <p className="mt-3 text-xs text-muted-foreground">
-            Free · No credit card · We'll email you when lessons open
+            {CTA_MICROCOPY}
           </p>
         </div>
       </Container>
