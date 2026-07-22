@@ -6,7 +6,7 @@ import { MOMENTUM_LINE, PRIMARY_CTA_LABEL, CTA_MICROCOPY } from "@/lib/constants
 
 /**
  * Momentum line + mid-page CTA. Deliberately short and honest — no
- * countdown, no seat count, no fake deadline for a self-paced challenge.
+ * timer, no seat count, no fake deadline for a self-paced challenge.
  */
 export const MomentumLine = ({ onCtaClick }: { onCtaClick: () => void }) => {
   return (

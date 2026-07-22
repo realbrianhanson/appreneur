@@ -207,7 +207,7 @@ const QuizContainer = () => {
       }
 
       // Step 2: Create user account. No phone / cohort_id is captured during
-      // prelaunch. handle_new_user copies safe attribution fields into profile.
+      // handle_new_user copies safe attribution fields into profile.
       const randomPassword = generateRandomPassword();
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
@@ -256,7 +256,7 @@ const QuizContainer = () => {
         // Give handle_new_user a beat to create the profile row.
         await new Promise((resolve) => setTimeout(resolve, 400));
 
-        // Store quiz lead for tracking (backup) — no cohort_id in prelaunch.
+        // Store quiz lead for tracking (backup) — no cohort_id.
         await supabase.from("quiz_leads").insert({
           first_name: data.firstName,
           email: data.email,
