@@ -29,7 +29,10 @@ import { PRIMARY_CTA_LABEL } from "@/lib/constants";
 
 const Index = () => {
   useEffect(() => {
-    trackPageView("/", "Appreneur Challenge · Build Your First App in 5 Days");
+    trackPageView(
+      "/",
+      "Free 5-Day AI Website & App Challenge for Beginners · Appreneur",
+    );
   }, []);
 
   const scrollToQuiz = () => {
@@ -42,8 +45,8 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <StickyCtaBar onCtaClick={scrollToQuiz} />
       <SEOHead
-        title="The Free 5-Day App-Building Challenge for Non-Coders · Appreneur"
-        description="Turn the app idea in your head into a working first version—in five focused days. Free, self-paced, beginner-friendly. No code. No developer. Start Day 1 today."
+        title="Free 5-Day AI Website & App Challenge for Beginners · Appreneur"
+        description="Build your first website or app with AI in 5 days—even if technology has always intimidated you. Free, self-paced, start anytime, with no coding or developer required."
         canonicalUrl="https://appreneur.ai/"
       />
 
