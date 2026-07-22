@@ -105,7 +105,7 @@ const faqs: Array<{ id: string; question: string; answer: string }> = [
     id: "break_anything",
     question: "Can I break anything?",
     answer:
-      "No. You're working in a safe, sandboxed builder — nothing you do affects a real customer or a live business system until you decide to share it. If something looks wrong, you can back up, try again, or start the step over. There is no permanent damage to worry about.",
+      "No. You're working on a practice version. Nothing you do affects a real customer or a live business system until you decide to share it. If something looks wrong, you can back up, try again, or start the step over. There is no permanent damage to worry about.",
   },
   {
     id: "watch_more_than_once",

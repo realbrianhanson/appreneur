@@ -9,6 +9,7 @@ import {
   PRIMARY_CTA_LABEL,
   SECONDARY_CTA_LABEL,
   HERO_EYEBROW,
+  HERO_H1,
   HERO_SUPPORT_COPY,
   CTA_MICROCOPY,
 } from "@/lib/constants";
@@ -16,9 +17,6 @@ import {
 interface HeroSectionProps {
   onCtaClick: () => void;
 }
-
-const H1_TEXT =
-  "Build Your First Website or App With AI—in 5 Days—even if tech has always intimidated you.";
 
 export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -106,7 +104,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
             </motion.div>
 
             <h1
-              aria-label={H1_TEXT}
+              aria-label={HERO_H1}
               className="font-display font-bold tracking-tight text-foreground"
               style={{
                 fontSize: "clamp(2.25rem, 5.4vw, 3.9rem)",
