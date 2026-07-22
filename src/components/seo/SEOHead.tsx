@@ -13,8 +13,8 @@ interface SEOHeadProps {
  * Updates document title and meta tags dynamically
  */
 export const SEOHead = ({
-  title = "Appreneur Challenge — Build Your First App in 5 Days",
-  description = "Join 500+ entrepreneurs building real apps without code. Free 5-day challenge teaches you to go from idea to live app.",
+  title = "Appreneur Challenge · Free 5-Day Self-Paced App-Building Challenge",
+  description = "A free, beginner-friendly, self-paced roadmap for turning an app idea into a working first version. Join early access while the lessons are being recorded.",
   noindex = false,
   ogImage = "/og-image.png",
   canonicalUrl,

@@ -176,7 +176,7 @@ const OnboardingWizard = ({
             {step === 2 && (
               <>
                 <p className="text-muted-foreground">
-                  Connect with 500+ other Appreneurs building apps without code.
+                  Connect with other Appreneurs building apps without code.
                   Share ideas, get feedback, and stay accountable.
                 </p>
                 <Button
