@@ -92,7 +92,10 @@ describe("Hero accessibility contract", () => {
     const src = read("src/components/landing/HeroSection.tsx");
     const h1Matches = src.match(/<h1[\s\S]*?>/g) ?? [];
     expect(h1Matches.length).toBe(1);
-    expect(src).toMatch(/aria-label={H1_TEXT}/);
+    // Accessible H1 must read from the shared HERO_H1 constant so the
+    // aria-label cannot drift from the styled visible copy.
+    expect(src).toMatch(/aria-label={HERO_H1}/);
+    expect(src).toMatch(/import[^;]*HERO_H1[^;]*from ["']@\/lib\/constants["']/);
     // Decorative inner spans hidden from AT
     expect(src).toMatch(/aria-hidden="true"/);
   });
