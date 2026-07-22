@@ -130,11 +130,9 @@ const QuizContainer = () => {
       const sessionId =
         sessionStorage.getItem("session_id") || crypto.randomUUID();
       sessionStorage.setItem("session_id", sessionId);
-      trackQuizComplete({
-        answer1: finalAnswers[0] || "",
-        answer2: finalAnswers[1] || "",
-        answer3: finalAnswers[2] || "",
-      });
+      // Only the event name is forwarded to external analytics — answer
+      // values stay first-party (see funnel_events insert below).
+      trackQuizComplete();
       await supabase.from("funnel_events").insert({
         session_id: sessionId,
         event_type: "quiz_completed",

@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import SEOHead from "@/components/seo/SEOHead";
 import { VIP_SALES_ENABLED } from "@/lib/constants";
 import { PrelaunchSalesPlaceholder } from "@/components/PrelaunchSalesPlaceholder";
-import { trackPageView, trackVIPOfferView } from "@/lib/analytics";
+import { trackPageView } from "@/lib/analytics";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { getStoredTrackingParams } from "@/hooks/useTrackingParams";
@@ -115,10 +115,16 @@ const VIPOffer = () => {
   const [bumpOffer, setBumpOffer] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
-  // Track page view and VIP offer view on mount
+  // While VIP sales are disabled, render the honest placeholder BEFORE any
+  // page-view / funnel_events tracking fires. This avoids counting placeholder
+  // impressions as "OTO viewed".
+  if (!VIP_SALES_ENABLED) {
+    return <PrelaunchSalesPlaceholder page="vip-offer" />;
+  }
+
+  // Track page view on mount (sales-enabled path only).
   useEffect(() => {
     trackPageView('/vip-offer', 'VIP Offer — Appreneur Challenge');
-    trackVIPOfferView();
     // Log the OTO view into funnel_events so the admin funnel dashboard can
     // report OTO view → purchase conversion.
     (async () => {
@@ -232,10 +238,6 @@ const VIPOffer = () => {
   ];
 
   const totalValue = stackItems.reduce((sum, item) => sum + item.value, 0);
-
-  if (!VIP_SALES_ENABLED) {
-    return <PrelaunchSalesPlaceholder page="vip-offer" />;
-  }
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-0">
