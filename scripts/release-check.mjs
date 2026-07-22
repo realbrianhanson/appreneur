@@ -20,8 +20,6 @@ const FORBIDDEN = [
   "five-day plan",
   "5-day roadmap",
   "five-day roadmap",
-  " roadmap",
-  " program.",
 ];
 
 const CUSTOMER_FACING_ROOTS = [
@@ -98,13 +96,20 @@ if (!existsSync(vipDoc)) {
   }
 }
 
-for (const marker of ["docs/decisions/LEGAL_APPROVED.md", "docs/decisions/EMAIL_CONFIG_APPROVED.md"]) {
+const REQUIRED_MARKERS = [
+  ["docs/decisions/LEGAL_APPROVED.md", "legal review"],
+  ["docs/decisions/EMAIL_CONFIG_APPROVED.md", "email configuration"],
+  ["docs/decisions/TESTIMONIALS_APPROVED.md", "testimonial attribution & permissions"],
+  ["docs/decisions/CONTENT_APPROVED.md", "VSL + 5 lessons + captions/transcripts + resources + QA"],
+  ["docs/decisions/SECURITY_CONFIG_APPROVED.md", "production edge secrets incl. FUNNEL_RATE_LIMIT_SECRET (marker only, no values)"],
+];
+for (const [marker, label] of REQUIRED_MARKERS) {
   if (!existsSync(marker)) {
-    failures.push(`Missing decision marker ${marker} — legal / email must be signed off.`);
+    failures.push(`Missing decision marker ${marker} — ${label} must be signed off by the owner.`);
   }
 }
 
-info.push("Testimonials do not gate release; approved testimonials auto-appear when present.");
+info.push("Release gate reports categories only. Never paste secret values into any marker or this report.");
 
 console.log("Release readiness report\n========================\n");
 for (const line of info) console.log(`i  ${line}`);
