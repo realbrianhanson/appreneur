@@ -111,8 +111,14 @@ describe("belief-bridge: FAQ answers the three beginner objections", () => {
   it("mistake answer explains it's normal and shows how to guide AI", () => {
     expect(src).toMatch(/normal part of using AI/);
   });
-  it("break-anything answer reassures with a safe sandbox framing", () => {
-    expect(src).toMatch(/sandbox/i);
+  it("break-anything answer reassures with plain-English practice framing", () => {
+    // "Sandboxed" was jargon for the 50+ beginner audience — the belief
+    // bridge must land in everyday language.
+    expect(src).toMatch(/practice version/);
+    expect(src).toMatch(
+      /Nothing you do affects a real customer or a live business system/,
+    );
+    expect(src).not.toMatch(/sandbox/i);
   });
   it("replay answer references pause, rewind, captions/transcript", () => {
     expect(src).toMatch(/pause, rewind/);
