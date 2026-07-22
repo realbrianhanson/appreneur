@@ -467,6 +467,7 @@ const Dashboard = () => {
             </Card>
 
             {/* Community Card */}
+            {showCommunity && (
             <Card className="border-primary/30">
               <CardContent className="p-5">
                 <div className="flex items-center gap-3 mb-3">
@@ -492,9 +493,10 @@ const Dashboard = () => {
                 </Button>
               </CardContent>
             </Card>
+            )}
 
             {/* VIP Upgrade */}
-            {!isVIP && (
+            {!isVIP && VIP_SALES_ENABLED && (
               <Card className="border-secondary/30 bg-gradient-to-br from-secondary/5 to-secondary/10">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-3 mb-3">
