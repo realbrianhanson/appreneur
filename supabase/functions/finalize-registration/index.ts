@@ -97,7 +97,7 @@ function buildWelcomeEmail(data: WelcomeTemplateData): {
     "",
     "Welcome to the Appreneur Challenge — a free, self-paced, five-day program that walks you from app idea to a working first version.",
     "",
-    "Day 1 is ready in your dashboard. One focused lesson, one clear deliverable — start whenever you're ready.",
+    "Day 1 is ready in your dashboard. One focused mission, one concrete win — start whenever you're ready.",
     "",
     `Start Day 1: ${data.dashboardUrl}`,
     "",
