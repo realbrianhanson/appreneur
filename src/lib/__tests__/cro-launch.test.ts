@@ -111,8 +111,12 @@ describe("CRO: PersonaChooser prefills the first quiz answer and scrolls to quiz
 
 describe("CRO: JourneyTimeline days carry explicit deliverables", () => {
   const src = read("src/components/landing/JourneyTimeline.tsx");
-  it("shows a 'You finish with:' label on every day card", () => {
-    const count = (src.match(/You finish with:/g) ?? []).length;
+  it("has a 'You finish with:' label rendered per day card", () => {
+    // The label lives inside the .map() so it renders once per day at runtime.
+    expect(src).toMatch(/You finish with:/);
+  });
+  it("declares an explicit deliverable for each of the five days", () => {
+    const count = (src.match(/deliverable:/g) ?? []).length;
     expect(count).toBeGreaterThanOrEqual(5);
   });
   it("uses the CRO tension/outcome day headlines", () => {
