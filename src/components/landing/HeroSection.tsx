@@ -5,6 +5,13 @@ import { Container } from "@/components/layout/Container";
 import { Magnetic } from "@/components/motion/Magnetic";
 import AppBuilderMockup from "./AppBuilderMockup";
 import { scrollTo } from "@/lib/scroll";
+import {
+  PRIMARY_CTA_LABEL,
+  SECONDARY_CTA_LABEL,
+  HERO_EYEBROW,
+  HERO_SUPPORT_COPY,
+  CTA_MICROCOPY,
+} from "@/lib/constants";
 
 interface HeroSectionProps {
   onCtaClick: () => void;
@@ -94,7 +101,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                   color: "#FFA04D",
                 }}
               >
-                Free Early Access · Self-Paced · Beginner-Friendly
+                {HERO_EYEBROW}
               </span>
             </motion.div>
 
@@ -128,11 +135,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
               transition={{ duration: 0.4, delay: 0.2 }}
               className="text-lg md:text-xl leading-relaxed max-w-xl mx-auto lg:mx-0 text-muted-foreground"
             >
-              A practical, no-code challenge for entrepreneurs who want a clear
-              path from idea to first build.{" "}
-              <span className="text-foreground/90 font-medium">
-                The lessons are being recorded now.
-              </span>
+              {HERO_SUPPORT_COPY}
             </motion.p>
 
             <motion.div
@@ -149,7 +152,7 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                     style={{ padding: "16px 30px" }}
                     data-testid="hero-primary-cta"
                   >
-                    Get Free Early Access
+                    {PRIMARY_CTA_LABEL}
                     <ArrowRight className="w-5 h-5" aria-hidden="true" />
                   </button>
                 </Magnetic>
@@ -158,13 +161,13 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
                   onClick={handleSeePlan}
                   className="inline-flex items-center gap-1.5 px-3 py-2.5 text-sm md:text-base text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline min-h-11"
                 >
-                  See the 5-Day Plan
+                  {SECONDARY_CTA_LABEL}
                   <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </a>
               </div>
 
               <p className="text-xs md:text-sm text-muted-foreground">
-                Free · No credit card · We'll email you when lessons open
+                {CTA_MICROCOPY}
               </p>
             </motion.div>
           </motion.div>
