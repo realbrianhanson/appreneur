@@ -15,47 +15,47 @@ interface DayCard {
 const days: DayCard[] = [
   {
     day: 1,
-    title: "Choose the idea worth building.",
+    title: "Choose what to build.",
     description:
-      "Stop juggling ten half-ideas. Today you pick the one your future self will thank you for — one audience, one problem, one specific outcome — and lock the direction for the rest of the week.",
+      "You'll decide who your website or app is for, the one problem it helps them with, and what a good result looks like. No tech words, no jargon — just a clear picture of what you're making and why.",
     deliverable:
-      "one clear audience, problem, and outcome, plus a one-sentence app concept you can say out loud.",
+      "one clear idea you can say in a single sentence — who it's for, what it does, and why it's useful.",
     icon: Lightbulb,
   },
   {
     day: 2,
-    title: "Turn the idea into a buildable first version.",
+    title: "Sketch the small first version.",
     description:
-      "Big vision doesn't ship. Today you carve your idea down to a buildable first version so scope stops fighting you: the screens that matter, the flow between them, and the features that wait for later.",
+      "You'll make a simple sketch of your pages or screens and what someone clicks first, next, and last. This keeps the first version small enough to actually finish, instead of a giant project you never start.",
     deliverable:
-      "a screen flow, a rough wireframe, and a must-have feature boundary for your V1.",
+      "a simple sketch of your pages and the small first version worth building.",
     icon: PenTool,
   },
   {
     day: 3,
-    title: "Make the core experience real.",
+    title: "Build the pages and make the buttons work.",
     description:
-      "This is the day the app stops being an idea. You assemble the working layout, navigation, and essential data so the core of your first version becomes something you can actually click through.",
+      "Today you actually build. You'll describe your pages in everyday English and watch a working layout appear, then make the buttons and menus do what they should. You won't write code.",
     deliverable:
-      "a working layout, real navigation, and the essential data your app needs.",
+      "working pages, navigation, and the basic information your website or app needs.",
     icon: Hammer,
   },
   {
     day: 4,
-    title: "Make it genuinely useful with AI.",
+    title: "Add one useful AI-powered feature.",
     description:
-      "AI features are cheap. Useful AI features are rare. Today you wire in one AI capability that actually solves your user's problem, and refine the prompt behind it until the output is worth trusting.",
+      "You'll add one AI feature that saves people time or does something helpful automatically — by giving the AI clear instructions in plain English until the result is something you'd trust to show a customer.",
     deliverable:
-      "one useful AI feature and the refined prompt that powers it.",
+      "one useful AI-powered feature and the plain-English instructions that make it work.",
     icon: Wand2,
   },
   {
     day: 5,
-    title: "Polish it. Test it. Publish it.",
+    title: "Test it, fix the rough edges, and put it online.",
     description:
-      "Most builders quit right before this day. You won't. You run the quality checklist, fix the rough edges, deploy a shareable version, and walk away with a next-iteration checklist for week two.",
+      "You'll click through your website or app, fix the small things that feel off, and put it online so you can share the link with a friend, a customer, or your team. You'll finish with a short list of what to improve next.",
     deliverable:
-      "a shareable, deployed first version and a next-iteration checklist.",
+      "a link you can open and share, plus a short list of what to improve next.",
     icon: Rocket,
     emoji: "🚀",
   },

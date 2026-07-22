@@ -43,8 +43,12 @@ export const PersonaChooser = () => {
               fontSize: "clamp(1.5rem, 3.4vw, 2rem)",
             }}
           >
-            Which describes you?
+            Which of these fits you best?
           </h2>
+          <p className="text-muted-foreground text-base md:text-lg">
+            Pick the path that sounds like you. We'll tailor your first day
+            around it.
+          </p>
           <div
             className="grid gap-3 sm:grid-cols-2"
             role="group"
@@ -61,8 +65,8 @@ export const PersonaChooser = () => {
                 <span className="block text-base md:text-lg font-semibold text-foreground">
                   {choice.label}
                 </span>
-                <span className="mt-1 block text-xs text-muted-foreground group-hover:text-foreground/80">
-                  Tap to tailor your first mission
+                <span className="mt-1 block text-sm text-muted-foreground group-hover:text-foreground/80">
+                  Tap to tailor your first day
                 </span>
               </button>
             ))}

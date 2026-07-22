@@ -58,9 +58,9 @@ describe("landing/quiz truthfulness in prelaunch", () => {
 
   it("HeroSection uses the launch-ready H1 and primary CTA label", () => {
     const src = read("src/components/landing/HeroSection.tsx");
-    expect(src).toMatch(/Turn the app idea in your head into a/);
-    expect(src).toMatch(/working first version/);
-    expect(src).toMatch(/five focused days/);
+    expect(src).toMatch(/Build Your First Website or App/);
+    expect(src).toMatch(/With AI—in 5 Days/);
+    expect(src).toMatch(/tech has always intimidated you/);
     expect(src).toMatch(/PRIMARY_CTA_LABEL/);
     expect(src).not.toMatch(/Get Free Early Access/);
     // No unverified marketing claims in hero

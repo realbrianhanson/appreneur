@@ -17,7 +17,7 @@ export const HEADLINE_VARIANTS: readonly HeadlineVariant[] = [
   {
     id: "control",
     headline:
-      "Turn the app idea in your head into a working first version—in five focused days.",
+      "Build Your First Website or App With AI—in 5 Days—even if tech has always intimidated you.",
     note: "Control — currently rendered.",
   },
   {
@@ -40,22 +40,22 @@ export const CONTROL_HEADLINE = HEADLINE_VARIANTS[0].headline;
  * signup flow.
  */
 export interface PersonaChoice {
-  id: "have_idea" | "help_pick";
+  id: "for_business" | "to_sell";
   label: string;
   /** Value written into the first quiz answer when this persona is chosen. */
-  quizAnswerValue: "idea_existing" | "idea_none";
+  quizAnswerValue: "for_business" | "to_sell";
 }
 
 export const PERSONA_CHOICES: readonly PersonaChoice[] = [
   {
-    id: "have_idea",
-    label: "I already have an app idea",
-    quizAnswerValue: "idea_existing",
+    id: "for_business",
+    label: "Build something for my business",
+    quizAnswerValue: "for_business",
   },
   {
-    id: "help_pick",
-    label: "Help me find the right idea",
-    quizAnswerValue: "idea_none",
+    id: "to_sell",
+    label: "Build websites or apps I can sell",
+    quizAnswerValue: "to_sell",
   },
 ] as const;
 
@@ -67,6 +67,11 @@ export const PERSONA_STORAGE_KEY = "appreneur.persona_prefill";
  */
 export const REQUIRED_OBJECTION_IDS = [
   "not_technical",
+  "too_old_or_nontechnical",
+  "never_built",
+  "write_code",
+  "for_existing_business",
+  "to_sell",
   "dont_know_what_to_build",
   "what_tools_do_i_need",
   "miss_a_day",
@@ -74,6 +79,7 @@ export const REQUIRED_OBJECTION_IDS = [
   "what_at_the_end",
   "really_free",
   "after_signup",
+  "get_stuck",
 ] as const;
 
 export type ObjectionId = (typeof REQUIRED_OBJECTION_IDS)[number];

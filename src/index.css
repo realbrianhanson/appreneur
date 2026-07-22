@@ -9,6 +9,13 @@
 
 @layer base {
   :root {
+    /* Age-aware base font — bumps every rem-based size so essential copy
+       stays comfortably readable for older business owners and beginners. */
+  }
+  html {
+    font-size: 17px;
+  }
+  :root {
     /* Core dark palette — #08080C canvas everywhere */
     --background: 240 20% 4%;
     --background-secondary: 240 15% 6%;

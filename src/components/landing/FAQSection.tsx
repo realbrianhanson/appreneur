@@ -15,23 +15,53 @@ const faqs: Array<{ id: string; question: string; answer: string }> = [
     id: "not_technical",
     question: "I'm not technical — is this really for me?",
     answer:
-      "Yes. The challenge is built for entrepreneurs, not engineers. If you can write an email, you can follow the daily missions. Modern AI builders handle the code while you make the decisions.",
+      "Yes. The challenge is built for business owners and beginners, not engineers. If you can write an email, you can follow the daily missions. AI handles the technical parts while you make the decisions in everyday English.",
+  },
+  {
+    id: "too_old_or_nontechnical",
+    question: "Am I too old or too nontechnical to do this?",
+    answer:
+      "No. This challenge was built with older business owners and total beginners in mind. Lessons move at a patient pace, define every term in plain English, and show exactly what to click. If you use email, you can do this.",
+  },
+  {
+    id: "never_built",
+    question: "What if I've never built anything before?",
+    answer:
+      "That's exactly who this is for. You don't need any prior experience with building websites or apps. Day 1 assumes you're starting from zero and walks you through every step.",
+  },
+  {
+    id: "write_code",
+    question: "Do I have to write code?",
+    answer:
+      "No. You build by describing what you want in everyday English. AI does the technical work behind the scenes. You never write code and you never open a code editor.",
+  },
+  {
+    id: "for_existing_business",
+    question: "Can I build something for my existing business?",
+    answer:
+      "Yes. Many people use the challenge to build a custom website, a simple internal tool, or a helpful automation for the business they already run. You choose the direction on Day 1.",
+  },
+  {
+    id: "to_sell",
+    question: "Can I build something I can sell or offer to clients?",
+    answer:
+      "Yes. You can pick a website or simple app you'd like to offer to customers as a product or service. The challenge focuses on getting a real, working first version live so you can decide what to do next.",
   },
   {
     id: "dont_know_what_to_build",
     question: "I don't know what to build yet. Can I still start?",
     answer:
-      "Absolutely. Day 1 is designed for exactly this. You'll narrow down to one audience, one problem, and one outcome by the end of the first mission — even if you're starting from a blank page.",
+      "Absolutely. Day 1 is designed for exactly this. By the end of the first day you'll have picked one clear idea — who it's for, what it does, and why it's useful — even if you're starting from a blank page.",
   },
   {
     id: "what_tools_do_i_need",
     question: "What tools do I need, and do they cost anything?",
     answer:
-      "You can begin on the free plan of the AI builder used in the lessons. Nothing paid is required to complete the challenge itself. If you later choose to publish or scale, some tools have paid tiers — but that is your decision, not a requirement.",
+      "You can start on the free plan of the AI builder used in the lessons. Nothing paid is required to complete the challenge itself. Later, if you choose to publish or scale, some tools offer paid tiers — but that's your decision, not a requirement.",
   },
   {
     id: "miss_a_day",
-    question: "What if I miss a day?",
+    question: "What if I miss a day or get behind?",
     answer:
       "Nothing breaks. The challenge is self-paced — pick up wherever you left off. Your progress and next mission are waiting for you when you come back.",
   },
@@ -39,25 +69,31 @@ const faqs: Array<{ id: string; question: string; answer: string }> = [
     id: "how_long",
     question: "How long do I have access?",
     answer:
-      "Your free account keeps access to the five missions so you can work at your own pace. No deadline, no cohort clock.",
+      "Your free account keeps access to the five missions so you can work at your own pace. Start anytime. No deadline.",
   },
   {
     id: "what_at_the_end",
     question: "What will I actually have at the end?",
     answer:
-      "By Day 5 the intended outcome is a working, shareable first version of your app, a clear use case, your core user flow, one useful AI feature, and a next-iteration checklist. Your result depends on completing the missions and using the tools provided.",
+      "By Day 5, the intended outcome is a working website or simple app, a clear purpose, pages and buttons that work, one useful AI-powered feature, a link you can share, and a short list of what to improve next. Your result depends on completing the missions and using the tools provided.",
   },
   {
     id: "really_free",
     question: "Is it really free? What's the catch?",
     answer:
-      "Yes. No credit card, no hidden fee for the challenge itself. You'll create a free Appreneur account to save progress, and that's it.",
+      "Yes. No credit card, no hidden fee for the challenge itself. You'll create a free Appreneur account so your progress is saved, and that's it.",
   },
   {
     id: "after_signup",
     question: "What happens right after I sign up?",
     answer:
       "You land in your dashboard, Day 1 unlocks immediately, and you can start your first mission the moment your account is created.",
+  },
+  {
+    id: "get_stuck",
+    question: "What if I get stuck along the way?",
+    answer:
+      "Every lesson defines its terms, shows exactly what to click, and points out the mistakes beginners usually make so you can avoid them. If a step doesn't work the first time, the lesson walks you through fixing it before moving on.",
   },
 ];
 

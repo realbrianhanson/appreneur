@@ -12,11 +12,11 @@ import { MECHANISM_LINE } from "@/lib/constants";
  */
 export const OpportunityMechanismSection = () => {
   const beginnerStalls = [
-    "Too many ideas, no clear pick",
-    "Scope grows before anything ships",
-    "Blank-screen paralysis when it's time to build",
-    "Gimmicky AI features that don't move the needle",
-    "Fear of publishing anything less than perfect",
+    "Technology has always felt intimidating",
+    "Hiring a developer costs too much",
+    "Too many ideas, none of them started",
+    "Not sure where to begin",
+    "Afraid to share anything less than perfect",
   ];
 
   return (
@@ -40,7 +40,7 @@ export const OpportunityMechanismSection = () => {
               fontSize: "clamp(2rem, 5vw, 3.25rem)",
             }}
           >
-            Your app isn't waiting on code.{" "}
+            You do not need to become a tech person.{" "}
             <span
               className="font-serifit italic bg-clip-text text-transparent"
               style={{
@@ -48,14 +48,20 @@ export const OpportunityMechanismSection = () => {
                   "linear-gradient(90deg, #FFA04D 0%, #FF6A00 100%)",
               }}
             >
-              It's waiting on the right sequence.
+              You need to learn how to tell AI what you want.
             </span>
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed max-w-3xl">
-            AI and no-code builders removed the developer bottleneck. What's
-            left is a sequencing problem — the wrong order, the wrong scope,
-            and the wrong first move. That's why beginners stall on the
-            same five things:
+            AI can now take everyday English and turn it into a working
+            website or app. That means an ordinary business owner — no
+            coding, no developer, no tech background — can describe the
+            pages and features they want and watch a real version take shape.
+            The only thing left to learn is how to tell AI what you want.
+          </p>
+          <p className="text-foreground text-lg leading-relaxed max-w-3xl">
+            You're not behind. You've just been waiting on the tools to
+            catch up. Here's what usually gets in the way — and what this
+            challenge replaces it with:
           </p>
           <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-muted-foreground text-[15px] md:text-base list-disc pl-5 max-w-2xl">
             {beginnerStalls.map((stall) => (

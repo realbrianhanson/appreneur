@@ -54,7 +54,7 @@ const Index = () => {
         course={{
           name: "The Appreneur Challenge",
           description:
-            "A free, self-paced 5-day challenge that guides entrepreneurs from idea to a working first app using AI-powered no-code tools.",
+            "A free, self-paced 5-day challenge for beginners and business owners age 50+ that guides you from idea to a working first website or app using AI — no coding, no developer required.",
           provider: "AI For Business",
           url: "https://appreneur.ai",
         }}
