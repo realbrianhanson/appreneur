@@ -2,26 +2,18 @@ import { motion } from "framer-motion";
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { Badge } from "@/components/ui/badge";
-import { Award, Users, TrendingUp, Heart, Check } from "lucide-react";
+import { Check } from "lucide-react";
 import brianPhoto from "@/assets/brian-hanson.jpeg";
 import { GhostWord } from "@/components/motion/GhostWord";
-import { CountUp } from "@/components/motion/CountUp";
 
 const bioBullets = [
-  "4X Inc. 5000 entrepreneur (highest ranking: #80)",
-  "Built multiple 7-figure businesses from the ground up",
-  "Trained 40,000+ business owners through AI For Business Live",
-  "Currently building Revven, an AI content platform",
-  "I still build apps every week using the exact system I'm teaching you",
+  "Founder of AI For Business — one of the world's largest AI training companies",
+  "Long-time entrepreneur and operator who has built and led multiple companies",
+  "Teaches a practical, no-fluff approach to using AI as an entrepreneur",
+  "Still builds apps every week using the exact system taught in this challenge",
 ];
 
 const AboutHostSection = () => {
-  const stats = [
-    { icon: Award, label: "Inc 5000 Honoree", to: 4, suffix: "X" },
-    { icon: TrendingUp, label: "Highest Ranking", to: 80, prefix: "#" },
-    { icon: Users, label: "Owners Trained", to: 40, suffix: "K+" },
-  ] as const;
-
   return (
     <Section variant="muted" spacing="xl" className="relative overflow-hidden">
       <GhostWord word="BRIAN" align="center" className="opacity-80" />
@@ -61,15 +53,12 @@ const AboutHostSection = () => {
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                   className="absolute -bottom-5 -right-4 md:-right-8 rounded-2xl border border-primary/40 bg-background/90 backdrop-blur px-4 py-3 shadow-[0_20px_50px_-15px_hsl(var(--primary)/0.5)]"
                 >
-                  <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-primary" />
-                    <div className="leading-tight">
-                      <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-mono">
-                        Inc. 5000
-                      </div>
-                      <div className="text-lg font-display font-bold text-foreground">
-                        #80
-                      </div>
+                  <div className="leading-tight">
+                    <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground font-mono">
+                      Founder
+                    </div>
+                    <div className="text-sm font-display font-bold text-foreground">
+                      AI For Business
                     </div>
                   </div>
                 </motion.div>
@@ -87,10 +76,13 @@ const AboutHostSection = () => {
                 </span>
               </h2>
               <p className="text-lg text-muted-foreground max-w-xl">
-                I've spent 20+ years in the trenches building businesses. Now I help entrepreneurs skip the hard lessons I learned.
+                Created by Brian Hanson, founder of AI For Business — one of
+                the world's largest AI training companies.
               </p>
               <p className="text-lg text-muted-foreground max-w-xl">
-                In my 20s I built one of the largest engine and transmission companies in the country, and I couldn't rebuild an engine to save my life. I figured out the system and executed. That's exactly what you're about to do here: AI writes the code, you bring the idea.
+                Brian is an entrepreneur, not a developer. This challenge
+                teaches the exact system he uses to turn ideas into working
+                apps with AI — no engineering background required.
               </p>
 
               <ul className="space-y-3">
@@ -112,36 +104,6 @@ const AboutHostSection = () => {
               </div>
             </div>
           </motion.div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-14 pt-10 border-t border-border/40">
-            {stats.map((s, i) => {
-              const Icon = s.icon;
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  transition={{ duration: 0.5, delay: i * 0.08 }}
-                  className="flex flex-col items-center p-5 rounded-2xl bg-background/40 border border-border/50 backdrop-blur-sm"
-                >
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mb-3">
-                    <Icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <CountUp
-                    to={s.to}
-                    prefix={"prefix" in s ? (s as any).prefix : ""}
-                    suffix={"suffix" in s ? (s as any).suffix : ""}
-                    className="text-3xl md:text-4xl font-display font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent tabular-nums"
-                  />
-                  <span className="text-xs text-muted-foreground text-center mt-1 uppercase tracking-widest font-mono">
-                    {s.label}
-                  </span>
-                </motion.div>
-              );
-            })}
-          </div>
         </div>
       </Container>
     </Section>
