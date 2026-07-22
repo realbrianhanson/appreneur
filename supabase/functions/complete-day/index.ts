@@ -21,11 +21,24 @@ function buildCors(req: Request): Record<string, string> {
   };
 }
 
-// Max time we accept per invocation. Keeps a bad client from padding
-// the timer, and caps the field far below any plausible legitimate run.
+// Duplicated from src/lib/dayTasks.ts because Deno cannot import from src/.
 const MAX_TIME_PER_CALL_S = 4 * 60 * 60; // 4 hours
-// Absolute upper bound stored on a row; further increments are ignored.
-const MAX_TOTAL_TIME_S = 24 * 60 * 60; // 24 hours per day
+const MAX_TOTAL_TIME_S = 24 * 60 * 60;   // 24 hours per row
+
+/**
+ * Retry-idempotent snapshot merge (mirror of mergeTimeSnapshot in the
+ * frontend). Treats the supplied value as an absolute lower bound so
+ * repeated retries produce the same stored total.
+ */
+function mergeTimeSnapshot(current: number, supplied: unknown): number | null {
+  const cur = Math.max(0, Math.floor(current || 0));
+  if (typeof supplied !== "number" || !Number.isFinite(supplied) || supplied <= 0) {
+    return null;
+  }
+  const capped = Math.floor(Math.min(supplied, MAX_TIME_PER_CALL_S));
+  const next = Math.min(Math.max(cur, capped), MAX_TOTAL_TIME_S);
+  return next > cur ? next : null;
+}
 
 serve(async (req) => {
   const corsHeaders = buildCors(req);
@@ -70,8 +83,6 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
-    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const admin = createClient(supabaseUrl, serviceKey);
 
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) {
@@ -81,7 +92,6 @@ serve(async (req) => {
       );
     }
 
-    // Load the row via the anon client so RLS still applies to reads.
     const { data: dayProgress, error: dayError } = await supabase
       .from("user_progress")
       .select("*")
@@ -96,10 +106,6 @@ serve(async (req) => {
       );
     }
 
-    // This endpoint is intentionally non-authoritative. The only path
-    // that can mark a day complete is public.complete_task after every
-    // canonical required task has been checked off. If that has not
-    // already happened, refuse the request.
     if (!dayProgress.is_completed || !dayProgress.completed_at) {
       return new Response(
         JSON.stringify({
@@ -110,37 +116,26 @@ serve(async (req) => {
       );
     }
 
-    // Safely record time. Cap per-call and per-row. Skip when the client
-    // sent nothing so repeated calls (e.g. accidental retries) are idempotent.
-    let addSeconds = 0;
-    if (
-      typeof time_spent_seconds === "number" &&
-      Number.isFinite(time_spent_seconds) &&
-      time_spent_seconds > 0
-    ) {
-      addSeconds = Math.floor(Math.min(time_spent_seconds, MAX_TIME_PER_CALL_S));
-    }
-
-    if (addSeconds > 0) {
-      const currentTotal = dayProgress.time_spent_seconds || 0;
-      const nextTotal = Math.min(currentTotal + addSeconds, MAX_TOTAL_TIME_S);
-      if (nextTotal !== currentTotal) {
-        // Use admin client because the gating trigger only allows the
-        // service role to touch progress rows freely; time_spent_seconds
-        // itself is safe via RLS but a single admin path keeps this simple.
-        const { error: timeError } = await admin
-          .from("user_progress")
-          .update({ time_spent_seconds: nextTotal, updated_at: new Date().toISOString() })
-          .eq("user_id", user.id)
-          .eq("day_number", day_number);
-        if (timeError) {
-          console.error("Error updating time_spent_seconds:", timeError);
-        }
+    // Retry-idempotent snapshot merge. `time_spent_seconds` is treated as
+    // an absolute lower bound: repeated retries with the same value yield
+    // the same stored total, and it never adds twice. The write goes
+    // through the authenticated user client — the gating trigger does not
+    // guard time_spent_seconds, so RLS ownership is sufficient.
+    const nextTotal = mergeTimeSnapshot(
+      dayProgress.time_spent_seconds ?? 0,
+      time_spent_seconds,
+    );
+    if (nextTotal !== null) {
+      const { error: timeError } = await supabase
+        .from("user_progress")
+        .update({ time_spent_seconds: nextTotal, updated_at: new Date().toISOString() })
+        .eq("user_id", user.id)
+        .eq("day_number", day_number);
+      if (timeError) {
+        console.error("Error updating time_spent_seconds:", timeError);
       }
     }
 
-    // Report the *existing* completion/unlock state — this endpoint
-    // never marks a day complete and never unlocks a next day.
     let nextDayUnlocked = false;
     if (day_number < 5) {
       const { data: nextRow } = await supabase
