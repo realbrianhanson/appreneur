@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTrackingParams, getStoredTrackingParams } from "@/hooks/useTrackingParams";
-import { useNextCohort } from "@/hooks/useNextCohort";
 import { sendWelcomeEmail } from "@/lib/email";
 import { fireWebhook } from "@/lib/webhooks";
 import {
@@ -14,9 +13,7 @@ import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
 import QuizStep from "./QuizStep";
 import EmailCaptureForm from "./EmailCaptureForm";
-import WaitlistForm from "./WaitlistForm";
-import CountdownTimer from "./CountdownTimer";
-import { Users, Calendar, Check } from "lucide-react";
+import { Check } from "lucide-react";
 
 const quizQuestions = [
   {
@@ -52,16 +49,6 @@ const QuizContainer = () => {
   
   // Capture tracking params from URL
   useTrackingParams();
-
-  // Single source of truth for the cohort/countdown date across the funnel.
-  const {
-    cohort,
-    targetDate: cohortStartDate,
-    isFallback,
-    spotsLeft: hookSpotsLeft,
-    maxSpots: hookMaxSpots,
-    onExpire,
-  } = useNextCohort();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [answers, setAnswers] = useState<(string | null)[]>([null, null, null]);
@@ -183,11 +170,7 @@ const QuizContainer = () => {
   };
 
   const handleEmailSubmit = async (data: { firstName: string; email: string; phone?: string }) => {
-    if (!cohort) return;
-
     setIsSubmitting(true);
-    let spotReservedForThisSignup = false;
-
     try {
       // Get tracking params
       const trackingParams = getStoredTrackingParams();
@@ -211,12 +194,8 @@ const QuizContainer = () => {
         console.error("lead_captured track error", e);
       }
 
-      // Step 2: Create user account with Supabase Auth using a random password.
-      // With email confirmation disabled in Auth settings, signUp returns an active
-      // session so the user is signed in immediately — no verification wall.
-      // We pass registration data via user_metadata; handle_new_user (SECURITY
-      // DEFINER) copies these fields into the profile — this works even when
-      // email confirmation is ON and the session isn't yet active.
+      // Step 2: Create user account. No phone / cohort_id is captured during
+      // prelaunch. handle_new_user copies safe attribution fields into profile.
       const randomPassword = generateRandomPassword();
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: data.email,
@@ -225,8 +204,6 @@ const QuizContainer = () => {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
             first_name: data.firstName,
-            phone: data.phone || null,
-            cohort_id: cohort.id,
             quiz_answers: {
               answer1: answers[0],
               answer2: answers[1],
@@ -257,79 +234,38 @@ const QuizContainer = () => {
           if (magicLinkError) throw magicLinkError;
 
           setIsComplete(true);
-          toast.success("Welcome back! Check your email for the login link.");
+          toast.success("Welcome back! We just sent you a login link.");
           return;
         }
         throw signUpError;
       }
 
-      // Step 3: Reserve cohort spot atomically now that we have an authenticated
-      // user. reserve_cohort_spot is authenticated-only, so it must run AFTER signUp.
-      const { data: spotReserved, error: spotError } = await supabase.rpc(
-        "reserve_cohort_spot",
-        { p_cohort_id: cohort.id }
-      );
-
-      if (spotError) {
-        console.error("Error reserving spot:", spotError);
-        throw new Error("Failed to reserve your spot. Please try again.");
-      }
-
-      if (!spotReserved) {
-        // Cohort is full — put them on the waitlist instead of leaving them stranded.
-        toast.error("This cohort just filled up! Adding you to the waitlist.");
-        await handleWaitlistSubmit(data.email, data.firstName, data.phone);
-        return;
-      }
-      spotReservedForThisSignup = true;
-
-      // Step 4: Sync non-privileged profile columns from the client. cohort_id,
-      // quiz_answers and UTM/fbclid are populated by the handle_new_user trigger
-      // from user_metadata (the profiles UPDATE trigger blocks cohort_id here).
       if (authData.user) {
-        // Wait briefly for handle_new_user trigger to create the profile row.
+        // Give handle_new_user a beat to create the profile row.
         await new Promise((resolve) => setTimeout(resolve, 400));
 
-        // Only push non-privileged, non-metadata fields (first_name, phone)
-        // that the client is allowed to write.
-        if (data.phone) {
-          const { error: profileError } = await supabase
-            .from("profiles")
-            .update({ phone: data.phone })
-            .eq("id", authData.user.id);
-          if (profileError) {
-            console.error("Error updating profile phone:", profileError);
-          }
-        }
-
-        // Step 5: Initialize user progress (Day 1 unlocked).
-        // Server derives user id from auth.uid() — no client-supplied id.
+        // Initialize the 5 progress rows using the safe no-argument RPC.
         const { error: progressError } = await supabase.rpc(
           "initialize_user_progress"
         );
-
         if (progressError) {
           console.error("Error initializing progress:", progressError);
-          // Don't fail registration if progress init fails
         }
 
-        // Step 6: Store quiz lead for tracking (backup)
+        // Store quiz lead for tracking (backup) — no cohort_id in prelaunch.
         await supabase.from("quiz_leads").insert({
           first_name: data.firstName,
           email: data.email,
           answer1: answers[0] || "",
           answer2: answers[1] || "",
           answer3: answers[2] || "",
-          cohort_id: cohort.id,
         });
 
-        // Step 7: Track registration_complete funnel event + analytics + CRM webhook.
         await supabase.from("funnel_events").insert({
           session_id: sessionId,
           user_id: authData.user.id,
           event_type: "registration_complete",
           event_data: {
-            cohort_id: cohort.id,
             quiz_answers: answers,
           },
           utm_source: trackingParams.utm_source,
@@ -345,7 +281,6 @@ const QuizContainer = () => {
           user_id: authData.user.id,
           email: data.email,
           first_name: data.firstName,
-          cohort_id: cohort.id,
           utm_params: {
             utm_source: trackingParams.utm_source || "",
             utm_medium: trackingParams.utm_medium || "",
@@ -360,107 +295,26 @@ const QuizContainer = () => {
           },
         }).catch((err) => console.error("user.registered webhook error", err));
 
-        // Step 8: Send welcome email
-        const cohortStartDate = new Date(cohort.start_date).toLocaleDateString("en-US", {
-          weekday: "long",
-          month: "long",
-          day: "numeric",
-          year: "numeric",
-        });
-
-        sendWelcomeEmail(data.email, data.firstName, cohortStartDate).catch(err => {
+        // Fire-and-forget welcome email. We don't claim it's sent to the user
+        // unless the server confirms it, so no toast promise here.
+        sendWelcomeEmail(data.email, data.firstName, "").catch(err => {
           console.error("Error sending welcome email:", err);
-          // Don't fail registration if email fails
         });
-
-        // Step 9: Route into the offer funnel.
-        // - Session present (email confirmation OFF): send to /vip-offer immediately.
-        // - No session (email confirmation ON): AuthCallback will route to /vip-offer
-        //   on first confirmation. Mark the browser so returning logins skip the OTO.
-        try {
-          localStorage.setItem("pending_registration", "1");
-        } catch {}
 
         if (authData.session) {
-          toast.success("You're in! One quick upgrade option before we start...");
-          navigate("/vip-offer");
+          navigate(`/thank-you?name=${encodeURIComponent(data.firstName)}`);
         } else {
           setIsComplete(true);
-          toast.success("You're in! Check your email to confirm your account.");
         }
         return;
       }
 
     } catch (error) {
       console.error("Error submitting registration:", error);
-      // Roll back the phantom cohort reservation if we grabbed one before failing.
-      if (spotReservedForThisSignup && cohort?.id) {
-        try {
-          await supabase.rpc("release_cohort_spot", { p_cohort_id: cohort.id });
-        } catch (releaseErr) {
-          console.error("Failed to release cohort spot:", releaseErr);
-        }
-      }
       toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleWaitlistSubmit = async (email: string, firstName?: string, phone?: string) => {
-    const targetCohortId = cohort?.id;
-
-    setIsSubmitting(true);
-    try {
-      const { error } = await supabase.from("waitlist").insert({
-        email,
-        first_name: firstName || null,
-        phone: phone || null,
-        target_cohort_id: targetCohortId,
-      });
-
-      if (error) throw error;
-
-      // Track waitlist event
-      const trackingParams = getStoredTrackingParams();
-      await supabase.from("funnel_events").insert({
-        session_id: sessionStorage.getItem("session_id") || crypto.randomUUID(),
-        event_type: "waitlist_joined",
-        event_data: { target_cohort_id: targetCohortId },
-        utm_source: trackingParams.utm_source,
-        utm_medium: trackingParams.utm_medium,
-        utm_campaign: trackingParams.utm_campaign,
-        utm_content: trackingParams.utm_content,
-        fb_ad_id: trackingParams.fb_ad_id,
-      });
-
-      fireWebhook("user.waitlisted", {
-        email,
-        first_name: firstName,
-        target_cohort: targetCohortId,
-      }).catch((err) => console.error("user.waitlisted webhook error", err));
-
-      toast.success("You're on the waitlist! We'll notify you when spots open.");
-    } catch (error) {
-      console.error("Error joining waitlist:", error);
-      toast.error("Something went wrong. Please try again.");
-      // Re-throw so callers (e.g. WaitlistForm) can render an inline error state
-      // instead of showing a false-positive success screen.
-      throw error;
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const spotsRemaining = hookSpotsLeft ?? 0;
-  const isFull = isFallback || !cohort || spotsRemaining <= 0 || !cohort.is_accepting_registrations;
-
-  const formatCohortDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
   };
 
   // If user is already authenticated, show different message
@@ -474,7 +328,7 @@ const QuizContainer = () => {
           Welcome Back!
         </h3>
         <p className="text-muted-foreground max-w-md mx-auto">
-          You're already registered for the challenge.
+          You're already registered. Preview your dashboard below.
         </p>
         <button
           onClick={() => navigate("/dashboard")}
@@ -506,23 +360,13 @@ const QuizContainer = () => {
           <h3 className="text-3xl md:text-4xl font-display font-bold leading-tight tracking-tight">
             You're in.{" "}
             <span className="font-serifit italic bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Welcome to the challenge.
+              Early access confirmed.
             </span>
           </h3>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Check your inbox: we've sent a confirmation link. Click it to verify your account and unlock your dashboard.
+            The lessons are being recorded. We'll email you the moment the full
+            challenge opens.
           </p>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.4 }}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary/10 border border-primary/30"
-        >
-          <Calendar className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium text-foreground">
-            Starts {formatCohortDate(cohortStartDate)}
-          </span>
         </motion.div>
         <div>
           <button
@@ -540,56 +384,20 @@ const QuizContainer = () => {
 
   return (
     <div className="space-y-6">
-      {/* Urgency Elements */}
-      <div className="space-y-4">
-          {/* Countdown */}
-          <div className="flex flex-col items-center gap-2">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Calendar className="w-4 h-4" />
-              <span>Challenge Starts {formatCohortDate(cohortStartDate)}</span>
-            </div>
-            <CountdownTimer targetDate={cohortStartDate} onExpire={onExpire} />
-          </div>
-
-          {/* Spots Remaining — only for real future cohorts */}
-          {!isFallback && !isFull && cohort && (
-            <div className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-secondary/10 border border-secondary/30 w-fit mx-auto">
-              <Users className="w-4 h-4 text-secondary" />
-              <span className="text-sm font-semibold">
-                <span className="text-secondary">{spotsRemaining}</span>
-                <span className="text-muted-foreground"> of {cohort.max_participants} Spots Left</span>
-              </span>
-            </div>
-          )}
-      </div>
-
       {/* Quiz Card */}
       <div className="relative rounded-2xl bg-white/[0.03] backdrop-blur-md border border-white/10 shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] overflow-hidden">
         {/* Thin amber progress bar */}
-        {!isFull && (
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-white/5 z-10">
-            <motion.div
-              className="h-full bg-gradient-to-r from-primary to-accent shadow-[0_0_10px_hsl(var(--primary)/0.6)]"
-              initial={false}
-              animate={{ width: `${progressPct}%` }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            />
-          </div>
-        )}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-white/5 z-10">
+          <motion.div
+            className="h-full bg-gradient-to-r from-primary to-accent shadow-[0_0_10px_hsl(var(--primary)/0.6)]"
+            initial={false}
+            animate={{ width: `${progressPct}%` }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </div>
 
         <div className="p-6 md:p-8 pt-8 md:pt-10">
-          {/* Waitlist Form (when full) */}
-          {isFull && (
-            <WaitlistForm
-              nextCohortDate={formatCohortDate(cohortStartDate)}
-              onSubmit={(email) => handleWaitlistSubmit(email)}
-              isLoading={isSubmitting}
-            />
-          )}
-
-          {/* Quiz Steps with slide transitions */}
-          {!isFull && (
-            <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden">
               <AnimatePresence mode="wait" initial={false} custom={direction}>
                 <motion.div
                   key={currentStep}
@@ -619,8 +427,7 @@ const QuizContainer = () => {
                   )}
                 </motion.div>
               </AnimatePresence>
-            </div>
-          )}
+          </div>
         </div>
       </div>
 
@@ -642,7 +449,7 @@ const QuizContainer = () => {
           </span>
         </div>
         <p className="text-xs text-muted-foreground">
-          No coding experience required · 60 minutes a day for 5 days
+          Five focused days · On your schedule · No coding experience required
         </p>
       </div>
     </div>
