@@ -373,92 +373,84 @@ export const AppBuilderMockup = () => {
                 )}
               </AnimatePresence>
 
-              {/* Cards */}
+              {/* Input rows — Service + Quantity */}
               <AnimatePresence>
-                {showCards && (
+                {showRows && (
                   <motion.div
                     initial="hidden"
                     animate="visible"
                     variants={{
                       hidden: {},
-                      visible: { transition: { staggerChildren: 0.1 } },
+                      visible: { transition: { staggerChildren: 0.12 } },
                     }}
-                    className="grid grid-cols-3 gap-1.5"
+                    className="space-y-1.5"
                   >
-                    {[CalendarIcon, CreditCard, Bell].map((Icon, i) => (
+                    {[
+                      { label: "Service", value: "Website setup" },
+                      { label: "Quantity", value: "2" },
+                    ].map((row) => (
                       <motion.div
-                        key={i}
+                        key={row.label}
                         variants={{
                           hidden: { opacity: 0, y: 6 },
                           visible: { opacity: 1, y: 0 },
                         }}
-                        className="rounded-md p-2 flex flex-col items-center gap-1"
+                        className="flex items-center justify-between rounded-md px-2.5 py-2"
                         style={{
                           background: "rgba(255,255,255,0.03)",
                           border: "1px solid rgba(255,255,255,0.06)",
                         }}
                       >
-                        <Icon className="w-3.5 h-3.5" style={{ color: "#FFA04D" }} />
                         <span
-                          className="rounded-full"
+                          className="text-[10px] uppercase tracking-widest"
                           style={{
-                            width: 22,
-                            height: 2,
-                            background: "rgba(244,242,238,0.25)",
+                            fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                            color: "rgba(244,242,238,0.55)",
                           }}
-                        />
+                        >
+                          {row.label}
+                        </span>
+                        <span
+                          className="text-[11px] font-semibold"
+                          style={{ color: "#F4F2EE" }}
+                        >
+                          {row.value}
+                        </span>
                       </motion.div>
                     ))}
                   </motion.div>
                 )}
               </AnimatePresence>
 
-              {/* Calendar grid */}
+              {/* Estimated total */}
               <AnimatePresence>
-                {showCalendar && (
+                {showTotal && (
                   <motion.div
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="space-y-1"
+                    className="flex items-center justify-between rounded-md px-2.5 py-2.5"
+                    style={{
+                      background:
+                        "linear-gradient(135deg, rgba(255,160,77,0.14), rgba(255,106,0,0.14))",
+                      border: "1px solid rgba(255,133,36,0.35)",
+                    }}
                   >
-                    <div
-                      className="grid grid-cols-7 gap-1 text-[8px] text-center"
-                      style={{ color: "rgba(244,242,238,0.4)" }}
+                    <span
+                      className="text-[10px] uppercase tracking-widest"
+                      style={{
+                        fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+                        color: "#FFC89A",
+                      }}
                     >
-                      {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-                        <span key={i}>{d}</span>
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-7 gap-1">
-                      {Array.from({ length: 21 }).map((_, i) => {
-                        const isHighlight = [4, 10, 16].includes(i);
-                        return (
-                          <motion.span
-                            key={i}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: i * 0.015 }}
-                            className="aspect-square rounded-[3px] flex items-center justify-center text-[8px]"
-                            style={
-                              isHighlight
-                                ? {
-                                    background:
-                                      "linear-gradient(135deg, #FFA04D, #FF6A00)",
-                                    color: "#1A0D00",
-                                    fontWeight: 700,
-                                  }
-                                : {
-                                    background: "rgba(255,255,255,0.04)",
-                                    color: "rgba(244,242,238,0.55)",
-                                  }
-                            }
-                          >
-                            {i + 1}
-                          </motion.span>
-                        );
-                      })}
-                    </div>
+                      Estimated total
+                    </span>
+                    <span
+                      className="text-sm font-bold"
+                      style={{ color: "#F4F2EE", letterSpacing: "-0.01em" }}
+                    >
+                      $1,500
+                    </span>
                   </motion.div>
                 )}
               </AnimatePresence>
