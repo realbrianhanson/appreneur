@@ -62,24 +62,24 @@ function buildWelcomeEmail(data: WelcomeTemplateData): {
 } {
   const firstName = escapeHtml(data.firstName || "there");
   const dashboardUrl = escapeHtml(data.dashboardUrl);
-  const subject = "You're on the early-access list for the Appreneur Challenge";
+  const subject = "Welcome to the Appreneur Challenge — Day 1 is ready";
   const html = `<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>${subject}</title></head>
 <body style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#0a0a0f;color:#ffffff;">
   <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
     <h1 style="font-size:24px;color:#ffffff;margin:0 0 24px 0;">Welcome, ${firstName}</h1>
     <p style="font-size:16px;line-height:1.6;color:#d4d4d8;margin:0 0 16px 0;">
-      You're on the early-access list for the Appreneur Challenge — a free,
-      self-paced, five-day build-your-first-app program.
+      Welcome to the Appreneur Challenge — a free, self-paced, five-day
+      program that walks you from app idea to a working first version.
     </p>
     <p style="font-size:16px;line-height:1.6;color:#d4d4d8;margin:0 0 24px 0;">
-      The lessons are still being recorded. We'll email you as soon as the full
-      challenge opens so you can start on your own schedule.
+      Day 1 is ready in your dashboard. One focused lesson, one clear
+      deliverable — start whenever you're ready.
     </p>
     <p style="margin:24px 0;">
       <a href="${dashboardUrl}"
         style="display:inline-block;background:#f59e0b;color:#0a0a0f;font-weight:700;text-decoration:none;padding:12px 24px;border-radius:8px;">
-        Preview your dashboard
+        Start Day 1
       </a>
     </p>
     <p style="font-size:14px;line-height:1.6;color:#a1a1aa;margin:24px 0 0 0;">
@@ -88,22 +88,22 @@ function buildWelcomeEmail(data: WelcomeTemplateData): {
     <hr style="border:0;border-top:1px solid #27272a;margin:32px 0;">
     <p style="font-size:12px;line-height:1.5;color:#71717a;margin:0;">
       Appreneur Challenge — a project of AI For Business.<br>
-      This is a transactional email sent because you signed up for early access.
+      This is a transactional email sent because you created a free account.
     </p>
   </div>
 </body></html>`;
   const text = [
     `Welcome, ${data.firstName || "there"}`,
     "",
-    "You're on the early-access list for the Appreneur Challenge — a free, self-paced, five-day build-your-first-app program.",
+    "Welcome to the Appreneur Challenge — a free, self-paced, five-day program that walks you from app idea to a working first version.",
     "",
-    "The lessons are still being recorded. We'll email you as soon as the full challenge opens so you can start on your own schedule.",
+    "Day 1 is ready in your dashboard. One focused lesson, one clear deliverable — start whenever you're ready.",
     "",
-    `Preview your dashboard: ${data.dashboardUrl}`,
+    `Start Day 1: ${data.dashboardUrl}`,
     "",
     "—",
     "Appreneur Challenge — a project of AI For Business.",
-    "This is a transactional email sent because you signed up for early access.",
+    "This is a transactional email sent because you created a free account.",
   ].join("\n");
   return { subject, html, text };
 }
