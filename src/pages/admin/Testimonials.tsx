@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { parseScreenshot } from "@/lib/testimonialScreenshot";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,6 +83,25 @@ export default function AdminTestimonials() {
 
   // Screenshot preview
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Admins preview screenshots via short-lived signed URLs. Legacy full
+  // URLs (before the P0 lockdown) are shown directly.
+  const openScreenshotPreview = async (t: Testimonial) => {
+    const ref = parseScreenshot(t);
+    if (ref.kind === "none") return;
+    if (ref.kind === "url") {
+      setPreviewUrl(ref.value);
+      return;
+    }
+    const { data, error } = await supabase.storage
+      .from("app-screenshots")
+      .createSignedUrl(ref.value, 300);
+    if (error || !data?.signedUrl) {
+      showError("Could not load screenshot");
+      return;
+    }
+    setPreviewUrl(data.signedUrl);
+  };
 
   useEffect(() => {
     fetchTestimonials();
