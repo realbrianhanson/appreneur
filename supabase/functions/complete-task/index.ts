@@ -6,15 +6,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Define required tasks for each day
-const dayTasks: Record<number, string[]> = {
-  1: ["watch_video", "define_idea", "create_wireframe", "share_community"],
-  2: ["watch_video", "setup_project", "build_layout", "add_navigation"],
-  3: ["watch_video", "add_features", "connect_data", "test_app"],
-  4: ["watch_video", "add_ai_feature", "refine_prompts", "integrate_ai"],
-  5: ["watch_video", "deploy_app", "launch_app", "share_success"],
-};
-
 serve(async (req) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
@@ -71,37 +62,12 @@ serve(async (req) => {
       );
     }
 
-    // Check if day is unlocked
-    const { data: dayProgress, error: dayError } = await supabase
-      .from("user_progress")
-      .select("*")
-      .eq("user_id", user.id)
-      .eq("day_number", day_number)
-      .single();
-
-    if (dayError || !dayProgress) {
-      return new Response(
-        JSON.stringify({ error: "Day progress not found" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!dayProgress.is_unlocked) {
-      return new Response(
-        JSON.stringify({ error: "This day is not unlocked yet" }),
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    // Get required tasks for this day
-    const requiredTasks = dayTasks[day_number] || [];
-
-    // Call the complete_task function. The DB function derives the user
-    // from auth.uid() via the JWT, so we no longer pass p_user_id.
+    // The DB function derives the user from auth.uid(), enforces unlock,
+    // and owns the canonical required-task list for each day. The client
+    // no longer supplies required tasks — that's server-authoritative now.
     const { data: result, error: completeError } = await supabase.rpc("complete_task", {
       p_day_number: day_number,
       p_task_id: task_id,
-      p_required_tasks: requiredTasks,
     });
 
     if (completeError) {
