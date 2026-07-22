@@ -30,6 +30,17 @@ const CUSTOMER_FACING_ROOTS = [
   "supabase/functions/send-email",
 ];
 
+// Internal-only surfaces the owner and admin see, never customers.
+// These are excluded from the customer-facing forbidden-phrase scan so
+// internal status language (e.g. "external analytics off during
+// prelaunch") on admin pages does not produce false positives. The
+// real customer-facing landing/quiz/auth/dashboard/day/thank-you/VIP/
+// downsell/email surfaces above are still scanned.
+const INTERNAL_EXCLUDE_PREFIXES = [
+  "src/pages/admin/",
+  "src/pages/admin\\",
+];
+
 function walk(dir) {
   const out = [];
   if (!existsSync(dir)) return out;
@@ -44,6 +55,7 @@ function walk(dir) {
 
 for (const file of ["index.html", ...CUSTOMER_FACING_ROOTS.flatMap(walk)].filter(existsSync)) {
   if (/\.test\.[tj]sx?$/.test(file)) continue;
+  if (INTERNAL_EXCLUDE_PREFIXES.some((p) => file.startsWith(p))) continue;
   const text = readFileSync(file, "utf8");
   const stripped = text
     .replace(/\/\*[\s\S]*?\*\//g, "")
