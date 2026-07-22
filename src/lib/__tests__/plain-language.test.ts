@@ -46,11 +46,13 @@ describe("audience: hero copy is written for beginners age 50+", () => {
     expect(HERO_H1).toMatch(/tech has always intimidated you/i);
     expect(HERO_H1).toMatch(/Website or App/);
   });
-  it("supporting copy mentions 'everyday English' and the two use cases", () => {
-    expect(HERO_SUPPORT_COPY).toMatch(/everyday English/i);
-    expect(HERO_SUPPORT_COPY).toMatch(/business/i);
-    expect(HERO_SUPPORT_COPY).toMatch(/sell/i);
-    expect(HERO_SUPPORT_COPY).toMatch(/No coding/);
+  it("supporting copy establishes belief in plain language", () => {
+    // Belief-bridge: reachable analogy + named instructor + honest coaching
+    // for when AI misfires. No 'no-code' framing.
+    expect(HERO_SUPPORT_COPY).toMatch(/type an email/i);
+    expect(HERO_SUPPORT_COPY).toMatch(/step-by-step video/i);
+    expect(HERO_SUPPORT_COPY).toMatch(/Brian/);
+    expect(HERO_SUPPORT_COPY).not.toMatch(/no-?code/i);
   });
   it("microcopy uses 'Start anytime' instead of a payment/credit-card claim", () => {
     expect(CTA_MICROCOPY).toMatch(/Start anytime/i);

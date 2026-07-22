@@ -1,7 +1,7 @@
 import { Container } from "@/components/layout/Container";
 import { Section } from "@/components/layout/Section";
 import { GhostWord } from "@/components/motion/GhostWord";
-import { MECHANISM_LINE } from "@/lib/constants";
+import { MECHANISM_LINE, BELIEF_ANALOGY } from "@/lib/constants";
 
 /**
  * Opportunity + mechanism block. Placed after the hero authority strip and
@@ -85,6 +85,12 @@ export const OpportunityMechanismSection = () => {
               data-testid="mechanism-line"
             >
               {MECHANISM_LINE}
+            </p>
+            <p
+              className="mt-3 text-base md:text-lg text-muted-foreground"
+              data-testid="belief-analogy"
+            >
+              {BELIEF_ANALOGY}
             </p>
           </div>
         </div>

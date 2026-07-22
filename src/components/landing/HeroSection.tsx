@@ -193,6 +193,12 @@ export const HeroSection = ({ onCtaClick }: HeroSectionProps) => {
               >
                 <AppBuilderMockup />
               </motion.div>
+              <p
+                className="mt-4 text-center text-xs md:text-sm text-muted-foreground/80 max-w-md mx-auto"
+                data-testid="mockup-honesty-label"
+              >
+                Illustrative build demonstration — not a customer result.
+              </p>
             </motion.div>
           </motion.div>
         </div>

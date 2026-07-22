@@ -15,6 +15,7 @@ import { EarlyAccessSection } from "@/components/landing/EarlyAccessSection";
 import { SocialProofSection } from "@/components/landing/SocialProofSection";
 import { AuthorityStrip } from "@/components/landing/AuthorityStrip";
 import { PersonaChooser } from "@/components/landing/PersonaChooser";
+import { BeliefBridgeSection } from "@/components/landing/BeliefBridgeSection";
 import { LandingVideoSlot } from "@/components/landing/LandingVideoSlot";
 import { OpportunityMechanismSection } from "@/components/landing/OpportunityMechanismSection";
 import { MomentumLine } from "@/components/landing/MomentumLine";
@@ -65,6 +66,9 @@ const Index = () => {
 
       {/* Authority — tight strip directly below the hero */}
       <AuthorityStrip />
+
+      {/* Belief bridge — establish possibility BEFORE asking for commitment */}
+      <BeliefBridgeSection />
 
       {/* Persona chooser — prefills the quiz's first answer */}
       <PersonaChooser />

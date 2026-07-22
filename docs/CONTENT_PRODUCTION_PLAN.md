@@ -4,6 +4,33 @@ One brief per launch-curriculum day. Target a polished self-paced lesson
 around 45–60 minutes; do NOT publish a runtime claim until the final
 edit is known.
 
+## Belief-bridge requirements (every lesson)
+
+The audience is scared, nontechnical, older beginners who may not
+believe building a website/app is possible for them. Every lesson —
+regardless of day — MUST include the following:
+
+- A confidence-building early win in the first few minutes: the learner
+  sees something visibly change on their screen before the harder
+  thinking work begins.
+- Every click shown on-screen. No off-camera keyboard shortcuts.
+- Every new word defined the first time it appears, in plain English.
+- A "What you should see" checkpoint at each major step, so the learner
+  can confirm they're on track before continuing.
+- A safe recovery step whenever the AI output can plausibly differ from
+  the demo, so the learner never has to guess.
+- Explicit pause-and-do-it prompts: the video tells the learner when to
+  pause, do the step, and come back.
+- Captions and a written transcript, published with the lesson.
+- A plain-English recap at the end that names what was built and what
+  changes next.
+
+## Day 1 — sequencing note
+
+Day 1 MUST be edited so the learner sees something change on screen
+early — before the deeper idea-selection work — to create immediate
+belief. Runtime is NOT published until the final edit is locked.
+
 ## Day 1 — Choose the right app idea
 - Outcome: one audience, one problem, one specific outcome, in one sentence.
 - Outline: why "small and specific" wins; audience; problem framing; outcome vs feature; go/no-go.

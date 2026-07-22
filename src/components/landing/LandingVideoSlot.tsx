@@ -29,6 +29,11 @@ export const LandingVideoSlot = () => {
           >
             {LANDING_VSL.title}
           </h2>
+          <p className="text-muted-foreground text-base md:text-lg">
+            A short walkthrough that answers three things: Is this really
+            possible? Can someone who isn't technical actually do it? And
+            what will I have at the end?
+          </p>
           <div
             className="relative rounded-2xl overflow-hidden border border-white/10 bg-black"
             style={{ aspectRatio: "16 / 9" }}

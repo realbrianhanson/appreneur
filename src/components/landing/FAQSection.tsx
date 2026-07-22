@@ -95,6 +95,24 @@ const faqs: Array<{ id: string; question: string; answer: string }> = [
     answer:
       "Every lesson defines its terms, shows exactly what to click, and points out the mistakes beginners usually make so you can avoid them. If a step doesn't work the first time, the lesson walks you through fixing it before moving on.",
   },
+  {
+    id: "ai_makes_mistake",
+    question: "What if AI makes a mistake?",
+    answer:
+      "It sometimes will — and that's a normal part of using AI. The lessons show you what a good result looks like, how to spot when the AI misunderstood you, and the simple next thing to say so it gets closer. You're never left guessing.",
+  },
+  {
+    id: "break_anything",
+    question: "Can I break anything?",
+    answer:
+      "No. You're working in a safe, sandboxed builder — nothing you do affects a real customer or a live business system until you decide to share it. If something looks wrong, you can back up, try again, or start the step over. There is no permanent damage to worry about.",
+  },
+  {
+    id: "watch_more_than_once",
+    question: "What if I need to watch a step more than once?",
+    answer:
+      "That's expected, and encouraged. Every lesson is a self-paced video you can pause, rewind, and replay as many times as you need. Captions and a written transcript are included so you can read along or jump back to any section.",
+  },
 ];
 
 const FAQSection = () => {
