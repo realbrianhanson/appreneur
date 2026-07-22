@@ -7,28 +7,28 @@ import { PRIMARY_CTA_LABEL, CTA_MICROCOPY } from "@/lib/constants";
 
 const inclusions = [
   {
-    title: "A working first version of your app",
-    body: "Not a slide deck. A live, clickable V1 you can open on your phone by Day 5.",
+    title: "A working website or simple app",
+    body: "Not a slide deck. A live, clickable first version you can open on your phone by Day 5.",
   },
   {
-    title: "A clear use case",
-    body: "One audience, one problem, one specific outcome — pinned so every decision serves it.",
+    title: "A clear purpose",
+    body: "Who it's for, the one problem it helps with, and what a good result looks like — in plain English.",
   },
   {
-    title: "Your core user flow",
-    body: "The essential screens, navigation, and data your first version needs to feel real.",
+    title: "Pages and buttons that work",
+    body: "The screens people actually see, with menus and buttons that go where they should.",
   },
   {
-    title: "One useful AI feature",
-    body: "A single AI capability wired in and tuned — the piece that makes your app feel modern.",
+    title: "One useful AI-powered feature",
+    body: "One thing your website or app can do automatically — set up by giving the AI clear instructions in everyday English.",
   },
   {
-    title: "A shareable, deployed version",
-    body: "A link you can send to a friend, a customer, or a co-founder for honest feedback.",
+    title: "A link you can open and share",
+    body: "A real web address you can send to a friend, a customer, or your team for honest feedback.",
   },
   {
-    title: "A next-iteration plan",
-    body: "A short list of what to build, cut, or test next so momentum carries into week two.",
+    title: "A short list of what to improve next",
+    body: "A simple next-steps list so you know exactly what to work on after Day 5.",
   },
 ];
 
