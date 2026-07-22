@@ -302,10 +302,10 @@ const QuizContainer = () => {
           }
         }
 
-        // Step 5: Initialize user progress (Day 1 unlocked)
+        // Step 5: Initialize user progress (Day 1 unlocked).
+        // Server derives user id from auth.uid() — no client-supplied id.
         const { error: progressError } = await supabase.rpc(
-          "initialize_user_progress",
-          { p_user_id: authData.user.id }
+          "initialize_user_progress"
         );
 
         if (progressError) {

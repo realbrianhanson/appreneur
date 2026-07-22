@@ -407,6 +407,7 @@ export type Database = {
       testimonials: {
         Row: {
           app_name: string | null
+          app_screenshot_path: string | null
           app_screenshot_url: string | null
           approved_at: string | null
           cohort_id: string | null
@@ -421,6 +422,7 @@ export type Database = {
         }
         Insert: {
           app_name?: string | null
+          app_screenshot_path?: string | null
           app_screenshot_url?: string | null
           approved_at?: string | null
           cohort_id?: string | null
@@ -435,6 +437,7 @@ export type Database = {
         }
         Update: {
           app_name?: string | null
+          app_screenshot_path?: string | null
           app_screenshot_url?: string | null
           approved_at?: string | null
           cohort_id?: string | null
@@ -684,11 +687,7 @@ export type Database = {
     }
     Functions: {
       complete_task: {
-        Args: {
-          p_day_number: number
-          p_required_tasks: string[]
-          p_task_id: string
-        }
+        Args: { p_day_number: number; p_task_id: string }
         Returns: Json
       }
       get_revenue_stats: { Args: never; Returns: Json }
@@ -704,7 +703,8 @@ export type Database = {
         Args: { cohort_uuid: string }
         Returns: undefined
       }
-      initialize_user_progress: {
+      initialize_user_progress: { Args: never; Returns: undefined }
+      initialize_user_progress_for: {
         Args: { p_user_id: string }
         Returns: undefined
       }

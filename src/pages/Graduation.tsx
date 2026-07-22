@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProgress } from "@/hooks/useProgress";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
@@ -28,6 +29,7 @@ import {
 } from "lucide-react";
 import jsPDF from "jspdf";
 import { showSuccess, showError } from "@/lib/toast-utils";
+import { canAccessGraduation, graduationDate } from "@/lib/progressGuards";
 
 // Confetti Component
 const Confetti = () => {
@@ -115,11 +117,22 @@ const Graduation = () => {
     return () => clearTimeout(t);
   }, []);
 
+  const hasCompletedDay5 = useMemo(() => canAccessGraduation(progress), [progress]);
+
   const completionDate = useMemo(() => {
-    const day5 = progress.find((p) => p.day_number === 5 && p.is_completed);
-    const d = day5?.completed_at ? new Date(day5.completed_at) : new Date();
-    return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    const d = graduationDate(progress);
+    return d
+      ? d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+      : "";
   }, [progress]);
+
+  // Guard: block the page (and certificate generation) for anyone who
+  // has not actually finished Day 5. We only redirect once progress has
+  // loaded to avoid a flash on the initial render.
+  const progressLoaded = progress.length > 0;
+  if (progressLoaded && !hasCompletedDay5) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const totalTime = useMemo(() => {
     return formatTime(stats?.total_time_seconds ?? 0);
@@ -133,6 +146,10 @@ const Graduation = () => {
   const shareUrl = encodeURIComponent("https://appreneur.ai");
 
   const handleDownloadCertificate = async () => {
+    if (!hasCompletedDay5) {
+      showError("Finish Day 5 to unlock your certificate.");
+      return;
+    }
     setIsGenerating(true);
     try {
       const pdf = new jsPDF({ orientation: "landscape", unit: "in", format: "letter" });

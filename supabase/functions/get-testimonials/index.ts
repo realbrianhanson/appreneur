@@ -34,10 +34,24 @@ serve(async (req: Request) => {
 
   try {
     const url = new URL(req.url);
-    const featured = url.searchParams.get("featured") === "true";
-    const limit = parseInt(url.searchParams.get("limit") || "20");
-    const offset = parseInt(url.searchParams.get("offset") || "0");
-    const minRating = parseInt(url.searchParams.get("min_rating") || "0");
+    let body: Record<string, unknown> = {};
+    if (req.method === "POST") {
+      try { body = await req.json(); } catch { body = {}; }
+    }
+    const featured =
+      url.searchParams.get("featured") === "true" || body.featured === true;
+    const limit = Math.min(
+      50,
+      Math.max(1, parseInt(String(body.limit ?? url.searchParams.get("limit") ?? "20")))
+    );
+    const offset = Math.max(
+      0,
+      parseInt(String(body.offset ?? url.searchParams.get("offset") ?? "0"))
+    );
+    const minRating = Math.max(
+      0,
+      parseInt(String(body.min_rating ?? url.searchParams.get("min_rating") ?? "0"))
+    );
 
     // Generate cache key
     const cacheKey = `testimonials_${featured}_${limit}_${offset}_${minRating}`;
@@ -57,12 +71,19 @@ serve(async (req: Request) => {
     // Use anon key — RLS already restricts SELECT to approved testimonials
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    // Service-role client only used to mint short-lived signed URLs for
+    // approved screenshots — never exposes unapproved rows.
+    const signer = createClient(supabaseUrl, serviceKey);
 
     // Build query
     let query = supabase
       .from("testimonials")
-      .select("id, name, content, rating, app_name, app_screenshot_url, is_featured, created_at", { count: "exact" })
+      .select(
+        "id, name, content, rating, app_name, app_screenshot_url, app_screenshot_path, is_featured, created_at",
+        { count: "exact" }
+      )
       .eq("is_approved", true);
 
     if (featured) {
@@ -85,6 +106,36 @@ serve(async (req: Request) => {
       throw error;
     }
 
+    // Resolve screenshots: sign object paths for approved rows, keep legacy
+    // full URLs as-is. Never sign a path for an unapproved row (RLS above
+    // already excluded them, but be explicit).
+    const SIGN_TTL = 300; // 5 minutes
+    const resolved = await Promise.all(
+      (testimonials || []).map(async (t: Record<string, unknown>) => {
+        const path = (t.app_screenshot_path as string | null) ?? null;
+        const legacy = (t.app_screenshot_url as string | null) ?? null;
+        let screenshot: string | null = null;
+        if (path) {
+          const { data: signed } = await signer.storage
+            .from("app-screenshots")
+            .createSignedUrl(path, SIGN_TTL);
+          screenshot = signed?.signedUrl ?? null;
+        } else if (legacy && /^https?:\/\//i.test(legacy)) {
+          screenshot = legacy;
+        }
+        return {
+          id: t.id,
+          name: t.name,
+          content: t.content,
+          rating: t.rating,
+          app_name: t.app_name,
+          app_screenshot_url: screenshot,
+          is_featured: t.is_featured,
+          created_at: t.created_at,
+        };
+      })
+    );
+
     // Get completion count for stats
     const { count: completedCount } = await supabase
       .from("user_progress")
@@ -93,9 +144,9 @@ serve(async (req: Request) => {
       .eq("is_completed", true);
 
     const response = {
-      testimonials: testimonials || [],
+      testimonials: resolved,
       total: count || 0,
-      hasMore: (offset + limit) < (count || 0),
+      hasMore: offset + limit < (count || 0),
       completedCount: completedCount || 0,
     };
 

@@ -55,9 +55,8 @@ serve(async (req) => {
 
     // If no progress exists, initialize it
     if (!progress || progress.length === 0) {
-      const { error: initError } = await supabase.rpc("initialize_user_progress", {
-        p_user_id: user.id,
-      });
+      // Server derives user id from the caller's JWT (auth.uid()).
+      const { error: initError } = await supabase.rpc("initialize_user_progress");
 
       if (initError) {
         console.error("Error initializing progress:", initError);
