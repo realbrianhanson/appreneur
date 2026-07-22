@@ -31,7 +31,7 @@ export const PersonaChooser = () => {
     <Section
       id="persona-chooser"
       variant="default"
-      spacing="md"
+      spacing="default"
       className="relative"
     >
       <Container size="wide" className="relative z-10">

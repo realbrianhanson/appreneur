@@ -10,7 +10,7 @@ import { MOMENTUM_LINE, PRIMARY_CTA_LABEL, CTA_MICROCOPY } from "@/lib/constants
  */
 export const MomentumLine = ({ onCtaClick }: { onCtaClick: () => void }) => {
   return (
-    <Section variant="default" spacing="md" className="relative">
+    <Section variant="default" spacing="default" className="relative">
       <Container size="wide" className="relative z-10">
         <div className="mx-auto max-w-3xl text-center space-y-6">
           <p
