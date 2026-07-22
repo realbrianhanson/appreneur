@@ -24,14 +24,14 @@ const read = (p: string) => readFileSync(resolve(p), "utf8");
 describe("CRO: launch-ready control copy", () => {
   it("uses owner-specified above-fold strings", () => {
     expect(HERO_EYEBROW).toBe(
-      "THE FREE 5-DAY APP-BUILDING CHALLENGE FOR NON-CODERS",
+      "THE FREE 5-DAY AI WEBSITE & APP-BUILDING CHALLENGE FOR BEGINNERS",
     );
     expect(HERO_H1).toBe(
-      "Turn the app idea in your head into a working first version—in five focused days.",
+      "Build Your First Website or App With AI—in 5 Days—even if tech has always intimidated you.",
     );
-    expect(HERO_SUPPORT_COPY).toMatch(/No coding\. No developer\. No wandering/);
+    expect(HERO_SUPPORT_COPY).toMatch(/No coding\. No developer\. No tech background required/);
     expect(PRIMARY_CTA_LABEL).toBe("Start My Free 5-Day Challenge");
-    expect(SECONDARY_CTA_LABEL).toBe("See What You'll Build");
+    expect(SECONDARY_CTA_LABEL).toBe("See What I'll Build");
     expect(REGISTRATION_CTA_LABEL).toBe("Create My Free Challenge Account");
   });
 
@@ -87,7 +87,8 @@ describe("CRO: mechanism section states the mechanism line verbatim", () => {
   it("OpportunityMechanismSection renders MECHANISM_LINE", () => {
     const src = read("src/components/landing/OpportunityMechanismSection.tsx");
     expect(src).toMatch(/MECHANISM_LINE/);
-    expect(src).toMatch(/waiting on the right sequence/);
+    expect(src).toMatch(/You do not need to become a tech person/);
+    expect(src).toMatch(/learn how to tell AI what you want/);
   });
 });
 
@@ -102,7 +103,7 @@ describe("CRO: PersonaChooser prefills the first quiz answer and scrolls to quiz
   it("only surfaces two coded choices, mapped to the quiz answers", () => {
     expect(PERSONA_CHOICES.length).toBe(2);
     const values = PERSONA_CHOICES.map((c) => c.quizAnswerValue).sort();
-    expect(values).toEqual(["idea_existing", "idea_none"]);
+    expect(values).toEqual(["for_business", "to_sell"]);
   });
   it("QuizContainer consumes PERSONA_STORAGE_KEY and advances past Q1", () => {
     expect(quiz).toMatch(/PERSONA_STORAGE_KEY/);
@@ -119,12 +120,12 @@ describe("CRO: JourneyTimeline days carry explicit deliverables", () => {
     const count = (src.match(/deliverable:/g) ?? []).length;
     expect(count).toBeGreaterThanOrEqual(5);
   });
-  it("uses the CRO tension/outcome day headlines", () => {
-    expect(src).toMatch(/Choose the idea worth building/);
-    expect(src).toMatch(/Turn the idea into a buildable first version/);
-    expect(src).toMatch(/Make the core experience real/);
-    expect(src).toMatch(/Make it genuinely useful with AI/);
-    expect(src).toMatch(/Polish it\. Test it\. Publish it\./);
+  it("uses plain-English day headlines for the beginner audience", () => {
+    expect(src).toMatch(/Choose what to build/);
+    expect(src).toMatch(/Sketch the small first version/);
+    expect(src).toMatch(/Build the pages and make the buttons work/);
+    expect(src).toMatch(/Add one useful AI-powered feature/);
+    expect(src).toMatch(/Test it, fix the rough edges, and put it online/);
   });
 });
 
