@@ -34,12 +34,43 @@ interface CompleteDayResult {
   stats?: UserStats;
 }
 
+const isUnauthorizedFunctionError = (
+  error: unknown,
+  response?: Response,
+): boolean => {
+  const contextStatus = (error as { context?: { status?: number } })?.context?.status;
+  return response?.status === 401 || contextStatus === 401;
+};
+
 export function useProgress() {
   const { session } = useAuth();
   const [progress, setProgress] = useState<UserProgress[]>([]);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const clearStaleSession = useCallback(async () => {
+    setProgress([]);
+    setStats(null);
+    setError(null);
+    await supabase.auth.signOut({ scope: "local" });
+  }, []);
+
+  const getFreshAccessToken = useCallback(async (): Promise<string | null> => {
+    const { error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      await clearStaleSession();
+      return null;
+    }
+
+    const { data, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !data.session?.access_token) {
+      await clearStaleSession();
+      return null;
+    }
+
+    return data.session.access_token;
+  }, [clearStaleSession]);
 
   const fetchProgress = useCallback(async () => {
     if (!session?.access_token) return;
@@ -48,17 +79,18 @@ export function useProgress() {
     setError(null);
 
     try {
+      const accessToken = await getFreshAccessToken();
+      if (!accessToken) return;
+
       const response = await supabase.functions.invoke("get-progress", {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
       if (response.error) {
-        // Stale/expired token — clear session so ProtectedRoute redirects to /login.
-        const ctx = (response.error as { context?: { status?: number } }).context;
-        if (ctx?.status === 401) {
-          await supabase.auth.signOut();
+        if (isUnauthorizedFunctionError(response.error, response.response)) {
+          await clearStaleSession();
           return;
         }
         throw new Error(response.error.message || "Failed to fetch progress");
@@ -84,7 +116,7 @@ export function useProgress() {
     } finally {
       setIsLoading(false);
     }
-  }, [session?.access_token]);
+  }, [session?.access_token, getFreshAccessToken, clearStaleSession]);
 
   const completeTask = useCallback(async (
     dayNumber: number, 
@@ -93,14 +125,21 @@ export function useProgress() {
     if (!session?.access_token) return null;
 
     try {
+      const accessToken = await getFreshAccessToken();
+      if (!accessToken) return null;
+
       const response = await supabase.functions.invoke("complete-task", {
         body: { day_number: dayNumber, task_id: taskId },
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
       if (response.error) {
+        if (isUnauthorizedFunctionError(response.error, response.response)) {
+          await clearStaleSession();
+          return null;
+        }
         throw new Error(response.error.message || "Failed to complete task");
       }
 
@@ -132,7 +171,7 @@ export function useProgress() {
       setError(err instanceof Error ? err.message : "Failed to complete task");
       return null;
     }
-  }, [session?.access_token]);
+  }, [session?.access_token, getFreshAccessToken, clearStaleSession]);
 
   const completeDay = useCallback(async (
     dayNumber: number,
@@ -141,14 +180,21 @@ export function useProgress() {
     if (!session?.access_token) return null;
 
     try {
+      const accessToken = await getFreshAccessToken();
+      if (!accessToken) return null;
+
       const response = await supabase.functions.invoke("complete-day", {
         body: { day_number: dayNumber, time_spent_seconds: timeSpentSeconds },
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
       if (response.error) {
+        if (isUnauthorizedFunctionError(response.error, response.response)) {
+          await clearStaleSession();
+          return null;
+        }
         throw new Error(response.error.message || "Failed to complete day");
       }
 
@@ -185,7 +231,7 @@ export function useProgress() {
       setError(err instanceof Error ? err.message : "Failed to complete day");
       return null;
     }
-  }, [session?.access_token, fetchProgress]);
+  }, [session?.access_token, fetchProgress, getFreshAccessToken, clearStaleSession]);
 
   const getDayProgress = useCallback((dayNumber: number): UserProgress | null => {
     return progress.find(p => p.day_number === dayNumber) || null;
