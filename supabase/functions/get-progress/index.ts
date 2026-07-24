@@ -8,7 +8,8 @@ const ALLOWED_ORIGINS = new Set<string>([
   "http://localhost:5173",
   "http://localhost:8080",
 ]);
-const PREVIEW_ORIGIN_RE = /^https:\/\/id-preview--[a-z0-9-]+\.lovable\.app$/;
+const PREVIEW_ORIGIN_RE =
+  /^https:\/\/(?:id-preview--)?[a-z0-9-]+\.(?:lovable\.app|lovableproject\.com)$/;
 
 function buildCors(req: Request): Record<string, string> {
   const origin = req.headers.get("Origin") || "";
