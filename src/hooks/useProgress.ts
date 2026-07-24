@@ -55,6 +55,12 @@ export function useProgress() {
       });
 
       if (response.error) {
+        // Stale/expired token — clear session so ProtectedRoute redirects to /login.
+        const ctx = (response.error as { context?: { status?: number } }).context;
+        if (ctx?.status === 401) {
+          await supabase.auth.signOut();
+          return;
+        }
         throw new Error(response.error.message || "Failed to fetch progress");
       }
 
