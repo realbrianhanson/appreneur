@@ -57,6 +57,12 @@ export function useProgress() {
   }, []);
 
   const getFreshAccessToken = useCallback(async (): Promise<string | null> => {
+    const { error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      await clearStaleSession();
+      return null;
+    }
+
     const { data, error: sessionError } = await supabase.auth.getSession();
     if (sessionError || !data.session?.access_token) {
       await clearStaleSession();
