@@ -43,6 +43,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const clearAuthState = () => {
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+    setIsLoading(false);
+  };
+
   const fetchProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -74,18 +81,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // and subsequent auth changes — no double fetch.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, newSession) => {
-        setSession(newSession);
-        setUser(newSession?.user ?? null);
-
         if (event === "SIGNED_OUT" || !newSession?.user) {
-          setProfile(null);
-          setIsLoading(false);
+          clearAuthState();
           return;
         }
 
-        // Defer profile fetch to avoid blocking the auth callback
-        const userId = newSession.user.id;
+        // INITIAL_SESSION comes from browser storage. Verify it with the auth
+        // server before treating protected routes as authenticated; otherwise a
+        // stale saved token can be sent to get-progress and blank the dashboard.
+        const verifyStoredSession = event === "INITIAL_SESSION";
         setTimeout(async () => {
+          if (verifyStoredSession) {
+            const { data: verified, error } = await supabase.auth.getUser();
+            if (error || !verified.user) {
+              await supabase.auth.signOut({ scope: "local" });
+              clearAuthState();
+              return;
+            }
+          }
+
+          const { data: current } = await supabase.auth.getSession();
+          const trustedSession = current.session;
+          if (!trustedSession?.user) {
+            clearAuthState();
+            return;
+          }
+
+          setSession(trustedSession);
+          setUser(trustedSession.user);
+          const userId = trustedSession.user.id;
           const profileData = await fetchProfile(userId);
           setProfile(profileData);
           setIsLoading(false);
@@ -130,9 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    setUser(null);
-    setSession(null);
-    setProfile(null);
+    clearAuthState();
   };
 
   const value: AuthContextType = {
