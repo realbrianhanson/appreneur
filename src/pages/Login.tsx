@@ -15,7 +15,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isMagicLinkSent, setIsMagicLinkSent] = useState(false);
-  const [mode, setMode] = useState<"password" | "magic" | "forgot">("magic");
+  const [mode, setMode] = useState<"password" | "magic" | "forgot">("password");
   
   const { signIn, signInWithMagicLink } = useAuth();
   const navigate = useNavigate();
