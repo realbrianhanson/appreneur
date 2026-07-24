@@ -86,10 +86,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
 
+        const verifyStoredSession = event === "INITIAL_SESSION";
+
+        if (!verifyStoredSession) {
+          setSession(newSession);
+          setUser(newSession.user);
+        }
+
         // INITIAL_SESSION comes from browser storage. Verify it with the auth
         // server before treating protected routes as authenticated; otherwise a
         // stale saved token can be sent to get-progress and blank the dashboard.
-        const verifyStoredSession = event === "INITIAL_SESSION";
         setTimeout(async () => {
           if (verifyStoredSession) {
             const { data: verified, error } = await supabase.auth.getUser();
