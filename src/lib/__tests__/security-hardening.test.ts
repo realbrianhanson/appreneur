@@ -104,3 +104,19 @@ describe("security hardening — frontend no longer writes funnel_events directl
     expect(read("src/pages/Downsell.tsx")).not.toMatch(/from\("funnel_events"\)\.insert/);
   });
 });
+
+describe("auth hardening — stale preview sessions", () => {
+  it("AuthContext verifies INITIAL_SESSION before authenticating protected routes", () => {
+    const src = read("src/contexts/AuthContext.tsx");
+    expect(src).toMatch(/event === "INITIAL_SESSION"/);
+    expect(src).toMatch(/supabase\.auth\.getUser\(\)/);
+    expect(src).toMatch(/signOut\(\{ scope: "local" \}\)/);
+  });
+
+  it("useProgress verifies and locally clears stale tokens on 401s", () => {
+    const src = read("src/hooks/useProgress.ts");
+    expect(src).toMatch(/supabase\.auth\.getUser\(\)/);
+    expect(src).toMatch(/isUnauthorizedFunctionError/);
+    expect(src).toMatch(/signOut\(\{ scope: "local" \}\)/);
+  });
+});
